@@ -38,7 +38,7 @@ const SignUp = ({navigation}) => {
         errorMessage={emailError}
       />
       <Input
-        label="Password"
+        label="Mật khẩu"
         placeholder="Enter your password"
         secureTextEntry
         value={password}
@@ -46,7 +46,7 @@ const SignUp = ({navigation}) => {
         errorMessage={passwordError}
       />
       <Input
-        label="Password"
+        label="Nhập lại mật khẩu"
         placeholder="Enter your password"
         secureTextEntry
         value={confirmPassword}
