@@ -2,11 +2,19 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Input, Button, Text} from 'react-native-elements';
 import {authStyles} from './authStyle';
+
+/**
+ * @author ntvu 1/10/2023
+ * @param {*} param0
+ * @returns
+ */
 const SignUp = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('ga');
-  const [passwordError, setPasswordError] = useState('Nhap sai v');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [emailError, setEmailError] = useState('Nhóm Nguyễn Thế Vũ - 20204625');
+  const [passwordError, setPasswordError] = useState('20204625');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('Nhóm FA');
 
   const handleSignUp = () => {
     // Xử lý đăng ký tại đây
@@ -36,6 +44,14 @@ const SignUp = ({navigation}) => {
         value={password}
         onChangeText={setPassword}
         errorMessage={passwordError}
+      />
+      <Input
+        label="Password"
+        placeholder="Enter your password"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        errorMessage={confirmPasswordError}
       />
       <Button
         title="Đăng kí"
