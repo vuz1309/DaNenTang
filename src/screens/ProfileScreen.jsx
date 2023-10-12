@@ -1,10 +1,16 @@
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import {Colors} from '../utils/Colors';
+import {UserContext} from '../../App';
 
 const ProfileScreen = () => {
-  const onLogout = () => {
-    // Handle logout
+  const {logout} = useContext(UserContext);
+  const onLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -14,7 +14,6 @@ import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
 
 const RegisterScreen = ({navigation}) => {
-  const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,13 +24,13 @@ const RegisterScreen = ({navigation}) => {
 
   const onRegister = () => {
     if (password !== confirmPassword) {
-      Alert.alert("Password don't match.");
+      Alert.alert('Mật khẩu không trùng khớp.');
       return;
     }
     if (email && password) {
       //Handle register
     } else {
-      Alert.alert('Please fill in details!');
+      Alert.alert('Vui lòng điền đầy đủ thông tin!');
     }
   };
 
@@ -59,6 +58,7 @@ const RegisterScreen = ({navigation}) => {
           placeholderTextColor={Colors.grey}
           onChangeText={value => setConfirmPassword(value)}
           style={styles.inputBox}
+          secureTextEntry={true}
         />
         <TextInput
           placeholder="Nhập lại mật khẩu"
@@ -66,6 +66,7 @@ const RegisterScreen = ({navigation}) => {
           value={password}
           onChangeText={value => setPassword(value)}
           style={styles.inputBox}
+          secureTextEntry={true}
         />
         <TouchableOpacity onPress={onRegister} style={styles.loginButton}>
           <Text style={styles.login}>Đăng ký</Text>

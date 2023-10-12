@@ -8,32 +8,30 @@ const Tab = createMaterialTopTabNavigator();
 
 const TopTabbar = () => {
   return (
-    <>
-      <Tab.Navigator
-        screenOptions={() => ({
-          tabBarShowLabel: false,
-          tabBarActiveTintColor: Colors.primaryColor,
-          tabBarInactiveTintColor: Colors.grey,
-        })}>
-        {TabData.map(tab => (
-          <Tab.Screen
-            key={tab.id}
-            name={tab.name}
-            component={tab.route}
-            options={{
-              tabBarIcon: ({color, focused}) => (
-                <VectorIcon
-                  type={focused ? tab.activeiconType : tab.inactiveIconType}
-                  name={focused ? tab.activeIconName : tab.inactiveIconName}
-                  size={focused ? tab.size : tab.unFocusSize}
-                  color={color}
-                />
-              ),
-            }}
-          />
-        ))}
-      </Tab.Navigator>
-    </>
+    <Tab.Navigator
+      screenOptions={() => ({
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: Colors.primaryColor,
+        tabBarInactiveTintColor: Colors.grey,
+      })}>
+      {TabData.map(tab => (
+        <Tab.Screen
+          key={tab.id}
+          name={tab.name}
+          component={tab.route}
+          options={{
+            tabBarIcon: ({color, focused}) => (
+              <VectorIcon
+                type={focused ? tab.activeiconType : tab.inactiveIconType}
+                name={focused ? tab.activeIconName : tab.inactiveIconName}
+                size={focused ? tab.size : tab.unFocusSize}
+                color={color}
+              />
+            ),
+          }}
+        />
+      ))}
+    </Tab.Navigator>
   );
 };
 
