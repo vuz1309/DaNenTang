@@ -12,6 +12,7 @@ import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
+import {setUserLogged} from '../storage/asyncStorage';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -23,7 +24,8 @@ const LoginScreen = ({navigation}) => {
 
   const onLogin = () => {
     if (email && password) {
-      //Handle login
+      setUserLogged({email, password});
+      navigation.navigate('MainScreen');
     }
   };
 
