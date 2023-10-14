@@ -5,16 +5,16 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
-import React, {useState} from 'react';
-import VectorIcon from '../utils/VectorIcon';
+import React, {useContext, useState} from 'react';
 import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
-import {setUserLogged} from '../storage/asyncStorage';
+import {UserContext} from '../../App';
 
 const LoginScreen = ({navigation}) => {
+  const {login} = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,8 +24,18 @@ const LoginScreen = ({navigation}) => {
 
   const onLogin = () => {
     if (email && password) {
-      setUserLogged({email, password});
-      navigation.navigate('MainScreen');
+      handleLoginApi();
+    }
+  };
+
+  const handleLoginApi = async () => {
+    try {
+      setIsLoading(true);
+      await login({email, password});
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -35,17 +45,20 @@ const LoginScreen = ({navigation}) => {
         <Image source={Logo} style={styles.logoStyle} />
         <TextInput
           placeholder="Email"
+          inputMode="email"
           value={email}
           placeholderTextColor={Colors.borderGrey}
           onChangeText={value => setEmail(value)}
           style={styles.inputBox}
         />
+
         <TextInput
           placeholder="Mật khẩu"
           placeholderTextColor={Colors.borderGrey}
           value={password}
           onChangeText={value => setPassword(value)}
           style={styles.inputBox}
+          secureTextEntry={true}
         />
         <TouchableOpacity onPress={onLogin} style={styles.loginButton}>
           <Text style={styles.login}>Đăng nhập</Text>

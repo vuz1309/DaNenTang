@@ -9,8 +9,7 @@ const SubHeader = () => {
     <View style={styles.container}>
       <Image source={Profile} style={styles.profileStyle} />
       <View style={styles.inputBox}>
-        <Text style={styles.inputStyle}>Tạo bài viết...</Text>
-        {/* <Text style={styles.inputStyle}>...</Text> */}
+        <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
       </View>
       <Image source={CameraRoll} style={styles.cameraRoll} />
     </View>

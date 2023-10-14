@@ -6,12 +6,12 @@ export const getUserLogged = async () => {
   return JSON.parse(user);
 };
 
-export const setUserLogged = user => {
-  AsyncStorage.setItem('user', JSON.stringify(user));
+export const setUserLogged = async user => {
+  await AsyncStorage.setItem('user', JSON.stringify(user));
 };
 
-export const removeUserLogged = () => {
-  AsyncStorage.removeItem('user');
+export const removeUserLogged = async () => {
+  await AsyncStorage.removeItem('user');
 };
 
 export const getAccessToken = () => {

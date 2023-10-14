@@ -14,6 +14,7 @@ const PostFooter = ({data}) => {
           <Image source={Like} style={styles.reactionIcon} />
           <Image source={Shock} style={styles.reactionIcon} />
           <Image source={Heart} style={styles.reactionIcon} />
+          <Text style={{marginLeft: 4}}> 23</Text>
           <Text style={styles.reactionCount}>{data.reactionCount}</Text>
         </View>
         <Text style={styles.reactionCount}>{data.comments} Bình luận</Text>
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
   reactionIcon: {
     height: 20,
     width: 20,
+    marginRight: -4,
   },
   row: {
     flexDirection: 'row',
