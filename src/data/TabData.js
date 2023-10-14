@@ -1,6 +1,6 @@
 import FriendScreen from '../screens/FriendScreen';
 import HomeScreen from '../screens/HomeScreen';
-import MarketPlaceScreen from '../screens/MarketPlaceScreen';
+// import MarketPlaceScreen from '../screens/MarketPlaceScreen';
 import NotificationScrren from '../screens/NotificationScrren';
 import ProfileScreen from '../screens/ProfileScreen';
 import WatchScreen from '../screens/WatchScreen';
@@ -39,17 +39,17 @@ export const TabData = [
     size: 25,
     unFocusSize: 25,
   },
-  {
-    id: 4,
-    route: MarketPlaceScreen,
-    name: 'MarketPlace',
-    activeIconName: 'shop',
-    activeiconType: 'Entypo',
-    inactiveIconName: 'storefront-outline',
-    inactiveIconType: 'MaterialCommunityIcons',
-    size: 25,
-    unFocusSize: 25,
-  },
+  // {
+  //   id: 4,
+  //   route: MarketPlaceScreen,
+  //   name: 'MarketPlace',
+  //   activeIconName: 'shop',
+  //   activeiconType: 'Entypo',
+  //   inactiveIconName: 'storefront-outline',
+  //   inactiveIconType: 'MaterialCommunityIcons',
+  //   size: 25,
+  //   unFocusSize: 25,
+  // },
   {
     id: 5,
     route: NotificationScrren,

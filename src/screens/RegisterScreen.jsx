@@ -24,13 +24,13 @@ const RegisterScreen = ({navigation}) => {
 
   const onRegister = () => {
     if (password !== confirmPassword) {
-      Alert.alert('Mật khẩu không trùng khớp.');
+      Alert.alert('Lỗi', 'Mật khẩu không trùng khớp.');
       return;
     }
     if (email && password) {
       //Handle register
     } else {
-      Alert.alert('Vui lòng điền đầy đủ thông tin!');
+      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
     }
   };
 

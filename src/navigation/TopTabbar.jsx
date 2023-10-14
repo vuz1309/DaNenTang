@@ -6,7 +6,7 @@ import {TabData} from '../data/TabData';
 
 const Tab = createMaterialTopTabNavigator();
 
-const TopTabbar = () => {
+const TopTabBar = () => {
   return (
     <Tab.Navigator
       screenOptions={() => ({
@@ -35,4 +35,4 @@ const TopTabbar = () => {
   );
 };
 
-export default TopTabbar;
+export default TopTabBar;

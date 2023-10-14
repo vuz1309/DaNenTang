@@ -17,10 +17,6 @@ const LoginScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState({
-    email: '',
-    password: '',
-  });
 
   const onCreateAccount = () => {
     navigation.navigate('RegisterScreen');
