@@ -12,6 +12,7 @@ import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
+import { validateEmail, validatePassword } from '../utils/validater';
 
 const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -25,6 +26,14 @@ const RegisterScreen = ({navigation}) => {
   const onRegister = () => {
     if (password !== confirmPassword) {
       Alert.alert('Lỗi', 'Mật khẩu không trùng khớp.');
+      return;
+    }
+    if (!validateEmail(email)) {
+      AlertMessage("Invalid Email format");
+      return;
+    }
+    if (!validatePassword(password)) {
+      AlertMessage("Invalid Password format");
       return;
     }
     if (email && password) {
