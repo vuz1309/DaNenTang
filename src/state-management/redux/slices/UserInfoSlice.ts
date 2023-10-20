@@ -7,11 +7,10 @@ import {
 } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import { CommonStatus } from './types';
-import { generatePersistConfig } from '../../../utils/helper';
+import { generatePersistConfig, logger } from '../../../utils/helper';
 
 export interface IUser {
     id?: number;
-    userId?: number;
     fullname?: string;
     avatar?: string[];
     dateOfBirth?: string;
@@ -74,6 +73,8 @@ const updateToken: Reducer<
     PayloadAction<Pick<IUserInfoState, 'token' | 'user'>>
 > = (state, { payload }) => {
     state.token = payload.token;
+    logger("reducer: " + payload.token)
+    logger("state: " + state.token);
     if (payload.user?.id) {
         state.user = { ...state.user, id: payload.user.id }
     }

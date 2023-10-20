@@ -32,6 +32,9 @@ const store = configureStore({
     devTools: __DEV__,
   });
 
+export interface FacebookRootState {
+    userInfo: IUserInfoState;
+}
 sagaMiddleware.run(rootSaga);
 
 const persistor = persistStore(store);

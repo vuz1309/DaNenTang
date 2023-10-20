@@ -19,55 +19,40 @@ import {
   setUserLogged,
 } from './src/storage/asyncStorage';
 
+import { useAppSelector } from './src/state-management/redux/hooks';
+import { FacebookRootState, store } from './src/state-management/redux/store';
+import { Provider, useSelector } from 'react-redux';
+import { IUserInfoState } from './src/state-management/redux/slices/UserInfoSlice';
+import { CommonStatus } from './src/state-management/redux/slices/types';
+
 const Stack = createStackNavigator();
 export const UserContext = createContext({});
-const App = () => {
-  const [user, setUser] = useState<any>(null);
-
-  const login = useCallback((res: any) => {
-    setUser(res);
-    setUserLogged(res);
-  }, []);
-
-  const logout = useCallback(() => {
-    removeUserLogged();
-    setUser(null);
-  }, []);
-
-  const userContextValue = useMemo(
-    () => ({
-      user,
-      login,
-      logout,
-    }),
-    [user, login],
-  );
-
-  useEffect(() => {
-    const getUser = async () => {
-      const userLogged = await getUserLogged();
-      setUser(userLogged);
-    };
-    getUser();
-  }, []);
-
+const AppChild = () => {
+  const userLogged = useSelector((state : FacebookRootState) => state.userInfo.user);
   return (
-    <UserContext.Provider value={userContextValue}>
-      <NavigationContainer>
-        <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          {user ? (
-            <Stack.Screen name="MainScreen" component={MainScreen} />
-          ) : (
-            <>
-              <Stack.Screen name="LoginScreen" component={LoginScreen} />
-              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </UserContext.Provider>
+        <NavigationContainer>
+          <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            { userLogged ? (
+              <Stack.Screen name="MainScreen" component={MainScreen} />
+            ) : (
+              <>
+                <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+    
   );
 };
+
+const App = () => {
+  return (
+    <Provider store={store}> 
+      <AppChild/>
+    </Provider>
+  )
+}
 
 export default App;

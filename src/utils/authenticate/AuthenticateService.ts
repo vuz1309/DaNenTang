@@ -29,6 +29,8 @@ const AuthenticateService = {
         store.dispatch(userInfoActions.logOut());
     },
     handlerLogin: (token: string, id: number) => {
+        logger("handle login: " + token);
+        
         store.dispatch(
             userInfoActions.updateToken({ token, user: { id } }),
         );
@@ -65,16 +67,18 @@ export const useLogin = (): LoginRequest => {
     }
     const handleLoginSuccess = (response: any) => {
         logger("Login Success!")
-        logger(response?.data)
+        logger(response?.data?.data)
+        logger("AS1: " + response.data.data?.token);
         store.dispatch(
             userInfoActions.getUserInfoRequest({
-                token: response?.data?.token,
-                user: { id: response?.data?.id },
+                token: response?.data?.data?.token,
+                user: { id: response?.data?.data?.id },
             }),
         );
+        logger("AS2: " + response.data.token);
         AuthenticateService.handlerLogin(
-            response?.data?.token,
-            response?.data?.id,
+            response?.data?.data?.token,
+            response?.data?.data?.id,
         );
     };
     return {
