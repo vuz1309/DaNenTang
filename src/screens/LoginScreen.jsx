@@ -14,6 +14,9 @@ import { UserContext } from '../../App';
 import { useLogin } from '../utils/authenticate/AuthenticateService';
 import { validateEmail, validatePassword } from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
+import { navigate } from '../navigation/NavigationService';
+import { AUTHENTICATE_ROUTE } from '../navigation/config/routes';
+
 
 const LoginScreen = ({ navigation }) => {
   const { login } = useContext(UserContext);
@@ -21,9 +24,12 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onCreateAccount = () => {
-    navigation.navigate('RegisterScreen');
+  const goToRegisterScreen = () => {
+    navigation.navigate(AUTHENTICATE_ROUTE.REGISTER);
+    // navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
+
+
   const { requestLogin, loading, error } = useLogin();
 
   const onLogin = () => {
@@ -37,7 +43,7 @@ const LoginScreen = ({ navigation }) => {
     }
     requestLogin({ email, password });
   };
-
+ 
 
   return (
     <View style={styles.container}>
@@ -64,7 +70,7 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.login}>Đăng nhập</Text>
         </TouchableOpacity>
         <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
-        <TouchableOpacity style={styles.newAccount} onPress={onCreateAccount}>
+        <TouchableOpacity style={styles.newAccount} onPress={goToRegisterScreen}>
           <Text style={styles.newAccountText}>Tạo tài khoản</Text>
         </TouchableOpacity>
         <Image source={MetaLogo} style={styles.metaLogoStyle} />
