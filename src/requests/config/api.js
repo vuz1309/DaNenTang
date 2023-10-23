@@ -48,7 +48,9 @@ export const createApiInstance = (config, {auth = true, silent} = {}) => {
       if (!silent) {
         console.log(error);
       }
-      if (auth) removeAccessToken();
+      if (auth) {
+        removeAccessToken();
+      }
       return Promise.reject(error);
     },
   );

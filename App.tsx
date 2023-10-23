@@ -2,7 +2,6 @@ import {StatusBar} from 'react-native';
 import React, {
   useEffect,
   useState,
-  useContext,
   createContext,
   useCallback,
   useMemo,
@@ -18,6 +17,7 @@ import {
   removeUserLogged,
   setUserLogged,
 } from './src/storage/asyncStorage';
+import UploadScreen from './src/screens/UploadScreen';
 
 const Stack = createStackNavigator();
 export const UserContext = createContext({});
@@ -57,7 +57,10 @@ const App = () => {
         <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
         <Stack.Navigator screenOptions={{headerShown: false}}>
           {user ? (
-            <Stack.Screen name="MainScreen" component={MainScreen} />
+            <>
+              <Stack.Screen name="MainScreen" component={MainScreen} />
+              <Stack.Screen name="UploadScreen" component={UploadScreen} />
+            </>
           ) : (
             <>
               <Stack.Screen name="LoginScreen" component={LoginScreen} />
