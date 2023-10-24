@@ -101,12 +101,15 @@ const userInfoSlice = createSlice({
     },
 });
 
+
+
 const persistConfig = generatePersistConfig('userInfo', [
     'token',
     'user',
 ]);
 
 export const userInfoActions = userInfoSlice.actions;
+
 export default persistReducer<IUserInfoState>(
     persistConfig,
     userInfoSlice.reducer,

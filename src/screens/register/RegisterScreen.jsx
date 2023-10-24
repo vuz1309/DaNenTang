@@ -11,7 +11,7 @@ import {
   } from 'react-native';
 import { Colors } from "../../utils/Colors";
 import VectorIcon from "../../utils/VectorIcon";
-import { AUTHENTICATE_ROUTE } from "../../navigation/config/routes";
+import { AUTHENTICATE_ROUTE, ONBOARDING_ROUTE } from "../../navigation/config/routes";
 import register from '../../assets/images/register.jpg';
 import { StyledButton, StyledText, StyledTouchable } from "../../components/base";
 
@@ -28,6 +28,7 @@ const RegisterScreen = ({navigation}) => {
             />
             <View
                 style={{
+                    marginTop : '5%',
                     borderBottomColor: 'black',
                     borderBottomWidth: StyleSheet.hairlineWidth,
                 }}
@@ -43,6 +44,7 @@ const RegisterScreen = ({navigation}) => {
                 <StyledButton
                 title = "Tiếp"
                 customStyle = {[styles.nextButton]}
+                onPress = {() => {navigation.navigate(ONBOARDING_ROUTE.INPUT_NAME)}}
                 />
             </View>
         </View>
@@ -52,6 +54,7 @@ const RegisterScreen = ({navigation}) => {
 const styles = StyleSheet.create(
     {
         container: {
+            backgroundColor: 'white',
             padding: 16
           },
         subContainer: {
