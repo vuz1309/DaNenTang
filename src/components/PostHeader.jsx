@@ -3,13 +3,24 @@ import React from 'react';
 import UserProfile from '../assets/images/post1.jpeg';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
+import {StyledTouchable} from './base';
 
 const PostHeader = ({data}) => {
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
         <View style={styles.row}>
-          <Image source={data.profileImg} style={styles.userProfile} />
+          <StyledTouchable>
+            <Image
+              source={
+                data.profileImg
+                  ? data.profileImg
+                  : require('../assets/images/avatar_null.jpg')
+              }
+              style={styles.userProfile}
+            />
+          </StyledTouchable>
+
           <View style={styles.userSection}>
             <Text style={styles.username}>{data.name}</Text>
             <View style={styles.row}>

@@ -17,6 +17,7 @@ import VectorIcon from '../utils/VectorIcon';
 
 const PostFooter = ({data}) => {
   const [reactionModal, setReactionModal] = useState(false);
+  const [isLikePost, setIsLikePost] = useState(data);
   return (
     <View style={styles.postFotterContainer}>
       <View style={styles.footerReactionSec}>
@@ -55,12 +56,14 @@ const PostFooter = ({data}) => {
           onLongPress={() => setReactionModal(true)}>
           <View style={styles.row}>
             <VectorIcon
-              name="like2"
+              name="like1"
               type="AntDesign"
               size={25}
-              color={Colors.grey}
+              color={Colors.primaryColor}
             />
-            <Text style={styles.reactionCount}>Thích</Text>
+            <Text style={{...styles.reactionCount, color: Colors.primaryColor}}>
+              Thích
+            </Text>
           </View>
         </TouchableOpacity>
 
