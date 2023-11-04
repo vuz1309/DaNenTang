@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useContext} from 'react';
 import {Colors} from '../utils/Colors';
-import {useLogout} from '../utils/authenticateFirebase/useLogin';
+import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
 const ProfileScreen = () => {

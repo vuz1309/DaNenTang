@@ -1755,6 +1755,11 @@
   resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-17.5.0.tgz"
   integrity sha512-6pfvp2x28parK3F2CvL6dGketzl8cPspjoE/SsSWem7EhtCluDwCT+qZjPJgJXyEHLhJVtnPHkHOHQGzH3he0Q==
 
+"@react-native-firebase/messaging@^17.5.0":
+  version "17.5.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-17.5.0.tgz"
+  integrity sha512-9jB7jEt4ySdALio2qwquAkXI106GTdPEuGY+vUFuNT6Wwwc5VQhyiJ5yforaF0BEsppFgK151PLYQQdIhahgzA==
+
 "@react-native-masked-view/masked-view@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@react-native-masked-view/masked-view/-/masked-view-0.2.9.tgz"
