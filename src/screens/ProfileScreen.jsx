@@ -1,13 +1,14 @@
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useContext} from 'react';
 import {Colors} from '../utils/Colors';
-import {UserContext} from '../../App';
-
+import {useLogout} from '../utils/authenticateFirebase/useLogin';
+import auth from '@react-native-firebase/auth';
+import fireStore from '@react-native-firebase/firestore';
 const ProfileScreen = () => {
-  const {logout} = useContext(UserContext);
+  const {requestLogout} = useLogout(auth(), fireStore());
   const onLogout = async () => {
     try {
-      await logout();
+      await requestLogout();
     } catch (error) {
       console.log(error);
     }

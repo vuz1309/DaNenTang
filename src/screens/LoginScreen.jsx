@@ -6,20 +6,22 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React, { useContext, useState } from 'react';
-import { Colors } from '../utils/Colors';
+import React, {useContext, useEffect, useState} from 'react';
+import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
-import { UserContext } from '../../App';
-import { useLogin } from '../utils/authenticate/AuthenticateService';
-import { validateEmail, validatePassword } from '../utils/validater';
+import {UserContext} from '../../App';
+// import {useLogin} from '../utils/authenticate/AuthenticateService';
+import {useLogin} from '../utils/authenticateFirebase/useLogin';
+import {validateEmail, validatePassword} from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
-import { navigate } from '../navigation/NavigationService';
-import { AUTHENTICATE_ROUTE } from '../navigation/config/routes';
+import {navigate} from '../navigation/NavigationService';
+import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 
-
-const LoginScreen = ({ navigation }) => {
-  const { login } = useContext(UserContext);
+import auth from '@react-native-firebase/auth';
+import fireStore from '@react-native-firebase/firestore';
+const LoginScreen = ({navigation}) => {
+  const {login} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,21 +31,19 @@ const LoginScreen = ({ navigation }) => {
     // navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
 
-
-  const { requestLogin, loading, error } = useLogin();
+  const {requestLogin, loading, error} = useLogin(auth(), fireStore());
 
   const onLogin = () => {
-    if (!validateEmail(email)) {
-      AlertMessage("Invalid Email format");
-      return;
-    }
-    if (!validatePassword(password)) {
-      AlertMessage("Invalid Password format");
-      return;
-    }
-    requestLogin({ email, password });
+    // if (!validateEmail(email)) {
+    //   AlertMessage("Invalid Email format");
+    //   return;
+    // }
+    // if (!validatePassword(password)) {
+    //   AlertMessage("Invalid Password format");
+    //   return;
+    // }
+    requestLogin({email, password});
   };
- 
 
   return (
     <View style={styles.container}>
@@ -70,7 +70,9 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.login}>Đăng nhập</Text>
         </TouchableOpacity>
         <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
-        <TouchableOpacity style={styles.newAccount} onPress={goToRegisterScreen}>
+        <TouchableOpacity
+          style={styles.newAccount}
+          onPress={goToRegisterScreen}>
           <Text style={styles.newAccountText}>Tạo tài khoản</Text>
         </TouchableOpacity>
         <Image source={MetaLogo} style={styles.metaLogoStyle} />
