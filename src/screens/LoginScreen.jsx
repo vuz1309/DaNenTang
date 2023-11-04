@@ -6,38 +6,44 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React, {useContext, useState} from 'react';
-import {Colors} from '../utils/Colors';
+import React, { useContext, useState } from 'react';
+import { Colors } from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
-import {UserContext} from '../../App';
+import { UserContext } from '../../App';
+import { useLogin } from '../utils/authenticate/AuthenticateService';
+import { validateEmail, validatePassword } from '../utils/validater';
+import AlertMessage from '../components/base/AlertMessage';
+import { navigate } from '../navigation/NavigationService';
+import { AUTHENTICATE_ROUTE } from '../navigation/config/routes';
 
-const LoginScreen = ({navigation}) => {
-  const {login} = useContext(UserContext);
+
+const LoginScreen = ({ navigation }) => {
+  const { login } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onCreateAccount = () => {
-    navigation.navigate('RegisterScreen');
+  const goToRegisterScreen = () => {
+    navigation.navigate(AUTHENTICATE_ROUTE.REGISTER);
+    // navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
+
+
+  const { requestLogin, loading, error } = useLogin();
 
   const onLogin = () => {
-    if (email && password) {
-      handleLoginApi();
+    if (!validateEmail(email)) {
+      AlertMessage("Invalid Email format");
+      return;
     }
-  };
-
-  const handleLoginApi = async () => {
-    try {
-      setIsLoading(true);
-      await login({email, password});
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+    if (!validatePassword(password)) {
+      AlertMessage("Invalid Password format");
+      return;
     }
+    requestLogin({ email, password });
   };
+ 
 
   return (
     <View style={styles.container}>
@@ -64,7 +70,7 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.login}>Đăng nhập</Text>
         </TouchableOpacity>
         <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
-        <TouchableOpacity style={styles.newAccount} onPress={onCreateAccount}>
+        <TouchableOpacity style={styles.newAccount} onPress={goToRegisterScreen}>
           <Text style={styles.newAccountText}>Tạo tài khoản</Text>
         </TouchableOpacity>
         <Image source={MetaLogo} style={styles.metaLogoStyle} />
