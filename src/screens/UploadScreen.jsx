@@ -4,42 +4,31 @@ import {
     StyleSheet,
     TouchableOpacity,
     Image,
-    TextInputBase,
     TextInput,
     Animated,
-    Easing, Modal, Dimensions, FlatList
+    Easing,
+    Dimensions,
+    FlatList, PermissionsAndroid, Modal
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Colors} from '../utils/Colors';
 import AntDesign from "react-native-vector-icons/dist/AntDesign";
 import VectorIcon from "../utils/VectorIcon";
-import Post1 from "../assets/images/post1.jpeg";
 import FriendStoryImg1 from "../assets/images/img2.jpeg";
-import MaterialIcons from "react-native-vector-icons/dist/MaterialIcons";
-import {useNavigation} from "@react-navigation/native";
-import {values} from "@babel/runtime/regenerator";
-import {valueOf} from "jest";
-import {options} from "axios";
+import {launchCamera, launchImageLibrary} from "react-native-image-picker";
 
 const UploadScreen = ({navigation, data}) => {
     const [text, setText] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalY, setModalY] = useState(new Animated.Value(200));
-    const windowHeight = Dimensions.get('window').height;
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
-        Animated.timing(modalY, {
-            toValue: 20,
-            duration: 200,
-            easing: Easing.ease(1),
-        }).start();
-    }
-    const Images = [
-        {id: '1', source: require('../assets/images/post1.jpeg')},
-        {id: '2', source: require('../assets/images/post2.jpeg')},
-        {id: '3', source: require('../assets/images/post5.jpeg')},
-        {id: '4', source: require('../assets/images/post4.jpeg')},
-    ];
+    const [images, setImages] = useState([
+        {id: 1, uri: ""},
+        {id: 2, uri: ""},
+        {id: 3, uri: ""},
+        {id: 4, uri: ""}
+    ]);
+    const [isExit, setIsExit] = useState(false);
+    const [crrIndex, setCrrIndex] = useState(0);
+    const defaultImg = "https://static.thenounproject.com/png/3752804-200.png";
     useEffect(() => {
         setIsModalOpen(false);
     }, []);
@@ -49,13 +38,70 @@ const UploadScreen = ({navigation, data}) => {
         profileImg: FriendStoryImg1,
         storyImg: FriendStoryImg1,
     }
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        Animated.timing(modalY, {
-            toValue: 200,
-            duration: 200,
-            easing: Easing.ease(1),
-        }).start();
+    const openLibrary = () => {
+        let options = {}
+        launchImageLibrary(options, (r) => {
+            let tmp = r.assets[0].uri;
+            console.log(tmp)
+            let newImgList = [...images];
+            if (crrIndex < 5) {
+                newImgList[crrIndex] = tmp;
+                setCrrIndex(crrIndex + 1);
+                setTimeout(() => {
+                    setImages(newImgList);
+                }, 100)
+                console.log("after add ", images)
+            } else {
+                console.log("Number of images exceeded")
+            }
+        }).then(r =>
+            console.log("succeed added")
+        ).catch(reject => {
+            console.log("closed");
+        })
+    }
+    const removeImg = (index) => {
+        let newImgList = [...images];
+        newImgList[index] = "";
+        setImages(newImgList);
+    }
+
+    const requestCameraPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: "App Camera Permission",
+                    message: "App needs access to your camera",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK"
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("Camera permission given");
+            } else {
+                console.log("Camera permission denied");
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+    const openCamera = () => {
+        requestCameraPermission().then(() => {
+            let options = {}
+            launchCamera(options).then(r => console.log(r))
+        })
+    }
+    const handleExit = () => {
+        if (text =="") {
+            navigation.navigate('MainScreen')
+        }else {
+            setIsExit(true);
+        }
+    }
+    const onCreateNewPost = () => {
+        console.log("Created");
     }
     return (
         <View style={styles.container}>
@@ -64,7 +110,7 @@ const UploadScreen = ({navigation, data}) => {
                 {/*header*/}
                 <View style={styles.header1}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('MainScreen')}
+                        onPress={handleExit}
                     >
                         <VectorIcon
                             name="arrowleft"
@@ -75,18 +121,19 @@ const UploadScreen = ({navigation, data}) => {
                     </TouchableOpacity>
                     <Text style={styles.headerText}>Create post</Text>
                 </View>
-                <View>
+                <TouchableOpacity disabled={text == ""} onPress={onCreateNewPost}>
                     <Text
                         style={[
                             styles.headerText,
                             text == "" ? {color: 'lightgrey'} : {color: Colors.grey}
                         ]}
                     >Upload</Text>
-                </View>
+                </TouchableOpacity>
             </View>
 
             {/*avatar and name*/}
             <View style={styles.avaContainer}>
+
                 <Image
                     style={styles.ava}
                     source={mock.profileImg}
@@ -120,14 +167,26 @@ const UploadScreen = ({navigation, data}) => {
             </View>
 
             {/*image section*/}
-            <FlatList
-                data={Images}
-                numColumns={2}
-                keyExtractor={(item) => item.id}
-                renderItem={({item}) => (
-                    <Image source={item.source} style={styles.image} resizeMode="contain"/>
-                )}
-            />
+                <FlatList
+                    data={images}
+                    numColumns={2}
+                    renderItem={({item}) =>
+                        (
+                            // <TouchableOpacity onPress={() => handleItemPress(item)}>
+                                    <Image
+                                        style={styles.image}
+                                        source={{
+                                            uri: item.uri !="" ? item.uri : defaultImg ,
+                                        }}>
+                                    </Image>
+                            // </TouchableOpacity>
+                        )
+                    }
+                    keyExtractor={item => images.indexOf(item)}
+                />
+
+
+
             {/*footer*/}
             {isModalOpen ?
                 <View style={styles.modal}>
@@ -140,10 +199,18 @@ const UploadScreen = ({navigation, data}) => {
                             style={{alignItems: 'center'}}
                         />
                     </TouchableOpacity>
-                    <View style={styles.option}>
-                        <Image style={styles.logoOption} source={require('../assets/images/photo.png')}/>
-                        <Text style={styles.headerText}>Photo/Video</Text>
-                    </View>
+                    <TouchableOpacity onPress={openLibrary}>
+                        <View style={styles.option}>
+                            <Image style={styles.logoOption} source={require('../assets/images/photo.png')}/>
+                            <Text style={styles.headerText}>Photo/Video</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={openCamera}>
+                        <View style={styles.option}>
+                            <Image style={styles.logoOption} source={require('../assets/images/camera.png')}/>
+                            <Text style={styles.headerText}>Open Camera</Text>
+                        </View>
+                    </TouchableOpacity>
                     <View style={styles.option}>
                         <Image style={styles.logoOption} source={require('../assets/images/emoji.png')}/>
                         <Text style={styles.headerText}>Feeling/activity</Text>
@@ -151,14 +218,72 @@ const UploadScreen = ({navigation, data}) => {
                 </View>
                 :
                 <TouchableOpacity style={styles.addOption} onPress={() => setIsModalOpen(true)}>
-                    <Text style={styles.headerText}>Add to your post</Text>
+                    <Text style={styles.headerText}>Thêm vào bài viết</Text>
                     <View style={styles.logoSection}>
                         <Image style={styles.logoOption} source={require('../assets/images/photo.png')}/>
+                        <Image style={styles.logoOption} source={require('../assets/images/camera.png')}/>
                         <Image style={styles.logoOption} source={require('../assets/images/emoji.png')}/>
                     </View>
                 </TouchableOpacity>
 
             }
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isExit}
+            >
+                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <View
+                        style={{
+                            backgroundColor: 'white',
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            padding: 20,
+                        }}
+                    >
+                        <View style={{ paddingBottom:10}}>
+                            <Text style={styles.headerText}>
+                                Bạn muốn hoàn thành bài viết của mình sau?
+                            </Text>
+                        </View>
+                        <View style={styles.option}>
+                            <VectorIcon
+                                name="bookmark"
+                                type="Feather"
+                                size={22}
+                                color={'grey'}
+                                style={{alignItems: 'center'}}
+                            />
+                            <Text style={{ fontSize: 18, marginBottom: 10, fontWeight:'bold'}}>Lưu làm bản nháp</Text>
+                        </View>
+                        <TouchableOpacity onPress={()=>navigation.navigate('MainScreen')}>
+                            <View style={styles.option}>
+                                <VectorIcon
+                                    name="trash-2"
+                                    type="Feather"
+                                    size={22}
+                                    color={'grey'}
+                                    style={{alignItems: 'center'}}
+                                />
+                                <Text style={{ fontSize: 18, marginBottom: 10, fontWeight:'bold' }}>Bỏ bài viết</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>setIsExit(false)}>
+                            <View style={styles.option}>
+                                <VectorIcon
+                                    name="check"
+                                    type="Feather"
+                                    size={22}
+                                    color={'#2873d7'}
+                                    style={{alignItems: 'center'}}
+                                />
+                                <Text style={{ fontSize: 18, marginBottom: 10, fontWeight:'bold', color:'#2873d7'}}>Tiếp tục chỉnh sửa</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
 
 
         </View>
@@ -225,7 +350,7 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingHorizontal: 10,
         width: '100%',
-        flexDirection:'row',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: 'white'
     },
@@ -256,13 +381,17 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     image: {
-        width: '50%', // Chiều rộng 50% để có 2 cột
-        aspectRatio: 1, // Giữ tỷ lệ khung hình
-        margin:3,
-        objectFit:"cover",
+        width: '100%',
+        flex: 1,
+        aspectRatio: 1,
+        margin: 3,
+        objectFit: "cover",
     },
-
-
+    imageList:{
+        flexDirection:"row",
+        gap:10,
+        width:'100%'
+    }
 
 });
 
