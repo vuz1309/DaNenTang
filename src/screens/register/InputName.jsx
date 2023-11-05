@@ -1,20 +1,11 @@
-import { StyledText, StyledButton } from "../../components/base";
-import { Colors } from "../../utils/Colors"
-import {
-    TextInput, StyleSheet,
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    Alert,
-    Button,
-  } from 'react-native';
-import React, { useContext, useState } from 'react';
+import {StyledButton, StyledText} from "../../components/base";
+import {Colors} from "../../utils/Colors"
+import {StyleSheet, TextInput, View,} from 'react-native';
+import React, {useState} from 'react';
 import VectorIcon from "../../utils/VectorIcon";
-import { AUTHENTICATE_ROUTE } from "../../navigation/config/routes";
-import { logger } from "../../utils/helper";
-import { userInfoActions } from "../../state-management/redux/slices/UserInfoSlice";
-import { storeStringAsyncData, getStringAsyncData } from "../../utils/authenticate/LocalStorage";
+import {AUTHENTICATE_ROUTE} from "../../navigation/config/routes";
+import {logger} from "../../utils/helper";
+import {getStringAsyncData, storeStringAsyncData} from "../../utils/authenticate/LocalStorage";
 
 
 const InputName = ({navigation}) => {
@@ -24,11 +15,11 @@ const InputName = ({navigation}) => {
     const onPress = async () => {
         const fullname = familyName + ' ' + name;
         await storeStringAsyncData('fullname', fullname);
-        const fullnameStr =  await getStringAsyncData('fullname');
+        const fullnameStr = await getStringAsyncData('fullname');
         logger(fullnameStr);
     }
     return (
-        <View style = {styles.container}>
+        <View style={styles.container}>
             <VectorIcon
                 name="arrow-back"
                 type="Ionicons"
@@ -36,34 +27,34 @@ const InputName = ({navigation}) => {
                 size={20}
                 onPress={() => navigation.navigate(AUTHENTICATE_ROUTE.REGISTER)}
             />
-             <View
+            <View
                 style={{
-                    marginTop : '5%',
+                    marginTop: '5%',
                     borderBottomColor: 'black',
                     borderBottomWidth: StyleSheet.hairlineWidth,
                 }}
             />
-            <View style ={[styles.subContainer]}>
-                <StyledText 
-                content="Bạn tên gì?" 
-                customStyle = {[styles.biggerText]}
+            <View style={[styles.subContainer]}>
+                <StyledText
+                    content="Bạn tên gì?"
+                    customStyle={[styles.biggerText]}
                 />
-                <View style =  {styles.wrapperTextInput}>
-                    <TextInput 
-                    value = {familyName} 
-                    placeholder="Họ" 
-                    style={styles.textInput}
-                    onChangeText={value => setFamilyName(value)}></TextInput>
-                    <TextInput 
-                    value = {name} 
-                    placeholder="Tên" 
-                    style={styles.textInput}
-                    onChangeText={value => setName(value)}></TextInput>
+                <View style={styles.wrapperTextInput}>
+                    <TextInput
+                        value={familyName}
+                        placeholder="Họ"
+                        style={styles.textInput}
+                        onChangeText={value => setFamilyName(value)}></TextInput>
+                    <TextInput
+                        value={name}
+                        placeholder="Tên"
+                        style={styles.textInput}
+                        onChangeText={value => setName(value)}></TextInput>
                 </View>
                 <StyledButton
                     title="Tiếp"
                     customStyle={[styles.nextButton]}
-                    onPress = {onPress}
+                    onPress={onPress}
                 />
             </View>
         </View>
@@ -71,13 +62,13 @@ const InputName = ({navigation}) => {
     )
 }
 const styles = StyleSheet.create(
-    {   
+    {
         container: {
             backgroundColor: Colors.white,
             padding: 16
         },
         wrapperTextInput: {
-            marginTop : '10%',
+            marginTop: '10%',
             flexDirection: 'row',
             justifyContent: 'space-between',
         },
@@ -101,14 +92,14 @@ const styles = StyleSheet.create(
             height: '17%',
             marginTop: '10%',
         },
-        biggerText : {
+        biggerText: {
             color: Colors.black,
-            fontSize : 18,
+            fontSize: 18,
             fontFamily: "Arial",
             textAlign: "center",
             fontWeight: "bold",
             width: '60%',
-            marginTop : '10%'
+            marginTop: '10%'
         },
     }
 )

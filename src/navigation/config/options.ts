@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/stack';
 // import {Themes} from 'assets/themes';
 import {Platform} from 'react-native';
-import { Colors } from '../../utils/Colors';
+import {Colors} from '../../utils/Colors';
 // import transition from './transition';
 
 const navigationConfigs: StackNavigationOptions = {
@@ -18,10 +18,10 @@ const navigationConfigs: StackNavigationOptions = {
   keyboardHandlingEnabled: Platform.OS === 'ios',
   cardOverlayEnabled: true,
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-//   transitionSpec: {
-//     open: transition,
-//     close: transition,
-//   },
+  //   transitionSpec: {
+  //     open: transition,
+  //     close: transition,
+  //   },
 };
 
 export const tabScreenOptions: BottomTabNavigationOptions = {

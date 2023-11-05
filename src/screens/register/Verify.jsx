@@ -1,3 +1,1 @@
-import InputName from "./InputName";
-const Verify = () =>{
-}
+const Verify = () => {};

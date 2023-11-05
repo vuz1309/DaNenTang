@@ -3,14 +3,17 @@ import {Themes} from '../../assets/themes';
 import React, {FunctionComponent} from 'react';
 import {StyleProp, TextStyle, ViewStyle} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters';
-import { StyledText, StyledTouchable } from '.';
+import {StyledText, StyledTouchable} from '.';
 
 interface StyledButtonProps {
   title?: string;
   customStyle?: StyleProp<ViewStyle>;
   customStyleText?: StyleProp<TextStyle>;
+
   onPress(params?: any): void;
+
   onLongPress?(): void;
+
   disabled?: boolean;
 }
 
