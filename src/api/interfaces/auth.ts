@@ -5,3 +5,9 @@ export interface TypeLoginRequest extends AxiosRequestConfig {
   password: string;
   // keepLogin?: boolean;
 }
+
+export interface TypeRegisterRequest extends AxiosRequestConfig {
+  email: string;
+  password: string;
+  uuid: string;
+}

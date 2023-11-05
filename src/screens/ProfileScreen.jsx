@@ -2,12 +2,18 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useContext} from 'react';
 import {Colors} from '../utils/Colors';
 import {UserContext} from '../../App';
-
+import AuthenticateService from '../utils/authenticate/AuthenticateService';
+import { store } from '../state-management/redux/store';
+import { storeStringAsyncData } from '../utils/authenticate/LocalStorage';
+import { AsyncStorageKey } from '../utils/authenticate/LocalStorage';
+import { userInfoActions } from '../state-management/redux/slices/UserInfoSlice';
 const ProfileScreen = () => {
+    const {userInfo} = store.getState();
     const {logout} = useContext(UserContext);
     const onLogout = async () => {
         try {
-            await logout();
+            storeStringAsyncData(AsyncStorageKey.TOKEN, '');
+            store.dispatch(userInfoActions.logOut());
         } catch (error) {
             console.log(error);
         }

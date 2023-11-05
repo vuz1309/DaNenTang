@@ -1,7 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
-import TopTabBar from '../navigation/TopTabBar';
-
+import TopTabBar from "../navigation/TopTabBar";
 const MainScreen = () => {
     return (
         <>

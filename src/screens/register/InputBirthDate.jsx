@@ -1,23 +1,42 @@
 import {StyledButton, StyledText} from "../../components/base";
 import {Colors} from "../../utils/Colors"
-import {StyleSheet, TextInput, View,} from 'react-native';
+import {StyleSheet, TextInput, View, Pressable, Platform} from 'react-native';
 import React, {useState} from 'react';
 import VectorIcon from "../../utils/VectorIcon";
 import {AUTHENTICATE_ROUTE, ONBOARDING_ROUTE} from "../../navigation/config/routes";
 import {logger} from "../../utils/helper";
 import {getStringAsyncData, storeStringAsyncData} from "../../utils/authenticate/LocalStorage";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-
-const InputName = ({navigation}) => {
-    const [familyName, setFamilyName] = useState('')
-    const [name, setName] = useState('')
-
+const InputBirthDate = ({navigation}) => {
+    const [dateOfBirth, setDateOfBirth] = useState("Chọn ngày sinh của bạn");
+    const [date, setDate] = useState(new Date());
+    const [isVisible, setIsVisible] = useState(false);
     const onPress = async () => {
-        const fullname = familyName + ' ' + name;
-        await storeStringAsyncData('fullname', fullname);
-        const fullnameStr = await getStringAsyncData('fullname');
-        logger(fullnameStr);
-        navigation.navigate(ONBOARDING_ROUTE.INPUT_BIRTH_DATE);
+        await storeStringAsyncData('dateOfBirth', dateOfBirth);
+        const dateOfBirthStr = await getStringAsyncData('dateOfBirth');
+        logger(dateOfBirthStr);
+        navigation.navigate(ONBOARDING_ROUTE.INPUT_EMAIL)
+
+    }
+    const toggleDatepicker = () => {
+        setIsVisible(!isVisible);
+    };
+    const onChange = ({type}, selectedDate) => {
+        if(type == "set"){
+            const currentDate = selectedDate;
+            setDate(currentDate);
+
+            if(Platform.OS === "android"){
+                toggleDatepicker();
+                setDateOfBirth(currentDate.toDateString());
+            }
+        }else{
+            toggleDatepicker();
+        }
+    }
+    const handleCancel = () =>{
+        setIsVisible(false);
     }
     return (
         <View style={styles.container}>
@@ -26,7 +45,7 @@ const InputName = ({navigation}) => {
                 type="Ionicons"
                 color={Colors.black}
                 size={20}
-                onPress={() => navigation.navigate(AUTHENTICATE_ROUTE.REGISTER)}
+                onPress={() => navigation.navigate(ONBOARDING_ROUTE.INPUT_NAME)}
             />
             <View
                 style={{
@@ -37,21 +56,33 @@ const InputName = ({navigation}) => {
             />
             <View style={[styles.subContainer]}>
                 <StyledText
-                    content="Bạn tên gì?"
+                    content="Sinh nhật của bạn khi nào?"
                     customStyle={[styles.biggerText]}
                 />
-                <View style={styles.wrapperTextInput}>
-                    <TextInput
-                        value={familyName}
-                        placeholder="Họ"
-                        style={styles.textInput}
-                        onChangeText={value => setFamilyName(value)}></TextInput>
-                    <TextInput
-                        value={name}
-                        placeholder="Tên"
-                        style={styles.textInput}
-                        onChangeText={value => setName(value)}></TextInput>
-                </View>
+                    
+                {!isVisible && (
+                    <Pressable
+                    onPress = {toggleDatepicker}>
+                        <TextInput
+                        style = {styles.textInput}
+                        placeHolder = "Sun July 14 2002"
+                        value = {dateOfBirth}
+                        onChangeText = {setDateOfBirth}
+                        placeholderTextColor={11182744}
+                        editable={false}
+                        />
+                    </Pressable>
+                )}
+                
+
+               {isVisible && (
+                <DateTimePicker
+                mode = "date"
+                display = "spinner"
+                value = {date}
+                onChange = {onChange}
+                />
+               )}
                 <StyledButton
                     title="Tiếp"
                     customStyle={[styles.nextButton]}
@@ -81,7 +112,7 @@ const styles = StyleSheet.create(
         },
         textInput: {
             margin: 10,
-            width: '45%',
+            width: '95%',
             height: 40,
             borderWidth: 0.5,
             borderColor: 'gray',
@@ -89,7 +120,7 @@ const styles = StyleSheet.create(
         },
         nextButton: {
             backgroundColor: Colors.primaryColor,
-            width: '95%',
+            width: '70%',
             height: '17%',
             marginTop: '10%',
         },
@@ -105,4 +136,4 @@ const styles = StyleSheet.create(
     }
 )
 
-export default InputName;
+export default InputBirthDate;

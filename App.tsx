@@ -15,7 +15,9 @@ import {
   ONBOARDING_ROUTE,
 } from './src/navigation/config/routes';
 import InputName from './src/screens/register/InputName';
-
+import InputBirthDate from "./src/screens/register/InputBirthDate";
+import InputEmail from './src/screens/register/InputEmail';
+import CreatePassword from './src/screens/register/CreatePassword';
 const Stack = createStackNavigator();
 export const UserContext = createContext({});
 const AppChild = () => {
@@ -41,6 +43,18 @@ const AppChild = () => {
             <Stack.Screen
               name={ONBOARDING_ROUTE.INPUT_NAME}
               component={InputName}
+            />
+            <Stack.Screen
+              name={ONBOARDING_ROUTE.INPUT_BIRTH_DATE}
+              component={InputBirthDate}
+            />
+            <Stack.Screen
+              name={ONBOARDING_ROUTE.INPUT_EMAIL}
+              component={InputEmail}
+            />
+            <Stack.Screen
+              name={ONBOARDING_ROUTE.CREATE_PASSWORD}
+              component={CreatePassword}
             />
           </>
         )}
