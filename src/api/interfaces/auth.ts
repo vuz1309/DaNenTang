@@ -1,7 +1,7 @@
-import { AxiosRequestConfig } from 'axios';
+import {AxiosRequestConfig} from 'axios';
 
 export interface TypeLoginRequest extends AxiosRequestConfig {
-    email: string;
-    password: string;
-    // keepLogin?: boolean;
-  }
+  email: string;
+  password: string;
+  // keepLogin?: boolean;
+}

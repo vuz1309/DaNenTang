@@ -1,30 +1,25 @@
-import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View,} from 'react-native';
-import React, {useContext, useState} from 'react';
+import {Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View,} from 'react-native';
+import React, {useState} from 'react';
+import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
-import {UserContext} from '../../App';
-import {useLogin} from '../utils/authenticate/AuthenticateService';
 import {validateEmail, validatePassword} from '../utils/validater';
-import AlertMessage from '../components/base/AlertMessage';
-import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 
-
-const LoginScreen = ({navigation}) => {
-    const {login} = useContext(UserContext);
-    const [isLoading, setIsLoading] = useState(false);
+const RegisterScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const goToRegisterScreen = () => {
-        navigation.navigate(AUTHENTICATE_ROUTE.REGISTER);
-        // navigate(AUTHENTICATE_ROUTE.REGISTER);
+    const onCreateAccount = () => {
+        navigation.navigate('LoginScreen');
     };
 
-
-    const {requestLogin, loading, error} = useLogin();
-
-    const onLogin = () => {
+    const onRegister = () => {
+        if (password !== confirmPassword) {
+            Alert.alert('Lỗi', 'Mật khẩu không trùng khớp.');
+            return;
+        }
         if (!validateEmail(email)) {
             AlertMessage("Invalid Email format");
             return;
@@ -33,37 +28,52 @@ const LoginScreen = ({navigation}) => {
             AlertMessage("Invalid Password format");
             return;
         }
-        requestLogin({email, password});
+        if (email && password) {
+            //Handle register
+        } else {
+            Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
+        }
     };
-
 
     return (
         <View style={styles.container}>
+            <VectorIcon
+                name="arrow-back"
+                type="Ionicons"
+                color={Colors.black}
+                size={20}
+                onPress={() => navigation.navigate('LoginScreen')}
+            />
             <View style={styles.subContainer}>
                 <Image source={Logo} style={styles.logoStyle}/>
                 <TextInput
                     placeholder="Email"
-                    inputMode="email"
+                    placeholderTextColor={Colors.grey}
                     value={email}
-                    placeholderTextColor={Colors.borderGrey}
                     onChangeText={value => setEmail(value)}
                     style={styles.inputBox}
                 />
-
                 <TextInput
                     placeholder="Mật khẩu"
-                    placeholderTextColor={Colors.borderGrey}
+                    value={confirmPassword}
+                    placeholderTextColor={Colors.grey}
+                    onChangeText={value => setConfirmPassword(value)}
+                    style={styles.inputBox}
+                    secureTextEntry={true}
+                />
+                <TextInput
+                    placeholder="Nhập lại mật khẩu"
+                    placeholderTextColor={Colors.grey}
                     value={password}
                     onChangeText={value => setPassword(value)}
                     style={styles.inputBox}
                     secureTextEntry={true}
                 />
-                <TouchableOpacity onPress={onLogin} style={styles.loginButton}>
-                    <Text style={styles.login}>Đăng nhập</Text>
+                <TouchableOpacity onPress={onRegister} style={styles.loginButton}>
+                    <Text style={styles.login}>Đăng ký</Text>
                 </TouchableOpacity>
-                <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
-                <TouchableOpacity style={styles.newAccount} onPress={goToRegisterScreen}>
-                    <Text style={styles.newAccountText}>Tạo tài khoản</Text>
+                <TouchableOpacity style={styles.newAccount} onPress={onCreateAccount}>
+                    <Text style={styles.newAccountText}>Đã có tài khoản?</Text>
                 </TouchableOpacity>
                 <Image source={MetaLogo} style={styles.metaLogoStyle}/>
             </View>
@@ -133,4 +143,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginScreen;
+export default RegisterScreen;
+  
