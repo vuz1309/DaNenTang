@@ -22,7 +22,7 @@ export const PostData = [
     caption: 'Không thể cản phá',
     date: '2d',
     comments: 23,
-    reaction: 180,
+    reactionCount: 180,
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ export const PostData = [
     caption: 'Quá ghê gớm!',
     date: '1d',
     comments: 10,
-    reaction: 120,
+    reactionCount: 120,
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ export const PostData = [
     caption: 'Rực lửa.',
     date: '3h',
     comments: 165,
-    reaction: 50,
+    reactionCount: 50,
   },
   {
     id: 4,
@@ -52,7 +52,7 @@ export const PostData = [
     caption: 'Chào buổi sáng.',
     date: '4h',
     comments: 15,
-    reaction: 90,
+    reactionCount: 90,
   },
   {
     id: 5,
@@ -62,7 +62,7 @@ export const PostData = [
     caption: 'Biển....',
     date: '1w',
     comments: 40,
-    reaction: 240,
+    reactionCount: 240,
   },
   {
     id: 6,
@@ -72,7 +72,7 @@ export const PostData = [
     caption: 'Exciting road trip with friends!',
     date: '2w',
     comments: 30,
-    reaction: 210,
+    reactionCount: 210,
   },
   {
     id: 7,
@@ -82,6 +82,6 @@ export const PostData = [
     caption: 'Celebrating a special occasion.',
     date: '1mo',
     comments: 50,
-    reaction: 300,
+    reactionCount: 300,
   },
 ];
