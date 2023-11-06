@@ -8,16 +8,14 @@ import {logger} from "../../utils/helper";
 import {getStringAsyncData, storeStringAsyncData} from "../../utils/authenticate/LocalStorage";
 
 
-const InputName = ({navigation}) => {
-    const [familyName, setFamilyName] = useState('')
-    const [name, setName] = useState('')
+const InputEmail = ({navigation}) => {
+    const [email, setEmail] = useState('')
 
     const onPress = async () => {
-        const fullname = familyName + ' ' + name;
-        await storeStringAsyncData('fullname', fullname);
-        const fullnameStr = await getStringAsyncData('fullname');
-        logger(fullnameStr);
-        navigation.navigate(ONBOARDING_ROUTE.INPUT_BIRTH_DATE);
+        await storeStringAsyncData('email', email);
+        const emailStr = await getStringAsyncData('email');
+        logger(emailStr);
+        navigation.navigate(ONBOARDING_ROUTE.CREATE_PASSWORD);
     }
     return (
         <View style={styles.container}>
@@ -26,7 +24,7 @@ const InputName = ({navigation}) => {
                 type="Ionicons"
                 color={Colors.black}
                 size={20}
-                onPress={() => navigation.navigate(AUTHENTICATE_ROUTE.REGISTER)}
+                onPress={() => navigation.navigate(ONBOARDING_ROUTE.INPUT_BIRTH_DATE)}
             />
             <View
                 style={{
@@ -37,20 +35,16 @@ const InputName = ({navigation}) => {
             />
             <View style={[styles.subContainer]}>
                 <StyledText
-                    content="Bạn tên gì?"
+                    content="Nhập địa chỉ email của bạn"
                     customStyle={[styles.biggerText]}
                 />
                 <View style={styles.wrapperTextInput}>
                     <TextInput
-                        value={familyName}
-                        placeholder="Họ"
+                        value={email}
+                        placeholder="Email"
                         style={styles.textInput}
-                        onChangeText={value => setFamilyName(value)}></TextInput>
-                    <TextInput
-                        value={name}
-                        placeholder="Tên"
-                        style={styles.textInput}
-                        onChangeText={value => setName(value)}></TextInput>
+                        onChangeText={value => setEmail(value)}></TextInput>
+                    
                 </View>
                 <StyledButton
                     title="Tiếp"
@@ -81,7 +75,7 @@ const styles = StyleSheet.create(
         },
         textInput: {
             margin: 10,
-            width: '45%',
+            width: '90%',
             height: 40,
             borderWidth: 0.5,
             borderColor: 'gray',
@@ -105,4 +99,4 @@ const styles = StyleSheet.create(
     }
 )
 
-export default InputName;
+export default InputEmail;

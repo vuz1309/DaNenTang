@@ -1,19 +1,14 @@
-import i18next, { Resource } from "i18next";
-import { memo } from "react";
-import isEqual from "react-fast-compare";
-import { TextProps, StyleProp, TextStyle, StyleSheet, Text } from "react-native";
-import Size from "../../assets/size";
-import { Themes } from "../../assets/themes";
-import { logger } from "../../utils/helper";
-import React from 'react'
-import {useTranslation} from 'react-i18next';
+import React, {memo} from 'react';
+import isEqual from 'react-fast-compare';
+import {StyleProp, StyleSheet, Text, TextProps, TextStyle} from 'react-native';
+import Size from '../../assets/size';
+import {Themes} from '../../assets/themes';
 
 interface StyledTextProps extends TextProps {
   originValue?: string;
   content?: string;
   customStyle?: StyleProp<TextStyle>;
 }
-
 
 const StyledText = (props: StyledTextProps) => {
   const {style, originValue, content} = props;
@@ -25,7 +20,7 @@ const StyledText = (props: StyledTextProps) => {
   }
 
   return (
-    <Text style={[styles.text, props.customStyle]} {...props} >
+    <Text style={[styles.text, props.customStyle]} {...props}>
       {value}
     </Text>
   );
