@@ -4,6 +4,7 @@ import {
   removeAccessToken,
   setAccessToken,
 } from '../../storage/asyncStorage';
+
 /**
  * Khởi tạo cách truyền và xử lí Rest-API
  * @Author NTVu - MF1742 - 23/08/2023
@@ -48,7 +49,9 @@ export const createApiInstance = (config, {auth = true, silent} = {}) => {
       if (!silent) {
         console.log(error);
       }
-      if (auth) removeAccessToken();
+      if (auth) {
+        removeAccessToken();
+      }
       return Promise.reject(error);
     },
   );

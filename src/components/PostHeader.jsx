@@ -1,6 +1,5 @@
-import {View, Image, StyleSheet, Text} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import UserProfile from '../assets/images/post1.jpeg';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
 import {StyledTouchable} from './base';

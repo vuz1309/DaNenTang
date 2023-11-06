@@ -1,19 +1,10 @@
 import React from "react";
-import {
-    View,
-    Text,
-    Image,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    Alert,
-    Button,
-  } from 'react-native';
-import { Colors } from "../../utils/Colors";
+import {Image, StyleSheet, View,} from 'react-native';
+import {Colors} from "../../utils/Colors";
 import VectorIcon from "../../utils/VectorIcon";
-import { AUTHENTICATE_ROUTE, ONBOARDING_ROUTE } from "../../navigation/config/routes";
+import {AUTHENTICATE_ROUTE, ONBOARDING_ROUTE} from "../../navigation/config/routes";
 import register from '../../assets/images/register.jpg';
-import { StyledButton, StyledText, StyledTouchable } from "../../components/base";
+import {StyledButton, StyledText} from "../../components/base";
 
 
 const RegisterScreen = ({navigation}) => {
@@ -28,27 +19,29 @@ const RegisterScreen = ({navigation}) => {
             />
             <View
                 style={{
-                    marginTop : '5%',
+                    marginTop: '5%',
                     borderBottomColor: 'black',
                     borderBottomWidth: StyleSheet.hairlineWidth,
                 }}
             />
             <View style={styles.subContainer}>
-                <Image source={register} style = {styles.image}></Image>
+                <Image source={register} style={styles.image}></Image>
                 <StyledText
-                customStyle = {[styles.biggerText]}
-                content = "Tham gia Facebook" />
+                    customStyle={[styles.biggerText]}
+                    content="Tham gia Facebook"/>
                 <StyledText
-                customStyle = {[styles.smallerText]}
-                content = "Chúng tôi sẽ giúp bạn tạo tài khoản mới sau vài bước dễ dàng" />
+                    customStyle={[styles.smallerText]}
+                    content="Chúng tôi sẽ giúp bạn tạo tài khoản mới sau vài bước dễ dàng"/>
                 <StyledButton
-                title = "Tiếp"
-                customStyle = {[styles.nextButton]}
-                onPress = {() => {navigation.navigate(ONBOARDING_ROUTE.INPUT_NAME)}}
+                    title="Tiếp"
+                    customStyle={[styles.nextButton]}
+                    onPress={() => {
+                        navigation.navigate(ONBOARDING_ROUTE.INPUT_NAME)
+                    }}
                 />
             </View>
         </View>
-        
+
     );
 };
 const styles = StyleSheet.create(
@@ -56,31 +49,31 @@ const styles = StyleSheet.create(
         container: {
             backgroundColor: 'white',
             padding: 16
-          },
+        },
         subContainer: {
             marginTop: '20%',
             justifyContent: 'center',
             alignItems: 'center',
         },
-        image : {
+        image: {
             width: '70%',
             height: '40%'
         },
-        biggerText : {
+        biggerText: {
             color: Colors.black,
-            fontSize : 18,
+            fontSize: 18,
             fontFamily: "Arial",
             textAlign: "center",
             fontWeight: "bold",
             width: '60%',
-            marginTop : '10%'
+            marginTop: '10%'
         },
-        smallerText : {
-            fontSize : 14,
+        smallerText: {
+            fontSize: 14,
             fontFamily: "Arial",
             textAlign: "center",
             width: '75%',
-            marginTop : '10%'
+            marginTop: '10%'
         },
         nextButton: {
             backgroundColor: Colors.primaryColor,
@@ -88,13 +81,12 @@ const styles = StyleSheet.create(
             height: '13%',
             marginTop: '10%',
         },
-          nextText: {
+        nextText: {
             color: Colors.white,
             fontSize: 20,
             fontWeight: '500',
         },
     },
-    
 )
 
 export default RegisterScreen;

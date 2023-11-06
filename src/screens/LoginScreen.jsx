@@ -21,7 +21,6 @@ import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
 const LoginScreen = ({navigation}) => {
-  const {login} = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
