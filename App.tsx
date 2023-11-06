@@ -1,5 +1,12 @@
 import {StatusBar} from 'react-native';
 import React, {createContext} from 'react';
+import React, {
+  useEffect,
+  useState,
+  createContext,
+  useCallback,
+  useMemo,
+} from 'react';
 import LoginScreen from './src/screens/LoginScreen';
 import {Colors} from './src/utils/Colors';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -15,6 +22,8 @@ import {
   ONBOARDING_ROUTE,
 } from './src/navigation/config/routes';
 import InputName from './src/screens/register/InputName';
+import UploadScreen from './src/screens/UploadScreen';
+
 import InputBirthDate from "./src/screens/register/InputBirthDate";
 import InputEmail from './src/screens/register/InputEmail';
 import CreatePassword from './src/screens/register/CreatePassword';
@@ -29,7 +38,10 @@ const AppChild = () => {
       <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {userLogged ? (
-          <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
+          <>
+              <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
+              <Stack.Screen name="UploadScreen" component={UploadScreen} />
+            </>
         ) : (
           <>
             <Stack.Screen
@@ -56,10 +68,9 @@ const AppChild = () => {
               name={ONBOARDING_ROUTE.CREATE_PASSWORD}
               component={CreatePassword}
             />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+          </>)}
+          </Stack.Navigator>
+        </NavigationContainer>
   );
 };
 

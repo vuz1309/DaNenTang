@@ -33,6 +33,5 @@ const TopTabBar = () => {
             ))}
         </Tab.Navigator>
     );
-};
-
+}
 export default TopTabBar;

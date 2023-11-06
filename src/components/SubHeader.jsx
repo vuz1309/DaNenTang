@@ -1,15 +1,20 @@
+import {View, TextInput, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Profile from '../assets/images/img1.jpeg';
 import CameraRoll from '../assets/images/cameraroll.png';
 import {Colors} from '../utils/Colors';
+import {useNavigation} from "@react-navigation/native";
 
 const SubHeader = () => {
-    return (
-        <View style={styles.container}>
-            <Image source={Profile} style={styles.profileStyle}/>
-            <View style={styles.inputBox}>
-                <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
+    const navigation = useNavigation();
+  return (
+    <View style={styles.container}>
+      <Image source={Profile} style={styles.profileStyle} />
+      <View style={styles.inputBox}>
+        <TouchableOpacity onPress={()=> navigation.navigate('UploadScreen')}>
+            <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
+        </TouchableOpacity>
             </View>
             <Image source={CameraRoll} style={styles.cameraRoll}/>
         </View>
