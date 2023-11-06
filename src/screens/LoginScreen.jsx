@@ -8,7 +8,7 @@ import {useLogin} from '../utils/authenticate/AuthenticateService';
 import {validateEmail, validatePassword} from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
 import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
-
+import { RequestUserPermission } from '../utils/notification/PushNotificationHelper';
 
 const LoginScreen = ({navigation}) => {
     const {login} = useContext(UserContext);
@@ -34,6 +34,7 @@ const LoginScreen = ({navigation}) => {
             return;
         }
         requestLogin({email, password});
+        
     };
 
 

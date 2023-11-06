@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AsyncStorageKey = {
   TOKEN: 'TOKEN',
+  FCM_TOKEN : 'FCM_TOKEN'
 };
 
 export const storeStringAsyncData = async (key: string, value: string) => {

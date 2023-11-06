@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "170875464808",
+    "firebase_url": "https://facebook-clone-698f6-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "facebook-clone-698f6",
+    "storage_bucket": "facebook-clone-698f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170875464808:android:c93d78d4b18ca271355fdd",
+        "android_client_info": {
+          "package_name": "com.facebookclone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHI7h11OCCnlJSttJA7UylKCCTrZzkggI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
