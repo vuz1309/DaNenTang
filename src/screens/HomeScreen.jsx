@@ -4,14 +4,17 @@ import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
 import Post from '../components/Post';
+import Header from '../components/Header';
 
 const HomeScreen = () => {
   return (
-    <ScrollView style={styles.homeContainer}>
-      <SubHeader />
-      <Stories />
-      <Post />
-    </ScrollView>
+    <>
+      <ScrollView style={styles.homeContainer}>
+        <SubHeader />
+        <Stories />
+        <Post />
+      </ScrollView>
+    </>
   );
 };
 

@@ -48,10 +48,12 @@ export const useLogin = (
     };
     try {
       setLoading(true);
+
       auth
         .signInWithEmailAndPassword(loginParams.email, loginParams.password)
         .then(async userCredential => {
           const user: any = userCredential.user;
+          logger(user);
           const idToken = await user.getIdToken();
           AuthenticateService.handlerLogin(idToken, user.uid);
 
@@ -85,7 +87,9 @@ export const useLogin = (
             console.error('Lỗi khi truy xuất dữ liệu từ Firestore:', error);
           }
         })
-        .catch(err => String(err));
+        .catch(err => {
+          AlertMessage('Tài khoản hoặc mật khẩu không chính xác.');
+        });
     } catch (e) {
       AlertMessage(String(e));
     } finally {
