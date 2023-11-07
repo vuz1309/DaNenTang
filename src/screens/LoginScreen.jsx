@@ -17,7 +17,7 @@ import {validateEmail, validatePassword} from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
 import {navigate} from '../navigation/NavigationService';
 import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
-
+import { RequestUserPermission } from '../utils/notification/notificationHelper';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
 const LoginScreen = ({navigation}) => {
@@ -31,15 +31,16 @@ const LoginScreen = ({navigation}) => {
 
   const {requestLogin, loading, error} = useLogin(auth(), fireStore());
 
-  const onLogin = () => {
-    // if (!validateEmail(email)) {
-    //   AlertMessage("Invalid Email format");
-    //   return;
-    // }
-    // if (!validatePassword(password)) {
-    //   AlertMessage("Invalid Password format");
-    //   return;
-    // }
+  const onLogin = async() => {
+    if (!validateEmail(email)) {
+      AlertMessage("Invalid Email format");
+      return;
+    }
+    if (!validatePassword(password)) {
+      AlertMessage("Invalid Password format");
+      return;
+    }
+    await RequestUserPermission();
     requestLogin({email, password});
   };
 

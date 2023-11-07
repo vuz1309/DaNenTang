@@ -9,13 +9,20 @@ import {logger} from '../helper';
 import {getAsyncData, storeStringAsyncData} from '../authenticate/LocalStorage';
 import {SUCCESS_CODE} from '../constants';
 import {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {FirebaseFirestoreTypes, firebase} from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { pushnotiRequest } from '../../api/modules/pushnoti';
 
 interface LoginRequest {
   loading: boolean;
   requestLogin: (values: TypeLoginRequest) => Promise<void>;
   error: boolean;
   handleLoginSuccess: (response: any) => void;
+}
+interface TypeDeviceInfo {
+  deviceId : string,
+  fcmToken : string,
+  status: string
 }
 export const isLogin = () => {
   const {userInfo} = store.getState();
@@ -66,23 +73,48 @@ export const useLogin = (
             .doc(loginParams.email);
           try {
             const userDevicesDoc = await userDevicesRef.get();
-            if (userDevicesDoc.exists) {
-              // Bản ghi tồn tại, có nghĩa người dùng đã đăng nhập từ nơi khác
-              const userDevicesData: any = userDevicesDoc.data();
 
-              if (userDevicesData.deviceId != loginParams.device_id) {
-                // Đăng nhập trên thiết bị khác
-                logger(
-                  'Đăng nhập trên thiết bị khác: ',
-                  userDevicesData.deviceId,
-                );
-                //Xử lý push notifications
+            if (userDevicesDoc.exists) {
+              const userDevicesData: any = userDevicesDoc.data();
+              const deviceInfoArray : Array<TypeDeviceInfo> = userDevicesData.deviceInfo;
+              
+              var deviceExisted : boolean = false;
+              deviceInfoArray.forEach(async (deviceInfo)=>{
+                let deviceId = deviceInfo.deviceId;
+                let fcmToken : any = deviceInfo.fcmToken;
+                let status : any = deviceInfo.status;
+                if(deviceId !== loginParams.device_id && (status === 'login')){
+                  sendNotification(fcmToken);
+                }else{
+                  deviceExisted = true;
+                  if(fcmToken !== await AsyncStorage.getItem('fcmtoken')){
+                      // update new FCM Token here
+                  }
+                }
+              });
+              if(!deviceExisted){
+                let deviceId = loginParams.device_id;
+                let fcmToken: any = await AsyncStorage.getItem('fcmtoken');
+                let status = 'login';
+                var deviceData : TypeDeviceInfo= {
+                  deviceId : deviceId,
+                  fcmToken: fcmToken,
+                  status: status
+                }
+                await userDevicesRef.update({
+                  deviceInfo: firebase.firestore.FieldValue.arrayUnion(deviceData)
+                });
               }
+            }else{
+              await userDevicesRef.set({
+                deviceInfo:  new Array({
+                  deviceId: loginParams.device_id,
+                  fcmToken: await AsyncStorage.getItem('fcmtoken'),
+                  status : 'login'
+                })
+              });
             }
-            await userDevicesRef.set({
-              email: loginParams.email,
-              deviceId: loginParams.device_id,
-            });
+            
           } catch (error) {
             console.error('Lỗi khi truy xuất dữ liệu từ Firestore:', error);
           }
@@ -109,14 +141,20 @@ export const useLogin = (
     try {
       const userDevicesDoc = await userDevicesRef.get();
       if (userDevicesDoc.exists) {
+        logger("existed");
         // Bản ghi tồn tại, có nghĩa người dùng đã đăng nhập từ nơi khác
         const userDevicesData: any = userDevicesDoc.data();
+
+        const fcmTokenList = userDevicesData.fcmToken;
+        logger("fcm token list", false, fcmTokenList[0]);
 
         if (userDevicesData.deviceId != deviceId) {
           // Đăng nhập trên thiết bị khác
           logger('Đăng nhập trên thiết bị khác: ', userDevicesData.deviceId);
           //Xử lý push notifications
         }
+      }else{
+        logger("not existed before");
       }
       await userDevicesRef.set({
         email: user.email,
@@ -170,3 +208,15 @@ export const useLogout = (
     error,
   };
 };
+
+const sendNotification = async (fcmToken: string) => {
+  const notiData = {
+    data: {
+      title: "Cảnh báo đăng nhập",
+      body: "Tài khoản của bạn vừa được đăng nhập trên một thiết bị mới!"
+    },
+    to: fcmToken
+  }
+  const response = await pushnotiRequest(notiData);
+  logger(response?.data);
+}

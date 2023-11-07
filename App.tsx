@@ -73,32 +73,14 @@ const AppChild = () => {
   );
 };
 
-import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid} from 'react-native';
+import { RequestUserPermission } from './src/utils/notification/notificationHelper';
 
 const App = () => {
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-  }
-
-  const getToken = async () => {
-    const token = await messaging().getToken();
-    console.log('Token = ', token);
-  };
-
   useEffect(() => {
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
-    requestUserPermission();
-    getToken();
   }, []);
 
   return (
