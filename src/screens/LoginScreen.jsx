@@ -8,7 +8,7 @@ import {useLogin} from '../utils/authenticate/AuthenticateService';
 import {validateEmail, validatePassword} from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
 import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
-import { RequestUserPermission } from '../utils/notification/PushNotificationHelper';
+import { RequestUserPermission, NotificationListener } from '../utils/notification/PushNotificationHelper';
 
 const LoginScreen = ({navigation}) => {
     const {login} = useContext(UserContext);
@@ -24,7 +24,9 @@ const LoginScreen = ({navigation}) => {
 
     const {requestLogin, loading, error} = useLogin();
 
-    const onLogin = () => {
+    const onLogin = async() => {
+        await RequestUserPermission();
+        NotificationListener();
         if (!validateEmail(email)) {
             AlertMessage("Invalid Email format");
             return;
@@ -34,7 +36,6 @@ const LoginScreen = ({navigation}) => {
             return;
         }
         requestLogin({email, password});
-        
     };
 
 

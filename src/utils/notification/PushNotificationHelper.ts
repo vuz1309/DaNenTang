@@ -4,8 +4,8 @@ import { StorageKey } from '../localStorage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging'
 import { logger } from '../helper';
-PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-
+import { t } from 'i18next';
+// PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 export const RequestUserPermission = async () => {
    const authStatus = await messaging().requestPermission();
@@ -13,8 +13,8 @@ export const RequestUserPermission = async () => {
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     if(enabled){
-      logger("Authorization status: "); logger(authStatus);
-      GetFCMToken();
+      logger("Authorization status: ", false, authStatus);
+      await GetFCMToken();
     }else{
       logger("not enabled");
     }
@@ -22,17 +22,44 @@ export const RequestUserPermission = async () => {
 
 }
 export const GetFCMToken = async () => {
-  let fcmToken = AsyncStorage.getItem('fcmtoken');
+  logger("start get fcm token");
+  let fcmToken = await AsyncStorage.getItem('fcmtoken');
+  logger('old fcmtoken: ', false, fcmToken);
   if(!fcmToken){
     try{
       let fcmToken = messaging().getToken();
       if(fcmToken){
-        logger("fcmtoken: "); logger(fcmToken);
+        logger("new fcmtoken: ", false, fcmToken)
         await AsyncStorage.setItem('fcmtoken', await fcmToken);
+      }else{
+        logger("fcm token not exist!");
       }
-
     }catch(error){
-        logger(error);
+        console.log(error, 'error in fcm ');
     }
   }
+}
+export const NotificationListener =  () => {
+  messaging().onNotificationOpenedApp(remoteMessage => {
+    logger('Notification caused app to open from background state: ', false, remoteMessage.notification);
+  });
+  messaging().getInitialNotification().then(remoteMessage => {
+    if(remoteMessage){
+      logger('Notification caused app to open from quit state: ', false, remoteMessage.notification);
+    }
+  });
+  messaging().onMessage(async remoteMessage => {
+    const title = remoteMessage.notification?.title;
+    const body = remoteMessage.notification?.body;
+    logger("title: ", false, title);
+    logger("body: ", false, body);
+    logger("notification on foreground state");
+  });
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    logger('Message handled in the background!',false, remoteMessage);
+    const title = remoteMessage.notification?.title;
+    const body = remoteMessage.notification?.body;
+    logger("title: ", false, title);
+    logger("body: ", false, body);
+  })
 }
