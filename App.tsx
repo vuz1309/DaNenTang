@@ -26,7 +26,7 @@ const AppChild = () => {
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        {userLogged ? (
+        {1 ? (
           <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
         ) : (
           <>
