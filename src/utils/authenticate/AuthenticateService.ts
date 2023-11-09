@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import {TypeLoginRequest} from '../../api/interfaces/auth';
-import {loginRequest} from '../../api/modules/authenticate';
+import {TypeLoginRequest, TypeRegisterRequest} from '../../api/interfaces/auth';
+import {loginRequest, registerRequest} from '../../api/modules/authenticate';
 import {getDeviceId} from 'react-native-device-info';
 import AlertMessage from '../../components/base/AlertMessage';
 import {store} from '../../state-management/redux/store';
@@ -15,6 +15,7 @@ interface LoginRequest {
   error: boolean;
   handleLoginSuccess: (response: any) => void;
 }
+
 
 export const isLogin = () => {
   const {userInfo} = store.getState();
@@ -40,12 +41,13 @@ export const useLogin = (): LoginRequest => {
   const requestLogin = async (options: any) => {
     const loginParams = await {
       ...options,
-      device_id: await getDeviceId(),
+      uuid: await getDeviceId(),
     };
     try {
       setLoading(true);
+      logger(loginParams);
       const response: any = await loginRequest(loginParams);
-
+      logger(response);
       /**
        * Author: Hieutm
        * Keep Login : Default: True

@@ -1,48 +1,54 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
-  Image,
-  ScrollView,
-} from 'react-native';
 import React from 'react';
-import {Colors} from '../utils/Colors';
-import {Themes} from '../assets/themes';
+import {View, Text, StyleSheet, TouchableHighlight, Image} from 'react-native';
+import {Colors} from '../../utils/Colors';
+import {Themes} from '../../assets/themes';
+import Post4 from '../../assets/images/post4.jpeg';
 
-import AddFriendRequest from '../components/friends/AddFriendRequest';
-
-const FriendScreen = () => {
+const AddFriendRequest = () => {
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Bạn bè</Text>
+    <View
+      style={{
+        ...styles.requestItemWrapper,
+        marginTop: 12,
+        position: 'relative',
+      }}>
+      <Text style={styles.time}>2 năm</Text>
+      <View style={styles.avatar}>
+        <Image style={styles.avatarImg} source={Post4} />
       </View>
-      <View style={styles.buttons}>
-        <TouchableHighlight style={styles.buttonWrapper}>
-          <Text style={styles.buttonText}>Gợi ý</Text>
-        </TouchableHighlight>
-        <TouchableHighlight style={styles.buttonWrapper}>
-          <Text style={styles.buttonText}>Bạn bè</Text>
-        </TouchableHighlight>
+      <View>
+        <Text style={styles.userName}>Hiền Ngô</Text>
+        <View style={{flexDirection: 'row', marginTop: 4}}>
+          <View style={styles.commonUserAvatar}>
+            <Image style={styles.commonUserAvatarImg} source={Post4} />
+          </View>
+          <View style={{...styles.commonUserAvatar, marginLeft: -8}}>
+            <Image style={styles.commonUserAvatarImg} source={Post4} />
+          </View>
+          <Text style={styles.numOfCommonUser}>56 bạn chung</Text>
+        </View>
+        <View
+          style={{
+            ...styles.requestItemWrapper,
+            marginTop: 8,
+          }}>
+          <TouchableHighlight
+            style={{
+              ...styles.buttonCtl,
+              backgroundColor: Colors.primaryColor,
+            }}>
+            <Text style={styles.acceptText}>Chấp nhận</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={{
+              ...styles.buttonCtl,
+              backgroundColor: Colors.lightgrey,
+            }}>
+            <Text style={styles.removeText}>Xóa</Text>
+          </TouchableHighlight>
+        </View>
       </View>
-
-      <View style={styles.requestTitle}>
-        <Text style={styles.requestText}>
-          Lời mời kết bạn <Text style={styles.numOfRequests}>32</Text>
-        </Text>
-        <TouchableHighlight>
-          <Text style={styles.viewAllBtn}>Xem tất cả</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={{paddingHorizontal: 12, paddingBottom: 12}}>
-        <AddFriendRequest />
-        <AddFriendRequest />
-        <AddFriendRequest />
-        <AddFriendRequest />
-        <AddFriendRequest />
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -155,5 +161,4 @@ const styles = StyleSheet.create({
     color: Colors.grey,
   },
 });
-
-export default FriendScreen;
+export default AddFriendRequest;
