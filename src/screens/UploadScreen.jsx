@@ -65,7 +65,7 @@ const UploadScreen = ({navigation, data}) => {
         newImgList[index] = "";
         setImages(newImgList);
     }
-
+//test
     const requestCameraPermission = async () => {
         try {
             const granted = await PermissionsAndroid.request(
