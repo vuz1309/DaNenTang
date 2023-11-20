@@ -1,8 +1,8 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {Colors} from '../utils/Colors';
-import VectorIcon from '../utils/VectorIcon';
-import {StyledTouchable} from './base';
+import {Colors} from '../../utils/Colors';
+import VectorIcon from '../../utils/VectorIcon';
+import {StyledTouchable} from '../base';
 
 const PostHeader = ({data}) => {
   return (
@@ -14,7 +14,7 @@ const PostHeader = ({data}) => {
               source={
                 data.profileImg
                   ? data.profileImg
-                  : require('../assets/images/avatar_null.jpg')
+                  : require('../../assets/images/avatar_null.jpg')
               }
               style={styles.userProfile}
             />

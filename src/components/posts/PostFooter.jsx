@@ -8,27 +8,45 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import React, {useState} from 'react';
-import Like from '../assets/images/like.jpeg';
-import Shock from '../assets/images/shock.jpeg';
-import Heart from '../assets/images/heart.jpeg';
-import {Colors} from '../utils/Colors';
-import VectorIcon from '../utils/VectorIcon';
+import React, {useMemo, useState} from 'react';
+import Like from '../../assets/images/like.jpeg';
+import Shock from '../../assets/images/shock.jpeg';
+import Heart from '../../assets/images/heart.jpeg';
+import {Colors} from '../../utils/Colors';
+import VectorIcon from '../../utils/VectorIcon';
 
-const PostFooter = ({data}) => {
+const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [reactionModal, setReactionModal] = useState(false);
-  const [isLikePost, setIsLikePost] = useState(data);
+  const [isLikePost, setIsLikePost] = useState(false);
+
+  const iconLikeName = useMemo(
+    () => (isLikePost ? 'like1' : 'like2'),
+    [isLikePost],
+  );
+  const likeColor = useMemo(
+    () => (isLikePost ? Colors.primaryColor : textStyles.color),
+    [isLikePost],
+  );
+
+  const handleClickLike = () => {
+    setIsLikePost(!isLikePost);
+  };
+
   return (
     <View style={styles.postFotterContainer}>
       <View style={styles.footerReactionSec}>
-        <View style={styles.row}>
+        <View style={{...styles.row, backgroundColor: 'transparent'}}>
           <Image source={Like} style={styles.reactionIcon} />
           <Image source={Shock} style={styles.reactionIcon} />
           <Image source={Heart} style={styles.reactionIcon} />
 
-          <Text style={styles.reactionCount}> {data.reactionCount}</Text>
+          <Text style={{...styles.reactionCount, ...textStyles}}>
+            {data.reactionCount}
+          </Text>
         </View>
-        <Text style={styles.reactionCount}>{data.comments} Bình luận</Text>
+        <Text style={{...styles.reactionCount, ...textStyles}}>
+          {data.comments} Bình luận
+        </Text>
       </View>
       <View style={styles.userActionSec}>
         {reactionModal && (
@@ -52,16 +70,21 @@ const PostFooter = ({data}) => {
         )}
 
         <TouchableOpacity
-          onPress={() => Alert.alert('like')}
+          onPress={handleClickLike}
           onLongPress={() => setReactionModal(true)}>
           <View style={styles.row}>
             <VectorIcon
-              name="like1"
+              name={iconLikeName}
               type="AntDesign"
               size={25}
-              color={Colors.primaryColor}
+              color={likeColor}
             />
-            <Text style={{...styles.reactionCount, color: Colors.primaryColor}}>
+            <Text
+              style={{
+                ...styles.reactionCount,
+                ...textStyles,
+                color: likeColor,
+              }}>
               Thích
             </Text>
           </View>
@@ -72,9 +95,11 @@ const PostFooter = ({data}) => {
             name="chatbox-outline"
             type="Ionicons"
             size={25}
-            color={Colors.grey}
+            color={textStyles.color}
           />
-          <Text style={styles.reactionCount}>Bình luận</Text>
+          <Text style={{...styles.reactionCount, ...textStyles}}>
+            Bình luận
+          </Text>
         </View>
 
         <View style={styles.row}>
@@ -82,9 +107,9 @@ const PostFooter = ({data}) => {
             name="arrow-redo-outline"
             type="Ionicons"
             size={25}
-            color={Colors.grey}
+            color={textStyles.color}
           />
-          <Text style={styles.reactionCount}>Chia sẻ</Text>
+          <Text style={{...styles.reactionCount, ...textStyles}}>Chia sẻ</Text>
         </View>
       </View>
     </View>
@@ -96,14 +121,14 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     marginRight: -4,
+    backgroundColor: 'black',
+    borderRadius: 10,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  postFotterContainer: {
-    padding: 16,
-  },
+
   reactionCount: {
     color: Colors.grey,
     fontSize: 14,
@@ -114,11 +139,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightgrey,
-    paddingBottom: 15,
+    padding: 14,
   },
   userActionSec: {
-    marginTop: 15,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
