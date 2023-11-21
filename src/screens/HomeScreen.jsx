@@ -6,6 +6,7 @@ import {Colors} from '../utils/Colors';
 import Post from '../components/posts/Post';
 import Header from '../components/Header';
 import {ScrollView} from 'react-native-gesture-handler';
+import {PostData} from '../data/PostData';
 
 const HomeScreen = () => {
   return (
@@ -15,7 +16,7 @@ const HomeScreen = () => {
       style={styles.homeContainer}>
       <SubHeader />
       <Stories />
-      <Post />
+      <Post data={PostData} />
     </ScrollView>
   );
 };
