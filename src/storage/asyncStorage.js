@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export const storageVariable = {
+  token: null,
+};
+
+export const initialize = async () => {
+  storageVariable.token = await AsyncStorage.getItem('token');
+};
+
 export const getUserLogged = async () => {
   const user = await AsyncStorage.getItem('user');
   if (!user) {
@@ -16,12 +24,20 @@ export const removeUserLogged = async () => {
   await AsyncStorage.removeItem('user');
 };
 
+/**
+ *
+ * @returns {string}
+ */
 export const getAccessToken = () => {
-  return AsyncStorage.getItem('token');
+  return storageVariable.token;
 };
-
+/**
+ *
+ * @param {string} token
+ */
 export const setAccessToken = token => {
-  AsyncStorage.setItem('token', JSON.stringify(token));
+  storageVariable.token = token;
+  AsyncStorage.setItem('token', token);
 };
 
 export const removeAccessToken = () => {

@@ -8,6 +8,7 @@ import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice
 import TokenProvider from './TokenProvider';
 import {logger} from '../helper';
 import {storeStringAsyncData} from './LocalStorage';
+import {setAccessToken} from '../../storage/asyncStorage';
 
 interface LoginRequest {
   loading: boolean;
@@ -15,7 +16,6 @@ interface LoginRequest {
   error: boolean;
   handleLoginSuccess: (response: any) => void;
 }
-
 
 export const isLogin = () => {
   const {userInfo} = store.getState();
@@ -52,8 +52,8 @@ export const useLogin = (): LoginRequest => {
        * Author: Hieutm
        * Keep Login : Default: True
        */
-      await storeStringAsyncData('email', options.username);
-      await storeStringAsyncData('password', options.password);
+      storeStringAsyncData('email', options.username);
+      storeStringAsyncData('password', options.password);
 
       handleLoginSuccess(response);
     } catch (e) {
@@ -72,6 +72,7 @@ export const useLogin = (): LoginRequest => {
         user: {id: response?.data?.data?.id},
       }),
     );
+    setAccessToken(response?.data?.data?.token);
     logger('AS2: ' + response.data.token);
     AuthenticateService.handlerLogin(
       response?.data?.data?.token,

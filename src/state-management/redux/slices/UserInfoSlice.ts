@@ -73,6 +73,7 @@ const updateToken: Reducer<
   PayloadAction<Pick<IUserInfoState, 'token' | 'user'>>
 > = (state, {payload}) => {
   state.token = payload.token;
+
   logger('reducer: ' + payload.token);
   logger('state: ' + state.token);
   if (payload.user?.id) {

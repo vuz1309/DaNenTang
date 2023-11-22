@@ -1,27 +1,20 @@
 import axios from 'axios';
 import {BE_URL} from './config';
-import {createApiInstance} from './config';
-/**
- * @Author NTVu - MF1742 - 23/08/2023
- * @description Tạo một apiInstance với content là json
- */
-export const authApi = createApiInstance(
-  {
-    baseURL: BE_URL,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: '*/*',
-    },
-    timeout: 8000,
-  },
-
-  {auth: true, silent: false},
-);
+import {getAccessToken} from '../storage/asyncStorage';
 
 const request = axios.create({
   baseURL: BE_URL,
   timeout: 8000,
   headers: {Accept: '*/*', 'Content-Type': 'application/json'},
+});
+export const authAndFileRequest = axios.create({
+  baseURL: BE_URL,
+  timeout: 8000,
+  headers: {
+    Accept: '*/*',
+    'Content-Type': 'multipart/form-data',
+    Authorization: `Bearer ${getAccessToken()}`,
+  },
 });
 
 export const serverRequest = axios.create({

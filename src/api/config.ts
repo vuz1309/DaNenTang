@@ -2,6 +2,7 @@ export const BE_URL = 'https://it4788.catan.io.vn';
 import axios from 'axios';
 
 import {getAccessToken} from '../storage/asyncStorage';
+import {logger} from '../utils/helper';
 
 /**
  * Khởi tạo cách truyền và xử lí Rest-API
@@ -17,13 +18,14 @@ export const createApiInstance = (
   const api = axios.create(config);
 
   api.interceptors.request.use(
-    async config => {
+    config => {
       if (auth && config?.headers) {
-        config.headers['Authorization'] = 'Bearer ' + (await getAccessToken());
+        config.headers.Authorization = `Bearer ${getAccessToken()}`;
       }
       return config;
     },
     error => {
+      console.log('error frontend');
       Promise.reject(error);
     },
   );
@@ -44,6 +46,7 @@ export const createApiInstance = (
      * @returns {{message: string, data: object}} data
      */
     error => {
+      console.log('error backend');
       if (!silent) {
         console.log(error);
       }
@@ -54,3 +57,19 @@ export const createApiInstance = (
 
   return api;
 };
+
+/**
+ * @Author NTVu
+ * @description auth api
+ */
+export const authApi = createApiInstance(
+  {
+    baseURL: BE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+    },
+  },
+
+  {auth: true, silent: false},
+);

@@ -1,5 +1,13 @@
-import {View, StyleSheet, Text, Image, Dimensions, Modal} from 'react-native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Dimensions,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 import React, {useState} from 'react';
 import {Colors} from '../../utils/Colors';
@@ -7,53 +15,39 @@ import {logger} from '../../utils/helper';
 
 import PostFooter from './PostFooter';
 import Carousel from 'react-native-snap-carousel';
+import VectorIcon from '../../utils/VectorIcon';
 
 const {width} = Dimensions.get('window');
 /**
  *
  * @param {object} props
- * @param {boolean} props.isModalVisible
  * @param {Function} props.onClose
  * @param {object} props.item
+ * @param {number} props.firstItem
  * @returns
  */
-const DetailsPost = ({item, onClose, isModalVisible}) => {
+const DetailsPost = ({item, onClose, firstItem = 0}) => {
   const [opacity, setOpacity] = useState(1);
-  const handleSwipeMove = () => {
-    setOpacity(1);
-    onClose();
-  };
 
-  const handleSwipeEnd = () => {
-    setOpacity(1);
-  };
   const arr = [...new Array(3).fill(null)].map((_, index) => ({id: index + 1}));
 
   return (
-    <Modal
-      isVisible={isModalVisible}
-      onRequestClose={onClose}
-      onSwipeComplete={handleSwipeMove}
-      style={{
-        flex: 1,
-        margin: 0,
-        backgroundColor: `rgba(0, 0, 0, ${opacity})`,
-        backgroundColor: Colors.black,
-        justifyContent: 'flex-end',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width,
-        height: '100%',
-      }}
-      onSwipeMove={() => setOpacity(0.2)}
-      onSwipeCancel={handleSwipeEnd}
-      swipeDirection={['up', 'down']}>
+    <Modal isModalVisible={true} onRequestClose={onClose}>
       <View
         style={{
           ...styles.postContainer,
           backgroundColor: `rgba(0, 0, 0, ${opacity})`,
         }}>
+        <View style={{flexDirection: 'row-reverse'}}>
+          <TouchableOpacity onPress={onClose}>
+            <VectorIcon
+              name="close"
+              type="AntDesign"
+              size={24}
+              color={Colors.white}
+            />
+          </TouchableOpacity>
+        </View>
         <Carousel
           data={arr}
           renderItem={() => (
@@ -65,6 +59,7 @@ const DetailsPost = ({item, onClose, isModalVisible}) => {
           )}
           sliderWidth={width}
           itemWidth={width}
+          firstItem={firstItem}
         />
         {opacity == 1 && (
           <View style={styles.postInfo}>
