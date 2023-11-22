@@ -7,7 +7,7 @@ import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
 const PostBody = ({item}) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  console.log(isModalVisible);
+
   return (
     <>
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>

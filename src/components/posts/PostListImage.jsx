@@ -18,65 +18,66 @@ import DetailsPost from './DetailsPost';
 const PostListImage = ({data, onClose}) => {
   const [isShowDetails, setDetailsPost] = React.useState(false);
   return (
-    <Modal
-      onModalHide={onClose}
-      style={{
-        margin: 0,
-        justifyContent: 'flex-end',
-      }}
-      isVisible={true}
-      swipeDirection={'right'}
-      onSwipeComplete={onClose}>
-      <View style={styles.postHeaderContainer}>
-        <StatusBar
-          backgroundColor={'rgba(0,0,0,0.2)'}
-          barStyle="dark-content"
-        />
-        <ScrollView>
-          <View style={styles.postTopSec}>
-            <View style={styles.row}>
-              <StyledTouchable>
-                <Image
-                  source={
-                    data.profileImg
-                      ? data.profileImg
-                      : require('../../assets/images/avatar_null.jpg')
-                  }
-                  style={styles.userProfile}
-                />
-              </StyledTouchable>
-
-              <View style={styles.userSection}>
-                <Text style={styles.username}>{data.name}</Text>
-                <View style={styles.row}>
-                  <Text style={styles.days}>{data.date}</Text>
-                  <Text style={styles.dot}>•</Text>
-                  <VectorIcon
-                    name="user-friends"
-                    type="FontAwesome5"
-                    size={13}
-                    color={Colors.headerIconGrey}
-                    style={styles.userIcon}
+    <>
+      <Modal
+        isVisible={true}
+        style={{
+          margin: 0,
+          justifyContent: 'flex-end',
+        }}
+        swipeDirection={'right'}
+        onSwipeComplete={onClose}>
+        <View style={styles.postHeaderContainer}>
+          <StatusBar
+            backgroundColor={'rgba(0,0,0,0.2)'}
+            barStyle="dark-content"
+          />
+          <ScrollView>
+            <View style={styles.postTopSec}>
+              <View style={styles.row}>
+                <StyledTouchable>
+                  <Image
+                    source={
+                      data.profileImg
+                        ? data.profileImg
+                        : require('../../assets/images/avatar_null.jpg')
+                    }
+                    style={styles.userProfile}
                   />
+                </StyledTouchable>
+
+                <View style={styles.userSection}>
+                  <Text style={styles.username}>{data.name}</Text>
+                  <View style={styles.row}>
+                    <Text style={styles.days}>{data.date}</Text>
+                    <Text style={styles.dot}>•</Text>
+                    <VectorIcon
+                      name="user-friends"
+                      type="FontAwesome5"
+                      size={13}
+                      color={Colors.headerIconGrey}
+                      style={styles.userIcon}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          <Text style={styles.caption}>{data.caption}</Text>
-          <PostFooter data={data} />
+            <Text style={styles.caption}>{data.caption}</Text>
+            <PostFooter data={data} />
 
-          <Pressable onPress={() => setDetailsPost(true)}>
-            <Image style={styles.img} source={data.postImg} />
-          </Pressable>
-          <Pressable onPress={() => setDetailsPost(true)}>
-            <Image style={styles.img} source={data.postImg} />
-          </Pressable>
-        </ScrollView>
-      </View>
+            <Pressable onPress={() => setDetailsPost(true)}>
+              <Image style={styles.img} source={data.postImg} />
+            </Pressable>
+            <Pressable onPress={() => setDetailsPost(true)}>
+              <Image style={styles.img} source={data.postImg} />
+            </Pressable>
+          </ScrollView>
+        </View>
+      </Modal>
       {isShowDetails && (
         <DetailsPost item={data} onClose={() => setDetailsPost(false)} />
       )}
-    </Modal>
+    </>
   );
 };
 
