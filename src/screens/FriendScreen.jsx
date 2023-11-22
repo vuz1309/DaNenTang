@@ -9,10 +9,22 @@ import {
 import React from 'react';
 import {Colors} from '../utils/Colors';
 import {Themes} from '../assets/themes';
+import {FacebookRootState} from '../state-management/redux/store';
 
 import AddFriendRequest from '../components/friends/AddFriendRequest';
+import {useSelector} from 'react-redux';
 
 const FriendScreen = () => {
+  const userLogged = useSelector(
+    /**
+     *
+     * @param {FacebookRootState} state
+     * @returns
+     */
+    state => state.userInfo.user,
+  );
+  React.useEffect(() => {}, []);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -36,6 +48,10 @@ const FriendScreen = () => {
         </TouchableHighlight>
       </View>
       <View style={{paddingHorizontal: 12, paddingBottom: 12}}>
+        <AddFriendRequest />
+        <AddFriendRequest />
+        <AddFriendRequest />
+        <AddFriendRequest />
         <AddFriendRequest />
         <AddFriendRequest />
         <AddFriendRequest />

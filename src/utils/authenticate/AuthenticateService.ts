@@ -28,8 +28,6 @@ const AuthenticateService = {
     store.dispatch(userInfoActions.logOut());
   },
   handlerLogin: (token: string, id: number) => {
-    logger('handle login: ' + token);
-
     store.dispatch(userInfoActions.updateToken({token, user: {id}}));
   },
 };
@@ -45,9 +43,9 @@ export const useLogin = (): LoginRequest => {
     };
     try {
       setLoading(true);
-      logger(loginParams);
+
       const response: any = await loginRequest(loginParams);
-      logger(response);
+
       /**
        * Author: Hieutm
        * Keep Login : Default: True
@@ -65,7 +63,7 @@ export const useLogin = (): LoginRequest => {
   const handleLoginSuccess = (response: any) => {
     logger('Login Success!');
     logger(response?.data?.data);
-    logger('AS1: ' + response.data.data?.token);
+
     store.dispatch(
       userInfoActions.getUserInfoRequest({
         token: response?.data?.data?.token,
@@ -73,7 +71,7 @@ export const useLogin = (): LoginRequest => {
       }),
     );
     setAccessToken(response?.data?.data?.token);
-    logger('AS2: ' + response.data.token);
+
     AuthenticateService.handlerLogin(
       response?.data?.data?.token,
       response?.data?.data?.id,

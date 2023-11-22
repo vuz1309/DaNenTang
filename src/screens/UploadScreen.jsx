@@ -115,8 +115,13 @@ const UploadScreen = ({navigation, data}) => {
     };
     setPost(newPost);
 
+    // Tham khảo đoạn thêm image kiểu này nếu có lỗi với kiểu đang làm (CHAT GPT)
+    // formData.append('image', {
+    //     uri: newPost.image[0],
+    //     type: 'image/jpeg', // Thay đổi loại tệp tùy thuộc vào định dạng của hình ảnh bạn đang sử dụng
+    //     name: 'photo.jpg',
     //   });
-    // Gửi yêu cầu API bằng Axios
+
     const formData = new FormData();
     formData.append('image', newPost.image);
     formData.append('described', newPost.described);
