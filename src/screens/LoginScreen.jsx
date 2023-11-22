@@ -11,8 +11,8 @@ import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
 import {UserContext} from '../../App';
-// import {useLogin} from '../utils/authenticate/AuthenticateService';
-import {useLogin} from '../utils/authenticateFirebase/AuthenticateFirebase';
+import {useLogin} from '../utils/authenticate/AuthenticateService';
+// import {useLogin} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import {validateEmail, validatePassword} from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
 import {navigate} from '../navigation/NavigationService';
@@ -29,7 +29,7 @@ const LoginScreen = ({navigation}) => {
     // navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
 
-  const {requestLogin, loading, error} = useLogin(auth(), fireStore());
+  const {requestLogin, loading, error} = useLogin();
 
   const onLogin = async () => {
     // if (!validateEmail(email)) {

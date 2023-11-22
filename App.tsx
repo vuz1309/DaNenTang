@@ -28,6 +28,7 @@ import UploadScreen from './src/screens/UploadScreen';
 import InputBirthDate from "./src/screens/register/InputBirthDate";
 import InputEmail from './src/screens/register/InputEmail';
 import CreatePassword from './src/screens/register/CreatePassword';
+import UserScreen from "./src/screens/UserScreen";
 const Stack = createStackNavigator();
 export const UserContext = createContext({});
 const AppChild = () => {
@@ -42,6 +43,7 @@ const AppChild = () => {
           <>
               <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
               <Stack.Screen name="UploadScreen" component={UploadScreen} />
+              <Stack.Screen name={"UserScreen"} component={UserScreen}/>
             </>
         ) : (
           <>

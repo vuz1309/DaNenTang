@@ -16,7 +16,9 @@ const SubHeader = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <Image source={Profile} style={styles.profileStyle} />
+      <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+        <Image source={Profile} style={styles.profileStyle} />
+      </TouchableOpacity>
       <View style={styles.inputBox}>
         <TouchableOpacity onPress={() => navigation.navigate('UploadScreen')}>
           <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
