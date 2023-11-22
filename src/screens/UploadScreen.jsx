@@ -106,7 +106,7 @@ const UploadScreen = ({navigation, data}) => {
     }
     const onCreateNewPost = async () => {
         const newPost = {
-            image: images.filter((e) => e.uri != ""),
+            image: images.filter((e) => e.uri !== ""),
             describe: text,
             status: status,
             video: ''

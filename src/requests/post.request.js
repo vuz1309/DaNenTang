@@ -1,5 +1,5 @@
-import {api} from "./config/api";
+import {authApi} from "../api/request";
 
 export const addPost= (post) => {
-    return api.post('/add_post',post)
+    return authApi.post('/add_post',post)
 }
