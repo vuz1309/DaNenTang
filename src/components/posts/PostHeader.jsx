@@ -11,19 +11,16 @@ const PostHeader = ({data}) => {
         <View style={styles.row}>
           <StyledTouchable>
             <Image
-              source={
-                data.profileImg
-                  ? data.profileImg
-                  : require('../../assets/images/avatar_null.jpg')
-              }
               style={styles.userProfile}
+              source={{uri: data.author.avatar}}
+              defaultSource={require('../../assets/images/avatar_null.jpg')}
             />
           </StyledTouchable>
 
           <View style={styles.userSection}>
-            <Text style={styles.username}>{data.name}</Text>
+            <Text style={styles.username}>{data.author.name}</Text>
             <View style={styles.row}>
-              <Text style={styles.days}>{data.date}</Text>
+              <Text style={styles.days}>{data.created}</Text>
               <Text style={styles.dot}>•</Text>
               <VectorIcon
                 name="user-friends"
@@ -51,7 +48,7 @@ const PostHeader = ({data}) => {
           />
         </View>
       </View>
-      <Text style={styles.caption}>{data.caption}</Text>
+      <Text style={styles.caption}>{data.described}</Text>
     </View>
   );
 };

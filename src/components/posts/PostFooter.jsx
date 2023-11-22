@@ -17,7 +17,7 @@ import VectorIcon from '../../utils/VectorIcon';
 
 const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [reactionModal, setReactionModal] = useState(false);
-  const [isLikePost, setIsLikePost] = useState(false);
+  const [isLikePost, setIsLikePost] = useState(!!data.is_felt);
 
   const iconLikeName = useMemo(
     () => (isLikePost ? 'like1' : 'like2'),
@@ -37,15 +37,15 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
       <View style={styles.footerReactionSec}>
         <View style={{...styles.row, backgroundColor: 'transparent'}}>
           <Image source={Like} style={styles.reactionIcon} />
-          <Image source={Shock} style={styles.reactionIcon} />
-          <Image source={Heart} style={styles.reactionIcon} />
+          {/* <Image source={Shock} style={styles.reactionIcon} />
+          <Image source={Heart} style={styles.reactionIcon} /> */}
 
           <Text style={{...styles.reactionCount, ...textStyles}}>
-            {data.reactionCount}
+            {data.feel}
           </Text>
         </View>
         <Text style={{...styles.reactionCount, ...textStyles}}>
-          {data.comments} Bình luận
+          {data.comment_mark} Bình luận
         </Text>
       </View>
       <View style={styles.userActionSec}>

@@ -7,15 +7,26 @@ const request = axios.create({
   timeout: 8000,
   headers: {Accept: '*/*', 'Content-Type': 'application/json'},
 });
-export const authAndFileRequest = axios.create({
-  baseURL: BE_URL,
-  timeout: 8000,
-  headers: {
-    Accept: '*/*',
-    'Content-Type': 'multipart/form-data',
-    Authorization: `Bearer ${getAccessToken()}`,
-  },
-});
+export const authAndFileRequest = async () =>
+  axios.create({
+    baseURL: BE_URL,
+    timeout: 8000,
+    headers: {
+      Accept: '*/*',
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${await getAccessToken()}`,
+    },
+  });
+export const authRequestJSON = async () =>
+  axios.create({
+    baseURL: BE_URL,
+    timeout: 8000,
+    headers: {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${await getAccessToken()}`,
+    },
+  });
 
 export const serverRequest = axios.create({
   baseURL: 'https://fcm.googleapis.com',

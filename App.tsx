@@ -42,7 +42,7 @@ const AppChild = () => {
         {userLogged ? (
           <>
             <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
-            <Stack.Screen name="UploadScreen" component={UploadScreen} />
+            <Stack.Screen name={'UploadScreen'} component={UploadScreen} />
             <Stack.Screen name={'UserScreen'} component={UserScreen} />
           </>
         ) : (

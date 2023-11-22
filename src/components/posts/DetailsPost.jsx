@@ -28,9 +28,6 @@ const {width} = Dimensions.get('window');
  */
 const DetailsPost = ({item, onClose, firstItem = 0}) => {
   const [opacity, setOpacity] = useState(1);
-
-  const arr = [...new Array(3).fill(null)].map((_, index) => ({id: index + 1}));
-
   return (
     <Modal isModalVisible={true} onRequestClose={onClose}>
       <View
@@ -49,12 +46,13 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           </TouchableOpacity>
         </View>
         <Carousel
-          data={arr}
-          renderItem={() => (
+          data={item.image}
+          renderItem={img => (
             <Image
               style={{height: '100%', width: '100%'}}
               resizeMode="contain"
-              source={item.postImg}
+              source={{uri: img.url}}
+              defaultSource={require('../../assets/images/avatar_null.jpg')}
             />
           )}
           sliderWidth={width}
@@ -70,13 +68,13 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
                   fontWeight: '700',
                   fontSize: 16,
                 }}>
-                Bùi Anh Mĩ
+                {item.author.name}
               </Text>
               <Text style={{color: Colors.white, fontWeight: '500'}}>
-                Thôi cố mà năm nay ra trường đúng hạn nhé.
+                {item.author.described}
               </Text>
               <Text style={{color: Colors.white, marginTop: 12}}>
-                28 phút trước
+                {item.author.created}
               </Text>
             </View>
             <PostFooter

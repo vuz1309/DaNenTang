@@ -24,12 +24,8 @@ export const removeUserLogged = async () => {
   await AsyncStorage.removeItem('user');
 };
 
-/**
- *
- * @returns {string}
- */
 export const getAccessToken = () => {
-  return storageVariable.token;
+  return AsyncStorage.getItem('token');
 };
 /**
  *
