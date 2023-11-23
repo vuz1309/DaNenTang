@@ -42,6 +42,14 @@ const AppChild = () => {
         {userLogged ? (
           <>
             <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
+            <Stack.Screen
+              name={APP_ROUTE.FRIEND_ALL}
+              component={AllFriendsScreen}
+            />
+            <Stack.Screen
+              name={APP_ROUTE.FRIEND_SUGGESTION}
+              component={SuggestionScreen}
+            />
             <Stack.Screen name={'UploadScreen'} component={UploadScreen} />
             <Stack.Screen name={'UserScreen'} component={UserScreen} />
           </>
@@ -81,6 +89,8 @@ const AppChild = () => {
 import {PermissionsAndroid} from 'react-native';
 import {RequestUserPermission} from './src/utils/notification/notificationHelper';
 import {initialize} from './src/storage/asyncStorage';
+import AllFriendsScreen from './src/screens/friends/AllFriends';
+import SuggestionScreen from './src/screens/friends/SuggestionScreen';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

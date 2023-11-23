@@ -33,44 +33,48 @@ const PostListImage = ({data, onClose}) => {
             barStyle="dark-content"
           />
           <ScrollView>
-            <View style={styles.postTopSec}>
-              <View style={styles.row}>
-                <StyledTouchable>
-                  <Image
-                    style={styles.userProfile}
-                    source={{uri: data.author.avatar}}
-                    defaultSource={require('../../assets/images/avatar_null.jpg')}
-                  />
-                </StyledTouchable>
-
-                <View style={styles.userSection}>
-                  <Text style={styles.username}>{data.author.name}</Text>
-                  <View style={styles.row}>
-                    <Text style={styles.days}>{data.created}</Text>
-                    <Text style={styles.dot}>•</Text>
-                    <VectorIcon
-                      name="user-friends"
-                      type="FontAwesome5"
-                      size={13}
-                      color={Colors.headerIconGrey}
-                      style={styles.userIcon}
+            <View>
+              <View style={styles.postTopSec}>
+                <View style={styles.row}>
+                  <StyledTouchable>
+                    <Image
+                      style={styles.userProfile}
+                      source={{uri: data.author.avatar}}
+                      defaultSource={require('../../assets/images/avatar_null.jpg')}
                     />
+                  </StyledTouchable>
+
+                  <View style={styles.userSection}>
+                    <Text style={styles.username}>{data.author.name}</Text>
+                    <View style={styles.row}>
+                      <Text style={styles.days}>{data.created}</Text>
+                      <Text style={styles.dot}>•</Text>
+                      <VectorIcon
+                        name="user-friends"
+                        type="FontAwesome5"
+                        size={13}
+                        color={Colors.headerIconGrey}
+                        style={styles.userIcon}
+                      />
+                    </View>
                   </View>
                 </View>
               </View>
+              <Text style={styles.caption}>{data.described}</Text>
+              <PostFooter data={data} />
             </View>
-            <Text style={styles.caption}>{data.described}</Text>
-            <PostFooter data={data} />
 
-            {data.image.map(({url}) => (
-              <Pressable onPress={() => setDetailsPost(true)}>
-                <Image
-                  style={styles.img}
-                  source={{uri: url}}
-                  defaultSource={require('../../assets/images/avatar_null.jpg')}
-                />
-              </Pressable>
-            ))}
+            <View>
+              {data.image.map(({url}, index) => (
+                <Pressable key={url} onPress={() => setDetailsPost(index + 1)}>
+                  <Image
+                    style={styles.img}
+                    source={{uri: url}}
+                    defaultSource={require('../../assets/images/avatar_null.jpg')}
+                  />
+                </Pressable>
+              ))}
+            </View>
           </ScrollView>
         </View>
       </Modal>
@@ -135,9 +139,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   img: {
-    height: 250,
     width: '100%',
-    resizeMode: 'cover',
+    minHeight: 300,
+    resizeMode: 'contain',
     marginBottom: 8,
   },
 });

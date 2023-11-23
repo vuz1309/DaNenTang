@@ -10,11 +10,11 @@ import {CommonStatus} from './types';
 import {generatePersistConfig, logger} from '../../../utils/helper';
 
 export interface IUser {
-  id?: number;
-  fullname?: string;
-  avatar?: string[];
-  dateOfBirth?: string;
-  gender?: number[];
+  id?: string;
+  username?: string;
+  avatar?: string;
+  coins?: string;
+  active?: string;
 }
 
 export interface IUserInfoState {

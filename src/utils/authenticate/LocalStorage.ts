@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AsyncStorageKey = {
   TOKEN: 'TOKEN',
+  HOME_DATA: 'HOME_DATA',
+  HOMME_DATA_LASTID: 'HOMME_DATA_LASTID',
 };
 
 export const storeStringAsyncData = async (key: string, value: string) => {
@@ -50,10 +52,5 @@ export const removeStringAsyncData = async (key: string) => {
   }
 };
 export const getUserLoggedIn = async () => {
-  try {
-    const token = getAsyncData('TOKEN');
-    return token;
-  } catch (e) {
-    // error reading value
-  }
+  return getAsyncData('TOKEN');
 };

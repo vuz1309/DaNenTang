@@ -23,7 +23,7 @@ export const getRequestFriends = (
     count: '20',
   },
 ) => {
-  return requestJSONWithAuth('get_request_friends', params);
+  return requestJSONWithAuth('get_requested_friends', params);
 };
 
 export const setRequestFriend = (params: {user_id: string}) => {
