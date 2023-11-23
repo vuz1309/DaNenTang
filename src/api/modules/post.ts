@@ -1,9 +1,13 @@
-import {authAndFileRequest, authRequestJSON} from '../request';
+import {
+  authAndFileRequest,
+  authRequestJSON,
+  requestJSONWithAuth,
+} from '../request';
 export const addPost = async (post: any) => {
   return (await authAndFileRequest()).post('/add_post', post);
 };
 
-export const getListPost = async (
+export const getListPost = (
   params: {
     user_id: string;
     in_campaign: string;
@@ -24,6 +28,34 @@ export const getListPost = async (
     count: '20',
   },
 ) => {
-  console.log(params);
-  return (await authRequestJSON()).post('/get_list_posts', params);
+  return requestJSONWithAuth('/get_list_posts', params);
+};
+
+export const getPostRequest = (params: {id: string}) => {
+  return requestJSONWithAuth('/get_post', params);
+};
+
+export const editPostRequest = async (post: {
+  image?: Array<string>;
+  video?: any;
+  described?: string;
+  status?: string;
+  auto_accept?: string;
+  id: string;
+  image_del: string;
+  image_sort: string;
+}) => {
+  return (await authAndFileRequest()).post('/edit_post', post);
+};
+
+export const deletePostRequest = (body: {id: string}) => {
+  return requestJSONWithAuth('/delete_post', body);
+};
+
+export const reportPostRequest = (body: {
+  id: string;
+  subject: string;
+  details: string;
+}) => {
+  return requestJSONWithAuth('/report_post', body);
 };
