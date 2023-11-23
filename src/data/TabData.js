@@ -52,7 +52,7 @@ export const TabData = [
   // },
   {
     id: 5,
-    route: NotificationScrren,
+    route: NotificationScreen,
     name: 'Notification',
     activeIconName: 'notifications',
     activeiconType: 'Ionicons',
