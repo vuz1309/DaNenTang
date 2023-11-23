@@ -7,14 +7,19 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import {Colors} from '../utils/Colors';
-import {Themes} from '../assets/themes';
-import {FacebookRootState} from '../state-management/redux/store';
+import {Colors} from '../../utils/Colors';
+import {Themes} from '../../assets/themes';
+import {FacebookRootState} from '../../state-management/redux/store';
 
-import AddFriendRequest from '../components/friends/AddFriendRequest';
+import AddFriendRequest from '../../components/friends/AddFriendRequest';
 import {useSelector} from 'react-redux';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const FriendScreen = () => {
+  const navigation = useNavigation();
+
   const userLogged = useSelector(
     /**
      *
@@ -31,12 +36,16 @@ const FriendScreen = () => {
         <Text style={styles.title}>Bạn bè</Text>
       </View>
       <View style={styles.buttons}>
-        <TouchableHighlight style={styles.buttonWrapper}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(APP_ROUTE.FRIEND_SUGGESTION)}
+          style={styles.buttonWrapper}>
           <Text style={styles.buttonText}>Gợi ý</Text>
-        </TouchableHighlight>
-        <TouchableHighlight style={styles.buttonWrapper}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(APP_ROUTE.FRIEND_ALL)}
+          style={styles.buttonWrapper}>
           <Text style={styles.buttonText}>Bạn bè</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.requestTitle}>
@@ -47,7 +56,7 @@ const FriendScreen = () => {
           <Text style={styles.viewAllBtn}>Xem tất cả</Text>
         </TouchableHighlight> */}
       </View>
-      <View style={{paddingHorizontal: 12, paddingBottom: 12}}>
+      <View style={{paddingBottom: 12}}>
         <AddFriendRequest />
         <AddFriendRequest />
         <AddFriendRequest />

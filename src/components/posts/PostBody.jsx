@@ -5,6 +5,7 @@ import PostHeader from './PostHeader';
 import PostFooter from './PostFooter';
 import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
+
 /**
  *
  * @param {object} props
@@ -12,31 +13,32 @@ import PostListImage from './PostListImage';
  */
 const PostBody = ({item}) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  console.log(item);
   return (
     <>
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>
         <PostHeader data={item} />
+
         {item.image.length > 0 && (
           <View style={styles.postImg}>
             <View style={{flex: 3, flexDirection: 'row'}}>
-              {item.image.length > 0 &&
-                item.image.slice(0, 2).map((img, index) => (
-                  <TouchableOpacity
-                    onPress={() => setModalVisible(index + 1)}
-                    style={{flex: 1, ...styles.border}}>
-                    <Image
-                      style={styles.image}
-                      defaultSource={require('../../assets/images/avatar_null.jpg')}
-                      source={{uri: img.url}}
-                    />
-                  </TouchableOpacity>
-                ))}
+              {item.image.slice(0, 2).map((img, index) => (
+                <TouchableOpacity
+                  key={img.url}
+                  onPress={() => setModalVisible(index + 1)}
+                  style={{flex: 1, ...styles.border}}>
+                  <Image
+                    style={styles.image}
+                    defaultSource={require('../../assets/images/avatar_null.jpg')}
+                    source={{uri: img.url}}
+                  />
+                </TouchableOpacity>
+              ))}
             </View>
             <View style={styles.spliter}>
               {item.image.length > 2 &&
                 item.image.slice(2, 4).map((img, index) => (
                   <TouchableOpacity
+                    key={img.url}
                     onPress={() => setModalVisible(index + 3)}
                     style={{flex: 1, ...styles.border}}>
                     <Image
@@ -46,20 +48,22 @@ const PostBody = ({item}) => {
                     />
                   </TouchableOpacity>
                 ))}
-              {item.image.length > 5 && (
+              {item.image.length >= 5 && (
                 <View style={{flex: 1, ...styles.border, position: 'relative'}}>
                   <Image
                     style={styles.image}
                     source={{uri: item.image[4].url}}
                   />
 
-                  <TouchableOpacity
-                    onPress={() => setModalVisible(5)}
-                    style={styles.overlayEndImg}>
-                    <Text style={{color: Colors.white}}>
-                      {item.image.length - 5}
-                    </Text>
-                  </TouchableOpacity>
+                  {item.image.length > 5 && (
+                    <TouchableOpacity
+                      onPress={() => setModalVisible(5)}
+                      style={styles.overlayEndImg}>
+                      <Text style={{color: Colors.white}}>
+                        {item.image.length - 5}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               )}
             </View>
@@ -68,24 +72,17 @@ const PostBody = ({item}) => {
         <PostFooter data={item} />
       </View>
 
-      {isModalVisible &&
-        item.image.length ==
-          1(
-            <DetailsPost
-              isModalVisible={isModalVisible}
-              item={item}
-              onClose={() => setModalVisible(false)}
-            />,
-          )}
+      {isModalVisible && item.image.length == 1 && (
+        <DetailsPost
+          isModalVisible={isModalVisible}
+          item={item}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
 
-      {isModalVisible &&
-        item.image.length >
-          1(
-            <PostListImage
-              data={item}
-              onClose={() => setModalVisible(false)}
-            />,
-          )}
+      {isModalVisible && item.image.length > 1 && (
+        <PostListImage data={item} onClose={() => setModalVisible(false)} />
+      )}
     </>
   );
 };

@@ -1,26 +1,70 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
 
+import {convertTimeToFacebookStyle} from '../../helpers/helpers';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+const MAX_CAPTION_LENGTH = 50;
+const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data}) => {
+  const createTime = useMemo(
+    () => convertTimeToFacebookStyle(data.created),
+    [data.created],
+  );
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
+  // Hàm kiểm tra độ dài của caption và trả về nội dung hiển thị
+  const renderCaption = () => {
+    if (data.described.length <= MAX_CAPTION_LENGTH || isExpanded) {
+      return <Text style={styles.caption}>{data.described}</Text>;
+    } else {
+      const truncatedCaption = data.described.slice(0, MAX_CAPTION_LENGTH);
+      return (
+        <>
+          <Text style={styles.caption}>{truncatedCaption}</Text>
+          <TouchableOpacity onPress={() => setIsExpanded(true)}>
+            <Text style={{color: Colors.textGrey}}> Xem thêm</Text>
+          </TouchableOpacity>
+        </>
+      );
+    }
+  };
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
         <View style={styles.row}>
-          <StyledTouchable>
-            <Image
-              style={styles.userProfile}
-              source={{uri: data.author.avatar}}
-              defaultSource={require('../../assets/images/avatar_null.jpg')}
-            />
+          <StyledTouchable
+            style={{
+              borderWidth: 1,
+              borderColor: Colors.borderGrey,
+              borderStyle: 'solid',
+              borderRadius: 50,
+              height: 40,
+              width: 40,
+            }}>
+            {data.author.avatar ? (
+              <Image
+                style={styles.userProfile}
+                source={{
+                  uri: data.author.avatar || avatarNullImage,
+                }}
+                defaultSource={avatarNullImage}
+              />
+            ) : (
+              <Image
+                style={styles.userProfile}
+                source={avatarNullImage}
+                defaultSource={avatarNullImage}
+              />
+            )}
           </StyledTouchable>
 
           <View style={styles.userSection}>
             <Text style={styles.username}>{data.author.name}</Text>
             <View style={styles.row}>
-              <Text style={styles.days}>{data.created}</Text>
+              <Text style={styles.days}>{createTime}</Text>
               <Text style={styles.dot}>•</Text>
               <VectorIcon
                 name="user-friends"
@@ -48,7 +92,7 @@ const PostHeader = ({data}) => {
           />
         </View>
       </View>
-      <Text style={styles.caption}>{data.described}</Text>
+      {renderCaption()}
     </View>
   );
 };

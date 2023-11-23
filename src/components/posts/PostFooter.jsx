@@ -17,8 +17,7 @@ import VectorIcon from '../../utils/VectorIcon';
 
 const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [reactionModal, setReactionModal] = useState(false);
-  const [isLikePost, setIsLikePost] = useState(!!data.is_felt);
-
+  const [isLikePost, setIsLikePost] = useState(!!Number(data.is_felt));
   const iconLikeName = useMemo(
     () => (isLikePost ? 'like1' : 'like2'),
     [isLikePost],
@@ -35,21 +34,31 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   return (
     <View style={styles.postFotterContainer}>
       <View style={styles.footerReactionSec}>
-        <View style={{...styles.row, backgroundColor: 'transparent'}}>
-          <Image source={Like} style={styles.reactionIcon} />
-          {/* <Image source={Shock} style={styles.reactionIcon} />
+        {Number(data.feel) > 0 && (
+          <View style={{...styles.row, backgroundColor: 'transparent'}}>
+            <Image source={Like} style={styles.reactionIcon} />
+            {/* <Image source={Shock} style={styles.reactionIcon} />
           <Image source={Heart} style={styles.reactionIcon} /> */}
 
-          <Text style={{...styles.reactionCount, ...textStyles}}>
-            {data.feel}
+            <Text style={{...styles.reactionCount, ...textStyles}}>
+              {data.feel}
+            </Text>
+          </View>
+        )}
+        {Number(data.comment_mark) > 0 && (
+          <Text
+            style={{
+              ...styles.reactionCount,
+              ...textStyles,
+              position: 'absolute',
+              right: 16,
+            }}>
+            {data.comment_mark} Bình luận
           </Text>
-        </View>
-        <Text style={{...styles.reactionCount, ...textStyles}}>
-          {data.comment_mark} Bình luận
-        </Text>
+        )}
       </View>
       <View style={styles.userActionSec}>
-        {reactionModal && (
+        {/* {reactionModal && (
           <View style={styles.reactionModalContainer}>
             <TouchableOpacity onPress={() => setReactionModal(false)}>
               <View>
@@ -67,7 +76,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               </View>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
         <TouchableOpacity
           onPress={handleClickLike}
@@ -135,6 +144,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   footerReactionSec: {
+    marginTop: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,

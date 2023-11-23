@@ -36,7 +36,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           backgroundColor: `rgba(0, 0, 0, ${opacity})`,
         }}>
         <View style={{flexDirection: 'row-reverse'}}>
-          <TouchableOpacity onPress={onClose}>
+          <TouchableOpacity style={{padding: 16}} onPress={onClose}>
             <VectorIcon
               name="close"
               type="AntDesign"
@@ -47,14 +47,16 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
         </View>
         <Carousel
           data={item.image}
-          renderItem={img => (
-            <Image
-              style={{height: '100%', width: '100%'}}
-              resizeMode="contain"
-              source={{uri: img.url}}
-              defaultSource={require('../../assets/images/avatar_null.jpg')}
-            />
-          )}
+          renderItem={({item}) => {
+            return (
+              <Image
+                style={{height: '100%', width: '100%'}}
+                resizeMode="contain"
+                source={{uri: item.url}}
+                defaultSource={require('../../assets/images/avatar_null.jpg')}
+              />
+            );
+          }}
           sliderWidth={width}
           itemWidth={width}
           firstItem={firstItem}
