@@ -16,6 +16,11 @@ import {FacebookRootState} from '../../state-management/redux/store';
 import {useSelector} from 'react-redux';
 import VectorIcon from '../../utils/VectorIcon';
 import AddFriendRequest from '../../components/friends/AddFriendRequest';
+import {
+  getSuggestionFriend,
+  setRequestFriend,
+} from '../../api/modules/friends.request';
+import AlertMessage from '../../components/base/AlertMessage';
 
 const SuggestionScreen = ({navigation}) => {
   const userLogged = useSelector(
@@ -26,7 +31,31 @@ const SuggestionScreen = ({navigation}) => {
      */
     state => state.userInfo.user,
   );
-  //   React.useEffect(() => {}, []);
+  const [allSuggestions, setSuggestions] = React.useState([]);
+  const [params, setParams] = React.useState({
+    index: '0',
+    count: '20',
+  });
+
+  const getAll = async () => {
+    try {
+      const {data} = await getSuggestionFriend(params);
+      setSuggestions(data.data);
+    } catch (error) {
+      AlertMessage('Vui lòng kiểm tra lại mạng!');
+    }
+  };
+  const setRequestApi = async user_id => {
+    try {
+      const {data} = await setRequestFriend({user_id});
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      AlertMessage('Vui lòng kiểm tra lại mạng!');
+    }
+  };
+  React.useEffect(() => {
+    getAll();
+  }, []);
 
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
@@ -66,7 +95,18 @@ const SuggestionScreen = ({navigation}) => {
           <Text style={styles.titleText}>Những người bạn có thể biết</Text>
         </View>
         <View style={{paddingBottom: 12}}>
-          <AddFriendRequest />
+          {allSuggestions.map(user => (
+            <AddFriendRequest
+              key={user.id}
+              mainText="Thêm bạn bè"
+              subText="Gỡ"
+              onClickMain={() => setRequestApi(user.id)}
+              onClickSub={() => {}}
+              data={user}
+              textOnReject="Đã gỡ gợi ý"
+              textOnAccept="Đã gửi yêu cầu"
+            />
+          ))}
         </View>
       </ScrollView>
     </View>

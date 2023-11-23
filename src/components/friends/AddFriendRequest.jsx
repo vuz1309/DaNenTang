@@ -3,13 +3,26 @@ import {View, Text, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import {Themes} from '../../assets/themes';
 import Post4 from '../../assets/images/post4.jpeg';
-
+const nullAvatar = require('../../assets/images/avatar_null.jpg');
 const AddFriendRequest = ({
   mainText = 'Chấp nhận',
   subText = 'Xóa',
   onClickMain,
   onClickSub,
+  data,
+  isShowTime = false,
+  textOnAccept = '',
+  textOnReject = '',
 }) => {
+  const [text, setText] = React.useState('');
+
+  if (!data)
+    return (
+      <View>
+        <Text>Loading....</Text>
+      </View>
+    );
+
   return (
     <TouchableHighlight
       underlayColor={Colors.lightgrey}
@@ -20,42 +33,74 @@ const AddFriendRequest = ({
           padding: 12,
           position: 'relative',
         }}>
-        <Text style={styles.time}>2 năm</Text>
+        {isShowTime && <Text style={styles.time}>2 năm</Text>}
         <View style={styles.avatar}>
-          <Image style={styles.avatarImg} source={Post4} />
+          {data.avatar.trim() ? (
+            <Image
+              style={styles.avatarImg}
+              source={{
+                uri: data.avatar.trim(),
+              }}
+              defaultSource={nullAvatar}
+            />
+          ) : (
+            <Image
+              style={styles.avatarImg}
+              source={nullAvatar}
+              defaultSource={nullAvatar}
+            />
+          )}
         </View>
         <View>
-          <Text style={styles.userName}>Hiền Ngô</Text>
-          {/* <View style={{flexDirection: 'row', marginTop: 4}}>
-            <View style={styles.commonUserAvatar}>
-              <Image style={styles.commonUserAvatarImg} source={Post4} />
+          <Text style={styles.userName}>{data.username}</Text>
+          {Number(data.same_friends) > 0 && (
+            <View style={{flexDirection: 'row', marginTop: 4}}>
+              {/* <View style={styles.commonUserAvatar}>
+                <Image style={styles.commonUserAvatarImg} source={Post4} />
+              </View>
+              <View style={{...styles.commonUserAvatar, marginLeft: -8}}>
+                <Image style={styles.commonUserAvatarImg} source={Post4} />
+              </View> */}
+              <Text style={styles.numOfCommonUser}>
+                {data.same_friends} bạn chung
+              </Text>
             </View>
-            <View style={{...styles.commonUserAvatar, marginLeft: -8}}>
-              <Image style={styles.commonUserAvatarImg} source={Post4} />
-            </View>
-            <Text style={styles.numOfCommonUser}>56 bạn chung</Text>
-          </View> */}
+          )}
           <View
             style={{
               ...styles.requestItemWrapper,
               marginTop: 8,
             }}>
-            <TouchableHighlight
-              onPress={onClickMain}
-              style={{
-                ...styles.buttonCtl,
-                backgroundColor: Colors.primaryColor,
-              }}>
-              <Text style={styles.acceptText}>{mainText}</Text>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={onClickSub}
-              style={{
-                ...styles.buttonCtl,
-                backgroundColor: Colors.lightgrey,
-              }}>
-              <Text style={styles.removeText}>{subText}</Text>
-            </TouchableHighlight>
+            {!text ? (
+              <>
+                <TouchableHighlight
+                  underlayColor={Colors.primaryColor}
+                  onPress={() => {
+                    onClickMain();
+                    setText(textOnAccept);
+                  }}
+                  style={{
+                    ...styles.buttonCtl,
+                    backgroundColor: Colors.primaryColor,
+                  }}>
+                  <Text style={styles.acceptText}>{mainText}</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                  underlayColor={Colors.lightgrey}
+                  onPress={() => {
+                    onClickSub();
+                    setText(textOnReject);
+                  }}
+                  style={{
+                    ...styles.buttonCtl,
+                    backgroundColor: Colors.lightgrey,
+                  }}>
+                  <Text style={styles.removeText}>{subText}</Text>
+                </TouchableHighlight>
+              </>
+            ) : (
+              <Text style={{color: Colors.textGrey}}>{text}</Text>
+            )}
           </View>
         </View>
       </View>

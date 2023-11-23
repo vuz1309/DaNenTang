@@ -27,7 +27,7 @@ const AuthenticateService = {
     TokenProvider.clearToken();
     store.dispatch(userInfoActions.logOut());
   },
-  handlerLogin: (token: string, id: number) => {
+  handlerLogin: (token: string, id: string) => {
     store.dispatch(userInfoActions.updateToken({token, user: {id}}));
   },
 };
@@ -65,9 +65,9 @@ export const useLogin = (): LoginRequest => {
     logger(response?.data?.data);
 
     store.dispatch(
-      userInfoActions.getUserInfoRequest({
+      userInfoActions.loginSuccess({
         token: response?.data?.data?.token,
-        user: {id: response?.data?.data?.id},
+        user: response?.data?.data,
       }),
     );
     setAccessToken(response?.data?.data?.token);

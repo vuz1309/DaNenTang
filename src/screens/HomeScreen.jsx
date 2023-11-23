@@ -1,10 +1,10 @@
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, RefreshControl, ScrollView} from 'react-native';
 import React from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
 import Post from '../components/posts/Post';
-import Header from '../components/Header';
+
 // import {ScrollView} from 'react-native-gesture-handler';
 
 import {getListPost} from '../api/modules/post';
@@ -18,6 +18,7 @@ import {
 import AlertMessage from '../components/base/AlertMessage';
 
 const HomeScreen = () => {
+  const [refreshing, setRefreshing] = React.useState(false);
   const [listPost, setListPost] = React.useState([]);
   const userLogged = useSelector(state => state.userInfo.user);
   const [params, setParams] = React.useState({
@@ -33,6 +34,7 @@ const HomeScreen = () => {
   const getListPostsApi = async () => {
     params.user_id = userLogged.id;
     try {
+      setRefreshing(true);
       const {data} = await getListPost();
       setParams(prev => ({
         ...prev,
@@ -42,14 +44,15 @@ const HomeScreen = () => {
         AsyncStorageKey.HOMME_DATA_LASTID,
         data.data.last_id,
       );
-      if (params.index != '0') {
+      if (Number(data.data.new_items) > 0)
         setListPost(prev => [...prev, ...data.data.post]);
-      } else {
-        setListPost(data.data.post);
-      }
+
+      setListPost(data.data.post);
       storeAsyncData(AsyncStorageKey.HOME_DATA, listPost);
     } catch (error) {
       AlertMessage('Có lỗi xảy ra, vui lòng kiểm tra mạng.');
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -64,6 +67,7 @@ const HomeScreen = () => {
       index: '0',
       count: '20',
     });
+
     getListPostsApi();
   };
 
@@ -86,12 +90,36 @@ const HomeScreen = () => {
     };
     getDataFromLocal();
   }, []);
+  const handleScroll = event => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
+    // Check if the user has scrolled to the top
+    if (offsetY === 0) {
+      // Trigger the reload function
+      reload();
+    }
+    if (offsetY + scrollViewHeight >= contentHeight - 20 && !refreshing) {
+      // You can adjust the threshold (20 in this case) based on your design
+      setRefreshing(true);
+      loadMore();
+    }
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    setRefreshing(false);
+  };
 
   return (
     <ScrollView
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
-      style={styles.homeContainer}>
+      style={styles.homeContainer}
+      onScroll={handleScroll}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <SubHeader />
       <Stories />
       <Post listPost={listPost} />
