@@ -39,4 +39,8 @@ export const serverRequest = axios.create({
   },
 });
 
+export const requestJSONWithAuth = async (url: string, params: object) => {
+  return (await authRequestJSON()).post(url, params);
+};
+
 export default request;

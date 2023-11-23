@@ -43,9 +43,9 @@ const FriendScreen = () => {
         <Text style={styles.requestText}>
           Lời mời kết bạn <Text style={styles.numOfRequests}>32</Text>
         </Text>
-        <TouchableHighlight>
+        {/* <TouchableHighlight>
           <Text style={styles.viewAllBtn}>Xem tất cả</Text>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
       </View>
       <View style={{paddingHorizontal: 12, paddingBottom: 12}}>
         <AddFriendRequest />
