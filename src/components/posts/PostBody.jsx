@@ -34,9 +34,9 @@ const PostBody = ({item}) => {
                 </TouchableOpacity>
               ))}
             </View>
-            <View style={styles.spliter}>
-              {item.image.length > 2 &&
-                item.image.slice(2, 4).map((img, index) => (
+            {item.image.length > 2 && (
+              <View style={styles.spliter}>
+                {item.image.slice(2, 4).map((img, index) => (
                   <TouchableOpacity
                     key={img.url}
                     onPress={() => setModalVisible(index + 3)}
@@ -48,25 +48,27 @@ const PostBody = ({item}) => {
                     />
                   </TouchableOpacity>
                 ))}
-              {item.image.length >= 5 && (
-                <View style={{flex: 1, ...styles.border, position: 'relative'}}>
-                  <Image
-                    style={styles.image}
-                    source={{uri: item.image[4].url}}
-                  />
+                {item.image.length >= 5 && (
+                  <View
+                    style={{flex: 1, ...styles.border, position: 'relative'}}>
+                    <Image
+                      style={styles.image}
+                      source={{uri: item.image[4].url}}
+                    />
 
-                  {item.image.length > 5 && (
-                    <TouchableOpacity
-                      onPress={() => setModalVisible(5)}
-                      style={styles.overlayEndImg}>
-                      <Text style={{color: Colors.white}}>
-                        {item.image.length - 5}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
-            </View>
+                    {item.image.length > 5 && (
+                      <TouchableOpacity
+                        onPress={() => setModalVisible(5)}
+                        style={styles.overlayEndImg}>
+                        <Text style={{color: Colors.white}}>
+                          {item.image.length - 5}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
           </View>
         )}
         <PostFooter data={item} />

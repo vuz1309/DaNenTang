@@ -50,6 +50,8 @@ const AppChild = () => {
               name={APP_ROUTE.FRIEND_SUGGESTION}
               component={SuggestionScreen}
             />
+            <Stack.Screen name={APP_ROUTE.REPORT} component={ReportScreen} />
+
             <Stack.Screen name={'UploadScreen'} component={UploadScreen} />
             <Stack.Screen name={'UserScreen'} component={UserScreen} />
           </>
@@ -91,6 +93,7 @@ import {RequestUserPermission} from './src/utils/notification/notificationHelper
 import {initialize} from './src/storage/asyncStorage';
 import AllFriendsScreen from './src/screens/friends/AllFriends';
 import SuggestionScreen from './src/screens/friends/SuggestionScreen';
+import ReportScreen from './src/screens/reports/ReportScreen';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

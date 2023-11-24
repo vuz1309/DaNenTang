@@ -5,7 +5,7 @@ export function convertTimeToFacebookStyle(inputTime) {
   const secondsDifference = Math.floor(timeDifference / 1000);
 
   if (secondsDifference < 60) {
-    return `${secondsDifference} giây trước`;
+    return `Vừa xong`;
   } else if (secondsDifference < 3600) {
     const minutesDifference = Math.floor(secondsDifference / 60);
     return `${minutesDifference} phút trước`;

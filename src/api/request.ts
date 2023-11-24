@@ -17,7 +17,7 @@ export const authAndFileRequest = async () =>
       Authorization: `Bearer ${await getAccessToken()}`,
     },
   });
-export const authRequestJSON = async () =>
+const authRequestJSON = async () =>
   axios.create({
     baseURL: BE_URL,
     timeout: 8000,

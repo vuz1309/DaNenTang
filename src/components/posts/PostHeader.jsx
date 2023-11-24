@@ -1,37 +1,105 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TouchableHighlight,
+} from 'react-native';
 import React, {useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
-
+import Modal from 'react-native-modal';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import AlertMessage from '../base/AlertMessage';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
+
 const MAX_CAPTION_LENGTH = 50;
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data}) => {
+  const {navigate} = useNavigation();
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
     [data.created],
   );
+  const [isShowModalReport, setShowModalReport] = React.useState(false);
+  const toggleModalReport = () => {
+    setShowModalReport(!isShowModalReport);
+  };
   const [isExpanded, setIsExpanded] = React.useState(false);
+  console.log(data);
+  const extractLinks = text => {
+    const linkRegex = /(https?:\/\/[^\s]+)/g;
+    const matches = text.match(linkRegex);
 
+    if (!matches) {
+      return <Text style={styles.caption}>{text}</Text>;
+    }
+
+    const elements = [];
+    let lastIndex = 0;
+
+    matches.forEach((match, index) => {
+      const startIndex = text.indexOf(match, lastIndex);
+      const beforeText = text.substring(lastIndex, startIndex);
+      elements.push(
+        <Text style={styles.caption} key={`before_${index}`}>
+          {beforeText}
+        </Text>,
+      );
+      elements.push(
+        <Text
+          key={`link_${index}`}
+          style={{...styles.caption, color: Colors.primaryColor}}
+          onPress={() => handleLinkPress(match)}>
+          {match}
+        </Text>,
+      );
+      lastIndex = startIndex + match.length;
+    });
+
+    if (lastIndex < text.length) {
+      const remainingText = text.substring(lastIndex);
+      elements.push(
+        <Text style={styles.caption} key="remaining">
+          {remainingText}
+        </Text>,
+      );
+    }
+
+    return elements;
+  };
   // Hàm kiểm tra độ dài của caption và trả về nội dung hiển thị
-  const renderCaption = () => {
+  const htmlContent = useMemo(() => {
     if (data.described.length <= MAX_CAPTION_LENGTH || isExpanded) {
-      return <Text style={styles.caption}>{data.described}</Text>;
+      return <>{extractLinks(data.described)}</>;
     } else {
-      const truncatedCaption = data.described.slice(0, MAX_CAPTION_LENGTH);
       return (
         <>
-          <Text style={styles.caption}>{truncatedCaption}</Text>
+          {extractLinks(data.described.slice(0, MAX_CAPTION_LENGTH))}
           <TouchableOpacity onPress={() => setIsExpanded(true)}>
-            <Text style={{color: Colors.textGrey}}> Xem thêm</Text>
+            <Text style={{color: Colors.textGrey}}>...Xem thêm</Text>
           </TouchableOpacity>
         </>
       );
     }
+  }, [isExpanded]);
+
+  const handleLinkPress = url => {
+    // Xử lý sự kiện khi người dùng nhấn vào liên kết
+    console.log('Link pressed:', url);
   };
-  console.log(data);
+  const [isModalVisible, setModalVisible] = React.useState(false);
+  const handleCopyToClipboard = () => {
+    Clipboard.setString(data.described);
+    AlertMessage('Copy thành công.');
+  };
+  const toggleModalDelPost = () => {
+    setModalVisible(!isModalVisible);
+  };
   if (!data) return <Text>Loading...</Text>;
   return (
     <View style={styles.postHeaderContainer}>
@@ -64,7 +132,10 @@ const PostHeader = ({data}) => {
           </StyledTouchable>
 
           <View style={styles.userSection}>
-            <Text style={styles.username}>{data.author.name}</Text>
+            <Text style={styles.username}>
+              {data.author.name}
+              <Text style={{fontWeight: '400'}}>{data.state}</Text>
+            </Text>
             <View style={styles.row}>
               <Text style={styles.days}>{createTime}</Text>
               <Text style={styles.dot}>•</Text>
@@ -78,23 +149,121 @@ const PostHeader = ({data}) => {
             </View>
           </View>
         </View>
-        <View style={styles.row}>
-          <VectorIcon
-            name="dots-three-horizontal"
-            type="Entypo"
-            size={25}
-            color={Colors.headerIconGrey}
-            style={styles.headerIcons}
-          />
-          <VectorIcon
-            name="close"
-            type="Ionicons"
-            size={25}
-            color={Colors.headerIconGrey}
-          />
+        <View style={{...styles.row}}>
+          <StyledTouchable onPress={toggleModalReport}>
+            <VectorIcon
+              name="dots-three-horizontal"
+              type="Entypo"
+              size={25}
+              color={Colors.headerIconGrey}
+              style={styles.headerIcons}
+            />
+          </StyledTouchable>
+          {Number(data.can_edit) > 0 && (
+            <StyledTouchable onPress={toggleModalDelPost}>
+              <VectorIcon
+                name="close"
+                type="Ionicons"
+                size={25}
+                color={Colors.headerIconGrey}
+              />
+            </StyledTouchable>
+          )}
         </View>
       </View>
-      {renderCaption()}
+      <TouchableHighlight
+        underlayColor={Colors.lightgrey}
+        style={{marginTop: 8}}
+        onLongPress={handleCopyToClipboard}>
+        {/* <HTMLView
+          value={htmlContent}
+          renderNode={renderNode}
+          stylesheet={styles.htmlStyles}
+        /> */}
+        {htmlContent}
+      </TouchableHighlight>
+      <Modal
+        isVisible={isModalVisible}
+        backdropOpacity={0.7}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        animationInTiming={100}
+        animationOutTiming={100}
+        backdropTransitionInTiming={100}
+        backdropTransitionOutTiming={100}
+        onBackdropPress={toggleModalDelPost}
+        style={styles.modal}>
+        <View style={styles.modalContent}>
+          <Text
+            style={{fontSize: 20, fontWeight: '700', color: Colors.textColor}}>
+            Xóa bài viết?
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              paddingVertical: 12,
+              color: Colors.textColor,
+            }}>
+            Bạn có thể chỉnh sửa bài viết này nếu cần thay đổi.
+          </Text>
+          <View
+            style={{justifyContent: 'flex-end', flexDirection: 'row', gap: 12}}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: Colors.primaryColor,
+                fontWeight: '500',
+              }}>
+              Xóa
+            </Text>
+            <Text
+              style={{fontSize: 16, color: Colors.black, fontWeight: '500'}}>
+              Chỉnh sửa
+            </Text>
+            <StyledTouchable onPress={toggleModalDelPost}>
+              <Text
+                style={{fontSize: 16, color: Colors.black, fontWeight: '500'}}>
+                Hủy
+              </Text>
+            </StyledTouchable>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        isVisible={isShowModalReport}
+        onBackdropPress={toggleModalReport}
+        animationOut={undefined}
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+          padding: 0,
+        }}>
+        <View style={styles.modalContent}>
+          <TouchableHighlight
+            onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
+            underlayColor={Colors.lightgrey}
+            style={{
+              alignItems: 'center',
+              padding: 16,
+              flexDirection: 'row',
+              gap: 12,
+            }}>
+            <>
+              <View>
+                <VectorIcon
+                  name="report"
+                  type="Octicons"
+                  size={24}
+                  color={Colors.headerIconGrey}
+                />
+              </View>
+              <Text style={{color: Colors.textColor, fontSize: 20}}>
+                Báo cáo bài viết
+              </Text>
+            </>
+          </TouchableHighlight>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -119,6 +288,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textColor,
     marginBottom: 2,
+    fontWeight: '600',
   },
   userSection: {
     marginLeft: 12,
@@ -141,7 +311,36 @@ const styles = StyleSheet.create({
   caption: {
     color: Colors.grey,
     fontSize: 15,
-    marginTop: 10,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    width: '100%',
+    color: Colors.black,
+
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  link: {
+    color: Colors.primaryColor,
+    textDecorationLine: 'none',
+  },
+  logo: {
+    width: 50,
+    height: 50,
+  },
+  htmlStyles: {
+    p: {
+      fontSize: 14,
+      color: Colors.textColor,
+    },
   },
 });
 

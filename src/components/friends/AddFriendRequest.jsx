@@ -52,7 +52,9 @@ const AddFriendRequest = ({
           )}
         </View>
         <View>
-          <Text style={styles.userName}>{data.username}</Text>
+          <Text style={styles.userName}>
+            {data.username || '(Chưa có tên)'}
+          </Text>
           {Number(data.same_friends) > 0 && (
             <View style={{flexDirection: 'row', marginTop: 4}}>
               {/* <View style={styles.commonUserAvatar}>

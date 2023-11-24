@@ -1,8 +1,4 @@
-import {
-  authAndFileRequest,
-  authRequestJSON,
-  requestJSONWithAuth,
-} from '../request';
+import {authAndFileRequest, requestJSONWithAuth} from '../request';
 export const addPost = async (post: any) => {
   return (await authAndFileRequest()).post('/add_post', post);
 };
@@ -58,4 +54,17 @@ export const reportPostRequest = (body: {
   details: string;
 }) => {
   return requestJSONWithAuth('/report_post', body);
+};
+
+export const getListVideos = (body: {
+  user_id: string;
+  in_campaign: string;
+  campaign_id: string;
+  latitude: string;
+  longitude: string;
+  last_id: string;
+  index: string;
+  count: string;
+}) => {
+  return requestJSONWithAuth('/get_list_videos', body);
 };
