@@ -41,6 +41,7 @@ const SuggestionScreen = ({navigation}) => {
     try {
       const {data} = await getSuggestionFriend(params);
       setSuggestions(data.data);
+      console.log(data);
     } catch (error) {
       AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
@@ -48,9 +49,10 @@ const SuggestionScreen = ({navigation}) => {
   const setRequestApi = async user_id => {
     try {
       const {data} = await setRequestFriend({user_id});
+      console.log(data);
     } catch (error) {
       console.log(JSON.stringify(error));
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
+      if (error.status !== 400) AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
   };
   React.useEffect(() => {

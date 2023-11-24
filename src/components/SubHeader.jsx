@@ -20,7 +20,10 @@ const SubHeader = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('UserScreen', {userId: userLogged.id})
+        }>
         {userLogged?.avatar ? (
           <Image
             source={{uri: userLogged.avatar}}

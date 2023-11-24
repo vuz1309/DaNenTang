@@ -17,6 +17,7 @@ import DetailsPost from './DetailsPost';
 
 const PostListImage = ({data, onClose}) => {
   const [isShowDetails, setDetailsPost] = React.useState(false);
+  if (!data) return <Text>Loading...</Text>;
   return (
     <>
       <Modal

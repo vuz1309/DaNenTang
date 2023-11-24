@@ -31,6 +31,8 @@ const PostHeader = ({data}) => {
       );
     }
   };
+  console.log(data);
+  if (!data) return <Text>Loading...</Text>;
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
@@ -44,11 +46,11 @@ const PostHeader = ({data}) => {
               height: 40,
               width: 40,
             }}>
-            {data.author.avatar ? (
+            {data?.author?.avatar ? (
               <Image
                 style={styles.userProfile}
                 source={{
-                  uri: data.author.avatar || avatarNullImage,
+                  uri: data?.author?.avatar,
                 }}
                 defaultSource={avatarNullImage}
               />
