@@ -15,6 +15,11 @@ import Heart from '../../assets/images/heart.jpeg';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 
+/**
+ *
+ * @param {object} props
+ * @returns
+ */
 const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [reactionModal, setReactionModal] = useState(false);
   const [isLikePost, setIsLikePost] = useState(!!Number(data.is_felt));
@@ -144,12 +149,12 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   footerReactionSec: {
-    marginTop: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightgrey,
     padding: 14,
+    paddingTop: 0,
   },
   userActionSec: {
     marginTop: 10,

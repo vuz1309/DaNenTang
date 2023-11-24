@@ -14,9 +14,47 @@ import {StyledTouchable} from '../base';
 import Modal from 'react-native-modal';
 import PostFooter from './PostFooter';
 import DetailsPost from './DetailsPost';
+import {convertTimeToFacebookStyle} from '../../helpers/helpers';
+const MAX_CAPTION_LENGTH = 50;
+const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 
 const PostListImage = ({data, onClose}) => {
-  const [isShowDetails, setDetailsPost] = React.useState(false);
+  const [isShowDetails, setDetailsPost] = React.useState(0);
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
+  // Hàm kiểm tra độ dài của caption và trả về nội dung hiển thị
+  const renderCaption = React.useMemo(() => {
+    if (data.described.length <= MAX_CAPTION_LENGTH || isExpanded) {
+      return <Text style={styles.caption}>{data.described}</Text>;
+    } else {
+      const truncatedCaption = data.described.slice(0, MAX_CAPTION_LENGTH);
+      return (
+        <>
+          <Text style={styles.caption}>{truncatedCaption}</Text>
+          <StyledTouchable onPress={() => setIsExpanded(true)}>
+            <Text style={{color: Colors.textGrey}}> Xem thêm</Text>
+          </StyledTouchable>
+        </>
+      );
+    }
+  }, [isExpanded]);
+
+  const avatarImg = React.useMemo(() => {
+    return data.author.avatar ? (
+      <Image
+        style={styles.userProfile}
+        source={{uri: data.author.avatar}}
+        defaultSource={avatarNullImage}
+      />
+    ) : (
+      <Image style={styles.userProfile} source={avatarNullImage} />
+    );
+  }, [data.author.avatar]);
+
+  const createTime = React.useMemo(
+    () => convertTimeToFacebookStyle(data.created),
+    [data.created],
+  );
   if (!data) return <Text>Loading...</Text>;
   return (
     <>
@@ -37,18 +75,12 @@ const PostListImage = ({data, onClose}) => {
             <View>
               <View style={styles.postTopSec}>
                 <View style={styles.row}>
-                  <StyledTouchable>
-                    <Image
-                      style={styles.userProfile}
-                      source={{uri: data.author.avatar}}
-                      defaultSource={require('../../assets/images/avatar_null.jpg')}
-                    />
-                  </StyledTouchable>
+                  <StyledTouchable>{avatarImg}</StyledTouchable>
 
                   <View style={styles.userSection}>
                     <Text style={styles.username}>{data.author.name}</Text>
                     <View style={styles.row}>
-                      <Text style={styles.days}>{data.created}</Text>
+                      <Text style={styles.days}>{createTime}</Text>
                       <Text style={styles.dot}>•</Text>
                       <VectorIcon
                         name="user-friends"
@@ -61,7 +93,7 @@ const PostListImage = ({data, onClose}) => {
                   </View>
                 </View>
               </View>
-              <Text style={styles.caption}>{data.described}</Text>
+              <View>{renderCaption}</View>
               <PostFooter data={data} />
             </View>
 
@@ -71,7 +103,7 @@ const PostListImage = ({data, onClose}) => {
                   <Image
                     style={styles.img}
                     source={{uri: url}}
-                    defaultSource={require('../../assets/images/avatar_null.jpg')}
+                    defaultSource={avatarNullImage}
                   />
                 </Pressable>
               ))}
@@ -79,8 +111,12 @@ const PostListImage = ({data, onClose}) => {
           </ScrollView>
         </View>
       </Modal>
-      {isShowDetails && (
-        <DetailsPost item={data} onClose={() => setDetailsPost(false)} />
+      {!!isShowDetails && (
+        <DetailsPost
+          item={data}
+          firstItem={isShowDetails - 1}
+          onClose={() => setDetailsPost(0)}
+        />
       )}
     </>
   );

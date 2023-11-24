@@ -11,21 +11,13 @@ export const useScrollHanler = (reload, loadMore) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const contentHeight = event.nativeEvent.contentSize.height;
     const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
-    console.log(offsetY);
-    if (offsetY === 0) {
-      // Trigger the reload function
-      reload?.();
-    }
+
     if (offsetY + scrollViewHeight >= contentHeight - 20 && !refreshing) {
-      // You can adjust the threshold (20 in this case) based on your design
-      setRefreshing(true);
       loadMore?.();
     }
   };
   const onRefresh = () => {
-    setRefreshing(true);
-
-    setRefreshing(false);
+    reload?.();
   };
   return {
     handleScroll,
