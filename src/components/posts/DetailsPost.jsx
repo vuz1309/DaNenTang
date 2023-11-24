@@ -28,6 +28,7 @@ const {width} = Dimensions.get('window');
  */
 const DetailsPost = ({item, onClose, firstItem = 0}) => {
   const [opacity, setOpacity] = useState(1);
+  if (!item) return <Text>Loading...</Text>;
   return (
     <Modal isModalVisible={true} onRequestClose={onClose}>
       <View
