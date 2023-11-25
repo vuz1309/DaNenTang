@@ -106,6 +106,7 @@ const PostHeader = ({data}) => {
       <View style={styles.postTopSec}>
         <View style={styles.row}>
           <StyledTouchable
+            onPress={() => navigate('UserScreen', {userId: data.author.id})}
             style={{
               borderWidth: 1,
               borderColor: Colors.borderGrey,

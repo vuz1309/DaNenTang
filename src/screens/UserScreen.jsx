@@ -33,6 +33,7 @@ const UserScreen = ({navigation, route}) => {
     try {
       console.log(userId);
       const {data} = await getUserInfo({user_id: userId});
+      console.log(data);
       setUserInfo(data.data);
     } catch (error) {
       console.log(JSON.stringify(error));
