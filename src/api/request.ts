@@ -1,32 +1,33 @@
 import axios from 'axios';
-import {BE_URL} from './config';
-import {getAccessToken} from '../storage/asyncStorage';
+import {BE_URL, createApiInstance} from './config';
 
 const request = axios.create({
   baseURL: BE_URL,
   timeout: 8000,
   headers: {Accept: '*/*', 'Content-Type': 'application/json'},
 });
-export const authAndFileRequest = async () =>
-  axios.create({
-    baseURL: BE_URL,
-    timeout: 8000,
-    headers: {
-      Accept: '*/*',
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${await getAccessToken()}`,
-    },
-  });
-const authRequestJSON = async () =>
-  axios.create({
+export const authAndFileRequest = createApiInstance({
+  baseURL: BE_URL,
+  timeout: 8000,
+  headers: {
+    Accept: '*/*',
+    'Content-Type': 'multipart/form-data',
+    Authorization: `Bearer ${store.getState().userInfo.token}`,
+  },
+});
+import {store} from '../state-management/redux/store';
+const authRequestJSON = createApiInstance(
+  {
     baseURL: BE_URL,
     timeout: 8000,
     headers: {
       Accept: '*/*',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getAccessToken()}`,
+      Authorization: `Bearer ${store.getState().userInfo.token}`,
     },
-  });
+  },
+  {auth: true},
+);
 
 export const serverRequest = axios.create({
   baseURL: 'https://fcm.googleapis.com',
@@ -39,8 +40,9 @@ export const serverRequest = axios.create({
   },
 });
 
-export const requestJSONWithAuth = async (url: string, params: object) => {
-  return (await authRequestJSON()).post(url, params);
+export const requestJSONWithAuth = (url: string, params: object) => {
+  console.log('token request', store.getState().userInfo.token);
+  return authRequestJSON.post(url, params);
 };
 
 export default request;

@@ -17,6 +17,7 @@ import {
 } from '../utils/authenticate/LocalStorage';
 import AlertMessage from '../components/base/AlertMessage';
 import {useScrollHanler} from '../hooks/useScrollHandler';
+import {INVALID_TOKEN} from '../utils/constants';
 
 const HomeScreen = () => {
   const [listPost, setListPost] = React.useState([]);
@@ -63,8 +64,12 @@ const HomeScreen = () => {
 
       storeAsyncData(AsyncStorageKey.HOME_DATA, listPost);
     } catch (error) {
-      AlertMessage('Có lỗi xảy ra, vui lòng kiểm tra mạng.');
-      console.log('load data error', JSON.stringify(error));
+      if (error.code == INVALID_TOKEN.toString()) {
+        AlertMessage('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
+      } else {
+        // AlertMessage('Vui lòng kiểm tra lại mạng.');
+      }
+      console.log('load data error', error);
     } finally {
       setRefreshing(false);
       setLoading(false);

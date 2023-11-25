@@ -1,8 +1,9 @@
 export const BE_URL = 'https://it4788.catan.io.vn';
 import axios from 'axios';
 
-import {getAccessToken} from '../storage/asyncStorage';
-import {logger} from '../utils/helper';
+import {store} from '../state-management/redux/store';
+import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
+import {INVALID_TOKEN} from '../utils/constants';
 
 /**
  * Khởi tạo cách truyền và xử lí Rest-API
@@ -19,9 +20,6 @@ export const createApiInstance = (
 
   api.interceptors.request.use(
     config => {
-      if (auth && config?.headers) {
-        config.headers.Authorization = `Bearer ${getAccessToken()}`;
-      }
       return config;
     },
     error => {
@@ -46,30 +44,19 @@ export const createApiInstance = (
      * @returns {{message: string, data: object}} data
      */
     error => {
-      console.log('error backend');
       if (!silent) {
-        console.log(error);
+        console.log(JSON.stringify(error.response));
       }
-
-      return Promise.reject(error);
+      const {response} = error;
+      if (response.data.code == INVALID_TOKEN.toString()) {
+        store.dispatch(userInfoActions.logOut());
+      }
+      return Promise.reject({
+        code: response.data.code,
+        message: response.data.message,
+      });
     },
   );
 
   return api;
 };
-
-/**
- * @Author NTVu
- * @description auth api
- */
-export const authApi = createApiInstance(
-  {
-    baseURL: BE_URL,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: '*/*',
-    },
-  },
-
-  {auth: true, silent: false},
-);
