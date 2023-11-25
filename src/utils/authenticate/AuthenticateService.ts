@@ -8,7 +8,6 @@ import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice
 import TokenProvider from './TokenProvider';
 import {logger} from '../helper';
 import {storeStringAsyncData} from './LocalStorage';
-import {setAccessToken} from '../../storage/asyncStorage';
 
 interface LoginRequest {
   loading: boolean;
@@ -70,7 +69,6 @@ export const useLogin = (): LoginRequest => {
         user: response?.data?.data,
       }),
     );
-    setAccessToken(response?.data?.data?.token);
 
     AuthenticateService.handlerLogin(
       response?.data?.data?.token,
