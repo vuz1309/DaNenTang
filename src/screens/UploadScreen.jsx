@@ -14,17 +14,15 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Colors} from '../utils/Colors';
-import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+
 import VectorIcon from '../utils/VectorIcon';
 import FriendStoryImg1 from '../assets/images/img2.jpeg';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {APP_ROUTE} from '../navigation/config/routes';
 
 import {addPost} from '../api/modules/post';
-import axios from 'axios';
-import {getAccessToken} from '../storage/asyncStorage';
 
-const UploadScreen = ({navigation, data}) => {
+const UploadScreen = ({navigation, route}) => {
   const [text, setText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [images, setImages] = useState([]);
