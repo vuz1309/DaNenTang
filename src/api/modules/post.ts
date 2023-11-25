@@ -1,6 +1,6 @@
 import {authAndFileRequest, requestJSONWithAuth} from '../request';
 export const addPost = async (post: any) => {
-  return (await authAndFileRequest()).post('/add_post', post);
+  return authAndFileRequest.post('/add_post', post);
 };
 
 export const getListPost = (
@@ -41,7 +41,7 @@ export const editPostRequest = async (post: {
   image_del: string;
   image_sort: string;
 }) => {
-  return (await authAndFileRequest()).post('/edit_post', post);
+  return authAndFileRequest.post('/edit_post', post);
 };
 
 export const deletePostRequest = (body: {id: string}) => {

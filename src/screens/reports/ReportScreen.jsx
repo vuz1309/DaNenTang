@@ -1,8 +1,9 @@
-import {View, Text, Touchable, TouchableHighlight} from 'react-native';
+import {View, Text, Touchable, TouchableHighlight, Modal} from 'react-native';
 import React, {useMemo} from 'react';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
 import {StyledButton} from '../../components/base';
+import ConfirmScreen from './ConfirmScreen';
 
 const reportOptions = [
   'Ảnh khỏa thân',
@@ -25,6 +26,7 @@ const OptionItem = ({opt, chooseReportItem, isChoosed}) => {
     () => (isChoosed ? Colors.white : Colors.black),
     [isChoosed],
   );
+
   return (
     <TouchableHighlight
       onPress={() => chooseReportItem(opt)}
@@ -48,7 +50,8 @@ const OptionItem = ({opt, chooseReportItem, isChoosed}) => {
 };
 const ReportScreen = ({navigation, route}) => {
   const {postId} = route.params;
-  const [isOther, setIsOther] = React.useState(false);
+
+  const [isContinue, setContinue] = React.useState(false);
   const [reportOptionsChoosed, setOptionsChoosed] = React.useState({});
   const chooseReportItem = opt => {
     setOptionsChoosed(prev => ({
@@ -56,6 +59,15 @@ const ReportScreen = ({navigation, route}) => {
       [opt]: !prev[opt],
     }));
   };
+
+  const items = React.useMemo(() => {
+    return Object.keys(reportOptionsChoosed).filter(
+      key => reportOptionsChoosed[key],
+    );
+  }, [reportOptionsChoosed]);
+  const isDisableBtn = React.useMemo(() => {
+    return items.length === 0;
+  }, [reportOptionsChoosed]);
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
       <View
@@ -109,10 +121,14 @@ const ReportScreen = ({navigation, route}) => {
             />
           ))}
           <TouchableHighlight
-            onPress={() => setIsOther(!isOther)}
+            onPress={() =>
+              setOptionsChoosed(prev => ({...prev, Khác: !prev['Khác']}))
+            }
             underlayColor={Colors.background}
             style={{
-              backgroundColor: isOther ? Colors.primaryColor : Colors.lightgrey,
+              backgroundColor: reportOptionsChoosed['Khác']
+                ? Colors.primaryColor
+                : Colors.lightgrey,
               borderRadius: 20,
               padding: 10,
               flexDirection: 'row',
@@ -122,13 +138,17 @@ const ReportScreen = ({navigation, route}) => {
                 name="search"
                 type="EvilIcons"
                 size={24}
-                color={isOther ? Colors.white : Colors.black}
+                color={
+                  reportOptionsChoosed['Khác'] ? Colors.white : Colors.black
+                }
               />
               <Text
                 style={{
                   fontWeight: '700',
                   fontSize: 15,
-                  color: isOther ? Colors.white : Colors.black,
+                  color: reportOptionsChoosed['Khác']
+                    ? Colors.white
+                    : Colors.black,
                 }}>
                 Vấn đề khác
               </Text>
@@ -155,7 +175,12 @@ const ReportScreen = ({navigation, route}) => {
               width: '100%',
             }}>
             <>
-              <VectorIcon name="user-x" type="Feather" size={24} />
+              <VectorIcon
+                name="user-x"
+                color={Colors.headerIconGrey}
+                type="Feather"
+                size={24}
+              />
               <View style={{flexWrap: 'wrap'}}>
                 <Text style={{color: Colors.black, fontSize: 18}}>
                   Chặn Phạm
@@ -176,7 +201,12 @@ const ReportScreen = ({navigation, route}) => {
               width: '100%',
             }}>
             <>
-              <VectorIcon name="user-x" type="Feather" size={24} />
+              <VectorIcon
+                name="x-circle"
+                type="Feather"
+                color={Colors.headerIconGrey}
+                size={24}
+              />
               <View style={{flexWrap: 'wrap'}}>
                 <Text style={{color: Colors.black, fontSize: 18}}>
                   Bỏ theo dõi Phạm
@@ -214,12 +244,33 @@ const ReportScreen = ({navigation, route}) => {
           </View>
         </View>
         <StyledButton
+          onPress={() => setContinue(true)}
           title={'Tiếp'}
-          customStyleText={{color: Colors.textGrey, fontSize: 18}}
-          customStyle={{marginTop: 12, backgroundColor: Colors.lightgrey}}
-          disabled={false}
+          customStyleText={{
+            color: isDisableBtn ? Colors.textGrey : Colors.white,
+            fontSize: 18,
+          }}
+          customStyle={{
+            marginTop: 12,
+            backgroundColor: isDisableBtn
+              ? Colors.lightgrey
+              : Colors.primaryColor,
+          }}
+          disabled={isDisableBtn}
         />
       </View>
+      {isContinue && (
+        <Modal
+          onRequestClose={() => setContinue(false)}
+          visible={true}
+          style={{
+            margin: 0,
+            padding: 0,
+            backgroundColor: Colors.white,
+          }}>
+          <ConfirmScreen postId={postId} items={items} />
+        </Modal>
+      )}
     </View>
   );
 };

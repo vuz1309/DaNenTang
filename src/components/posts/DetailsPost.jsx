@@ -6,26 +6,17 @@ import {
   Dimensions,
   Modal,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
-
 import React, {useState} from 'react';
 import {Colors} from '../../utils/Colors';
-import {logger} from '../../utils/helper';
 
 import PostFooter from './PostFooter';
-import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-snap-carousel';
 import VectorIcon from '../../utils/VectorIcon';
+import PostDescription from './PostDescription';
 
 const {width} = Dimensions.get('window');
-/**
- *
- * @param {object} props
- * @param {Function} props.onClose
- * @param {object} props.item
- * @param {number} props.firstItem
- * @returns
- */
+
 const DetailsPost = ({item, onClose, firstItem = 0}) => {
   const [opacity, setOpacity] = useState(1);
   if (!item) return <Text>Loading...</Text>;
@@ -36,7 +27,14 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           ...styles.postContainer,
           backgroundColor: `rgba(0, 0, 0, ${opacity})`,
         }}>
-        <View style={{flexDirection: 'row-reverse'}}>
+        <View
+          style={{
+            flexDirection: 'row-reverse',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            zIndex: 12,
+          }}>
           <TouchableOpacity style={{padding: 16}} onPress={onClose}>
             <VectorIcon
               name="close"
@@ -46,7 +44,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
             />
           </TouchableOpacity>
         </View>
-        <Carousel
+        {/* <Carousel
           data={item.image}
           renderItem={({item}) => {
             return (
@@ -61,7 +59,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           sliderWidth={width}
           itemWidth={width}
           firstItem={firstItem}
-        />
+        /> */}
         {opacity == 1 && (
           <View style={styles.postInfo}>
             <View style={{paddingHorizontal: 14}}>
@@ -73,9 +71,11 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
                 }}>
                 {item.author.name}
               </Text>
-              <Text style={{color: Colors.white, fontWeight: '500'}}>
-                {item.author.described}
-              </Text>
+
+              <PostDescription
+                described={item.described}
+                color={Colors.white}
+              />
               <Text style={{color: Colors.white, marginTop: 12}}>
                 {item.author.created}
               </Text>
@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
     width: '100%',
     color: Colors.white,
     elevation: 200,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    paddingTop: 16,
   },
 });
 

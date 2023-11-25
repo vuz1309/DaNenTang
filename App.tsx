@@ -90,7 +90,6 @@ const AppChild = () => {
 
 import {PermissionsAndroid} from 'react-native';
 import {RequestUserPermission} from './src/utils/notification/notificationHelper';
-import {initialize} from './src/storage/asyncStorage';
 import AllFriendsScreen from './src/screens/friends/AllFriends';
 import SuggestionScreen from './src/screens/friends/SuggestionScreen';
 import ReportScreen from './src/screens/reports/ReportScreen';
@@ -99,7 +98,6 @@ const App = () => {
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
-    initialize();
   }, []);
   React.useEffect(() => {
     messaging().setBackgroundMessageHandler(async remoteMessage => {

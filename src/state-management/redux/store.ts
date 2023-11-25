@@ -9,6 +9,7 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import userInfoReducer, {IUserInfoState} from './slices/UserInfoSlice';
+import postInfoReducer, {IPostsState} from './slices/HomeListPost';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../sagas/RootSaga';
 
@@ -16,6 +17,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const rootReducer = {
   userInfo: userInfoReducer,
+  postInfo: postInfoReducer,
 };
 
 const store = configureStore({
@@ -34,6 +36,7 @@ const store = configureStore({
 
 export interface FacebookRootState {
   userInfo: IUserInfoState;
+  postInfo: IPostsState;
 }
 
 sagaMiddleware.run(rootSaga);
