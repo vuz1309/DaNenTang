@@ -42,14 +42,16 @@ const PostHeader = ({data}) => {
   };
 
   const removePost = async () => {
+    const postId = data.id;
+    toggleModalDelPost();
     try {
-      deletePostRequest({id: data.id});
+      const {data} = deletePostRequest({id: postId});
+      console.log('REMOVE POST RESPONSE:', data);
       store.dispatch(
         postInfoActions.removePost({
-          postId: data.id,
+          postId,
         }),
       );
-      // toggleModalDelPost()
     } catch (error) {
       console.log(JSON.stringify(error));
     }

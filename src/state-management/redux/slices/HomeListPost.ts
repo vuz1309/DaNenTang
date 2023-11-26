@@ -6,8 +6,10 @@ import persistReducer from 'redux-persist/es/persistReducer';
 
 export interface IPostsState {
   posts: Array<any>;
+  paramsConfig: any;
   status?: CommonStatus;
   error?: any;
+  lastId: string;
 }
 
 type Reducer<A extends Action<any> = AnyAction> = CaseReducer<IPostsState, A>;
@@ -15,15 +17,35 @@ type Reducer<A extends Action<any> = AnyAction> = CaseReducer<IPostsState, A>;
 const initialState: IPostsState = {
   status: CommonStatus.IDLE,
   posts: [],
+  paramsConfig: {
+    user_id: '',
+    in_campaign: '1',
+    campaign_id: '1',
+    latitude: '1.0',
+    longitude: '1.0',
+    last_id: '1',
+    index: '0',
+    count: '20',
+  },
+  lastId: '1',
 };
-
+const setParams: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  state.paramsConfig = payload;
+};
+const setLastId: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  state.lastId = payload;
+};
 const removePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
   const {postId} = payload;
-  console.log('remove post', postId);
-  state.posts = state.posts?.filter(p => p !== postId);
+  state.posts.splice(
+    state.posts.findIndex(p => p.id === postId),
+    1,
+  );
+};
+const shiftPost: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  state.posts = [payload, ...state.posts];
 };
 const addPosts: Reducer<PayloadAction<any>> = (state, {payload}) => {
-  console.log('set post', payload);
   const posts = state.posts;
   const listPosts = payload.filter(
     (post: any) => !posts.find(p => p.id === post.id),
@@ -32,6 +54,13 @@ const addPosts: Reducer<PayloadAction<any>> = (state, {payload}) => {
 };
 const setPosts: Reducer<PayloadAction<any>> = (state, {payload}) => {
   state.posts = payload;
+};
+const updatePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  const post = state.posts.find(p => p.id == payload.id);
+  if (post)
+    Object.keys(payload).forEach(key => {
+      post[key] = payload[key];
+    });
 };
 const persisConfig = generatePersistConfig('postInfo', ['post']);
 
@@ -42,6 +71,10 @@ const postsSlice = createSlice({
     removePost,
     addPosts,
     setPosts,
+    updatePost,
+    setParams,
+    setLastId,
+    shiftPost,
   },
 });
 
