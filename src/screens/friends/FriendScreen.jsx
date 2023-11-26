@@ -22,10 +22,10 @@ import {
   setAcceptFriend,
 } from '../../api/modules/friends.request';
 import AlertMessage from '../../components/base/AlertMessage';
+import {useScrollHanler} from '../../hooks/useScrollHandler';
 
 const FriendScreen = () => {
   const navigation = useNavigation();
-  const [refreshing, setRefreshing] = React.useState(false);
 
   const userLogged = useSelector(
     /**
@@ -35,11 +35,7 @@ const FriendScreen = () => {
      */
     state => state.userInfo.user,
   );
-  const onRefresh = () => {
-    setRefreshing(true);
 
-    setRefreshing(false);
-  };
   const [requestFriends, setRequestFriends] = React.useState([]);
   const [total, setTotal] = React.useState('0');
   const [params, setParams] = React.useState({
@@ -54,39 +50,28 @@ const FriendScreen = () => {
 
     getRequestedFriendsApi();
   };
-  const handleScroll = event => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
-    // Check if the user has scrolled to the top
-    if (offsetY === 0) {
-      // Trigger the reload function
-      reload();
-    }
-    if (offsetY + scrollViewHeight >= contentHeight - 20 && !refreshing) {
-      // You can adjust the threshold (20 in this case) based on your design
-      setRefreshing(true);
-      // loadMore();
-    }
-  };
-  const setAcceptFriendApi = async user_id => {
+  const {handleScroll, onRefresh, refreshing} = useScrollHanler(
+    reload,
+    () => {},
+  );
+
+  const setAcceptFriendApi = async (user_id, is_accept = '1') => {
     try {
-      const {data} = setAcceptFriend({user_id, is_accept: '1'});
+      const {data} = setAcceptFriend({user_id, is_accept});
       console.log(data);
     } catch (error) {
       AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
   };
+
   const getRequestedFriendsApi = async () => {
     try {
-      setRefreshing(true);
       const {data} = await getRequestFriends(params);
+      console.log('requested friends:', data);
       setRequestFriends(data.data.requests);
       setTotal(data.data.total);
     } catch (error) {
       AlertMessage('Vui lòng kiểm tra lại mạng!');
-    } finally {
-      setRefreshing(false);
     }
   };
   React.useEffect(() => {
@@ -98,7 +83,11 @@ const FriendScreen = () => {
       onScroll={handleScroll}
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          colors={[Colors.primaryColor]}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
       }>
       <View style={styles.header}>
         <Text style={styles.title}>Bạn bè</Text>
@@ -127,8 +116,12 @@ const FriendScreen = () => {
             {requestFriends.map(fr => (
               <AddFriendRequest
                 data={fr}
+                key={fr.id}
                 onClickMain={() => setAcceptFriendApi(fr.id)}
-                onClickSub={() => {}}
+                onClickSub={() => {
+                  setAcceptFriendApi(fr.id, '0');
+                }}
+                isShowTime={true}
                 textOnReject="Đã gỡ lời mời"
                 textOnAccept="Các bạn đã là bạn bè"
               />

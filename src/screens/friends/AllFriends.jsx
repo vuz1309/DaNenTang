@@ -6,17 +6,17 @@ import {
   Image,
   ScrollView,
   Pressable,
-  Touchable,
+  RefreshControl,
 } from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
-import {Themes} from '../../assets/themes';
 import {FacebookRootState} from '../../state-management/redux/store';
 
 import {useSelector} from 'react-redux';
 import VectorIcon from '../../utils/VectorIcon';
 import AlertMessage from '../../components/base/AlertMessage';
 import {getAllFriends} from '../../api/modules/friends.request';
+import {useScrollHanler} from '../../hooks/useScrollHandler';
 
 const AllFriendsScreen = ({navigation}) => {
   const userLogged = useSelector(
@@ -32,24 +32,41 @@ const AllFriendsScreen = ({navigation}) => {
   const [params, setParams] = React.useState({
     index: '0',
     count: '20',
-    user_id: '114',
   });
   const [total, setTotal] = React.useState('0');
 
   const getAllFriendsRequest = async () => {
     try {
-      setParams(prev => ({...prev, user_id: userLogged.id}));
-      const {data} = await getAllFriends(params);
+      setIsLoadMore(true);
+      const {data} = await getAllFriends({...params, user_id: userLogged.id});
 
       setTotal(data.data.total);
       setFriends(data.data.friends);
     } catch (error) {
       AlertMessage('Vui lòng kiểm tra lại mạng!');
+    } finally {
+      setIsLoadMore(false);
     }
+  };
+  const {handleScroll, onRefresh, isLoadMore, refreshing, setIsLoadMore} =
+    useScrollHanler(reload, loadMore);
+  const reload = () => {
+    if (refreshing) return;
+    setParams({
+      index: '0',
+      count: '20',
+    });
+  };
+  const loadMore = () => {
+    if (isLoadMore) return;
+    setParams({
+      index: (Number(params.index) + 1).toString(),
+      count: '20',
+    });
   };
   React.useEffect(() => {
     getAllFriendsRequest();
-  }, []);
+  }, [params]);
 
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
@@ -77,7 +94,16 @@ const AllFriendsScreen = ({navigation}) => {
           />
         </TouchableHighlight>
       </View>
-      <ScrollView>
+      <ScrollView
+        onScroll={handleScroll}
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            colors={[Colors.primaryColor]}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
         <View
           style={{
             flexDirection: 'row',
@@ -97,7 +123,7 @@ const AllFriendsScreen = ({navigation}) => {
         </View>
         {allFriends.length > 0 ? (
           allFriends.map(fr => (
-            <View style={{paddingBottom: 12}}>
+            <View key={fr.id} style={{paddingBottom: 12}}>
               <TouchableHighlight
                 underlayColor={Colors.lightgrey}
                 onPress={() => console.log('press')}>
@@ -123,15 +149,26 @@ const AllFriendsScreen = ({navigation}) => {
                         borderStyle: 'solid',
                         borderRadius: 25,
                       }}>
-                      <Image
-                        style={{
-                          height: '100%',
-                          width: '100%',
-                          borderRadius: 25,
-                        }}
-                        source={require('../../assets/images/avatar_null.jpg')}
-                        defaultSource={require('../../assets/images/avatar_null.jpg')}
-                      />
+                      {fr.avatar ? (
+                        <Image
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            borderRadius: 25,
+                          }}
+                          source={{uri: fr.avatar}}
+                          defaultSource={require('../../assets/images/avatar_null.jpg')}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            borderRadius: 25,
+                          }}
+                          source={require('../../assets/images/avatar_null.jpg')}
+                        />
+                      )}
                     </View>
                     <View>
                       <Text
@@ -140,9 +177,11 @@ const AllFriendsScreen = ({navigation}) => {
                           fontSize: 20,
                           color: Colors.black,
                         }}>
-                        Nguyễn Xuân Thành
+                        {fr.username}
                       </Text>
-                      <Text style={{color: Colors.grey}}>30 bạn chung</Text>
+                      <Text style={{color: Colors.grey}}>
+                        {fr.same_friends} bạn chung
+                      </Text>
                     </View>
                   </View>
                   <Pressable onPress={() => console.log('pres')}>

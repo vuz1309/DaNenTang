@@ -48,7 +48,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
         type,
       });
       if (data.code == SUCCESS_CODE) {
-        updateData.feel = Number(updateData.feel) + (isLikePost ? -1 : 1);
+        updateData.feel = data.data.kudos;
         updateData.is_felt = type;
 
         store.dispatch(postInfoActions.updatePost(updateData));

@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import {Themes} from '../../assets/themes';
 import Post4 from '../../assets/images/post4.jpeg';
+import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 const nullAvatar = require('../../assets/images/avatar_null.jpg');
 const AddFriendRequest = ({
   mainText = 'Chấp nhận',
@@ -22,6 +23,10 @@ const AddFriendRequest = ({
         <Text>Loading....</Text>
       </View>
     );
+  const createTime = React.useMemo(
+    () => convertTimeToFacebookStyle(data.created),
+    [data.created],
+  );
 
   return (
     <TouchableHighlight
@@ -33,7 +38,7 @@ const AddFriendRequest = ({
           padding: 12,
           position: 'relative',
         }}>
-        {isShowTime && <Text style={styles.time}>2 năm</Text>}
+        {isShowTime && <Text style={styles.time}>{createTime}</Text>}
         <View style={styles.avatar}>
           {data.avatar.trim() ? (
             <Image

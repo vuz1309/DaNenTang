@@ -45,7 +45,7 @@ const PostHeader = ({data}) => {
     const postId = data.id;
     toggleModalDelPost();
     try {
-      const {data} = deletePostRequest({id: postId});
+      const data = deletePostRequest({id: postId});
       console.log('REMOVE POST RESPONSE:', data);
       store.dispatch(
         postInfoActions.removePost({
@@ -53,7 +53,7 @@ const PostHeader = ({data}) => {
         }),
       );
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.log(error);
     }
   };
 

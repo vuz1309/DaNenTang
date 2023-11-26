@@ -6,7 +6,7 @@ import React from 'react';
  */
 export const useScrollHanler = (reload, loadMore) => {
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const [isLoadMore, setIsLoadMore] = React.useState(false);
   const handleScroll = event => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const contentHeight = event.nativeEvent.contentSize.height;
@@ -22,6 +22,8 @@ export const useScrollHanler = (reload, loadMore) => {
   return {
     handleScroll,
     onRefresh,
+    isLoadMore,
+    setIsLoadMore,
     refreshing,
     setRefreshing,
   };
