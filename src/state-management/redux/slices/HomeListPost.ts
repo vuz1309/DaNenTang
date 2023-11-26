@@ -37,6 +37,7 @@ const setLastId: Reducer<PayloadAction<any>> = (state, {payload}) => {
 };
 const removePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
   const {postId} = payload;
+
   state.posts.splice(
     state.posts.findIndex(p => p.id === postId),
     1,
