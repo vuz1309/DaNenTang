@@ -1,32 +1,98 @@
-import {View, StyleSheet, Text, ImageBackground, Image} from 'react-native';
-import React from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Dimensions,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState} from 'react';
 import {Colors} from '../../utils/Colors';
-import {logger} from '../../utils/helper';
-import Pinchable from 'react-native-pinchable';
-const DetailsPost = ({item}) => {
+
+import PostFooter from './PostFooter';
+// import Carousel from 'react-native-snap-carousel';
+import VectorIcon from '../../utils/VectorIcon';
+import PostDescription from './PostDescription';
+
+const {width} = Dimensions.get('window');
+
+const DetailsPost = ({item, onClose, firstItem = 0}) => {
+  const [opacity, setOpacity] = useState(1);
+  if (!item) return <Text>Loading...</Text>;
   return (
-    <View style={styles.postContainer}>
-      <Pinchable>
-        <Image
-          style={styles.backgroundImg}
-          resizeMode="contain"
-          source={item.postImg}
-        />
-      </Pinchable>
-      <View style={styles.postInfo}>
-        <View>
-          <Text>Bui Anh Mi</Text>
-          <Text>Thoi co ma nam tay nhau ra troung dung han nhe.</Text>
-          <Text>28 phut truoc</Text>
+    <Modal isModalVisible={true} onRequestClose={onClose}>
+      <View
+        style={{
+          ...styles.postContainer,
+          backgroundColor: `rgba(0, 0, 0, ${opacity})`,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row-reverse',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            zIndex: 12,
+          }}>
+          <TouchableOpacity style={{padding: 16}} onPress={onClose}>
+            <VectorIcon
+              name="close"
+              type="AntDesign"
+              size={24}
+              color={Colors.white}
+            />
+          </TouchableOpacity>
         </View>
+        {/* <Carousel
+          data={item.image}
+          renderItem={({item}) => {
+            return (
+              <Image
+                style={{height: '100%', width: '100%'}}
+                resizeMode="contain"
+                source={{uri: item.url}}
+                defaultSource={require('../../assets/images/avatar_null.jpg')}
+              />
+            );
+          }}
+          sliderWidth={width}
+          itemWidth={width}
+          firstItem={firstItem}
+        /> */}
+        {opacity == 1 && (
+          <View style={styles.postInfo}>
+            <View style={{paddingHorizontal: 14}}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontWeight: '700',
+                  fontSize: 16,
+                }}>
+                {item.author.name}
+              </Text>
+
+              <PostDescription
+                described={item.described}
+                color={Colors.white}
+              />
+              <Text style={{color: Colors.white, marginTop: 12}}>
+                {item.author.created}
+              </Text>
+            </View>
+            <PostFooter
+              data={item}
+              textStyles={{color: Colors.white, fontWeight: '500'}}
+            />
+          </View>
+        )}
       </View>
-    </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   postContainer: {
-    backgroundColor: Colors.black,
     width: '100%',
     height: '100%',
     position: 'relative',
@@ -38,10 +104,12 @@ const styles = StyleSheet.create({
   postInfo: {
     position: 'absolute',
     bottom: 0,
+    left: 0,
+    width: '100%',
     color: Colors.white,
-    backgroundColor: Colors.black,
-
     elevation: 200,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    paddingTop: 16,
   },
 });
 

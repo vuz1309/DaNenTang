@@ -10,11 +10,11 @@ import {CommonStatus} from './types';
 import {generatePersistConfig, logger} from '../../../utils/helper';
 
 export interface IUser {
-  id?: number;
-  fullname?: string;
-  avatar?: string[];
-  dateOfBirth?: string;
-  gender?: number[];
+  id?: string;
+  username?: string;
+  avatar?: string;
+  coins?: string;
+  active?: string;
 }
 
 export interface IUserInfoState {
@@ -73,6 +73,7 @@ const updateToken: Reducer<
   PayloadAction<Pick<IUserInfoState, 'token' | 'user'>>
 > = (state, {payload}) => {
   state.token = payload.token;
+
   logger('reducer: ' + payload.token);
   logger('state: ' + state.token);
   if (payload.user?.id) {

@@ -1,4 +1,4 @@
-import FriendScreen from '../screens/FriendScreen';
+import FriendScreen from '../screens/friends/FriendScreen';
 import HomeScreen from '../screens/HomeScreen';
 // import MarketPlaceScreen from '../screens/MarketPlaceScreen';
 import NotificationScreen from '../screens/NotificationScreen';

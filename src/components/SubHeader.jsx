@@ -11,12 +11,28 @@ import Profile from '../assets/images/img1.jpeg';
 import CameraRoll from '../assets/images/cameraroll.png';
 import {Colors} from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
+const nullAvatar = require('../assets/images/avatar_null.jpg');
 const SubHeader = () => {
   const navigation = useNavigation();
+  const userLogged = useSelector(state => state.userInfo.user);
+
   return (
     <View style={styles.container}>
-      <Image source={Profile} style={styles.profileStyle} />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('UserScreen', {userId: userLogged.id})
+        }>
+        {userLogged?.avatar ? (
+          <Image
+            source={{uri: userLogged.avatar}}
+            style={styles.profileStyle}
+          />
+        ) : (
+          <Image source={nullAvatar} style={styles.profileStyle} />
+        )}
+      </TouchableOpacity>
       <View style={styles.inputBox}>
         <TouchableOpacity onPress={() => navigation.navigate('UploadScreen')}>
           <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>

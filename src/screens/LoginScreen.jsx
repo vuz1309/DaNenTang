@@ -6,20 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
-import {UserContext} from '../../App';
-// import {useLogin} from '../utils/authenticate/AuthenticateService';
-import {useLogin} from '../utils/authenticateFirebase/AuthenticateFirebase';
-import {validateEmail, validatePassword} from '../utils/validater';
-import AlertMessage from '../components/base/AlertMessage';
-import {navigate} from '../navigation/NavigationService';
+import {useLogin} from '../utils/authenticate/AuthenticateService';
+// import {useLogin} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
-import { RequestUserPermission } from '../utils/notification/notificationHelper';
-import auth from '@react-native-firebase/auth';
-import fireStore from '@react-native-firebase/firestore';
+import {RequestUserPermission} from '../utils/notification/notificationHelper';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,17 +23,17 @@ const LoginScreen = ({navigation}) => {
     // navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
 
-  const {requestLogin, loading, error} = useLogin(auth(), fireStore());
+  const {requestLogin, loading, error} = useLogin();
 
-  const onLogin = async() => {
-    if (!validateEmail(email)) {
-      AlertMessage("Invalid Email format");
-      return;
-    }
-    if (!validatePassword(password)) {
-      AlertMessage("Invalid Password format");
-      return;
-    }
+  const onLogin = async () => {
+    // if (!validateEmail(email)) {
+    //   AlertMessage("Email không hợp lệ!");
+    //   return;
+    // }
+    // if (!validatePassword(password)) {
+    //   AlertMessage("Mật khẩu không chính xác!");
+    //   return;
+    // }
     await RequestUserPermission();
     requestLogin({email, password});
   };

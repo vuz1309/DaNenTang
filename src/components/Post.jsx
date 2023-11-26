@@ -1,15 +1,18 @@
 import {Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {Colors} from '../utils/Colors';
-import PostHeader from './PostHeader';
-import PostFooter from './PostFooter';
-import {PostData} from '../data/PostData';
+import PostHeader from "./posts/PostHeader";
+import PostFooter from "./posts/PostFooter";
 
-const Post = () => {
+
+const Post = ({data}) => {
     return (
         <View style={styles.postContainer}>
-            {PostData.map(item => (
-                <View key={item.id}>
+            {data.map(item => (
+                <View key={item.id} style={{
+                    borderColor:Colors.background,
+                    borderTopWidth:10
+                }}>
                     <PostHeader data={item}/>
                     <Image source={item.postImg} style={styles.postImg}/>
                     <PostFooter data={item}/>

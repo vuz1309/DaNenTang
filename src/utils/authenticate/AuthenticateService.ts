@@ -16,7 +16,6 @@ interface LoginRequest {
   handleLoginSuccess: (response: any) => void;
 }
 
-
 export const isLogin = () => {
   const {userInfo} = store.getState();
   return !!userInfo?.token;
@@ -27,9 +26,7 @@ const AuthenticateService = {
     TokenProvider.clearToken();
     store.dispatch(userInfoActions.logOut());
   },
-  handlerLogin: (token: string, id: number) => {
-    logger('handle login: ' + token);
-
+  handlerLogin: (token: string, id: string) => {
     store.dispatch(userInfoActions.updateToken({token, user: {id}}));
   },
 };
@@ -45,15 +42,15 @@ export const useLogin = (): LoginRequest => {
     };
     try {
       setLoading(true);
-      logger(loginParams);
+
       const response: any = await loginRequest(loginParams);
-      logger(response);
+
       /**
        * Author: Hieutm
        * Keep Login : Default: True
        */
-      await storeStringAsyncData('email', options.username);
-      await storeStringAsyncData('password', options.password);
+      storeStringAsyncData('email', options.username);
+      storeStringAsyncData('password', options.password);
 
       handleLoginSuccess(response);
     } catch (e) {
@@ -65,14 +62,14 @@ export const useLogin = (): LoginRequest => {
   const handleLoginSuccess = (response: any) => {
     logger('Login Success!');
     logger(response?.data?.data);
-    logger('AS1: ' + response.data.data?.token);
+
     store.dispatch(
-      userInfoActions.getUserInfoRequest({
+      userInfoActions.loginSuccess({
         token: response?.data?.data?.token,
-        user: {id: response?.data?.data?.id},
+        user: response?.data?.data,
       }),
     );
-    logger('AS2: ' + response.data.token);
+
     AuthenticateService.handlerLogin(
       response?.data?.data?.token,
       response?.data?.data?.id,
