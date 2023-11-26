@@ -14,6 +14,10 @@ import Shock from '../../assets/images/shock.jpeg';
 import Heart from '../../assets/images/heart.jpeg';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
+import {feelPost} from '../../api/modules/comment.request';
+import {store} from '../../state-management/redux/store';
+import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
+import {SUCCESS_CODE} from '../../utils/constants';
 
 /**
  *
@@ -32,8 +36,26 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
     [isLikePost],
   );
 
-  const handleClickLike = () => {
+  const handleClickLike = async () => {
+    const id = data.id;
     setIsLikePost(!isLikePost);
+    const updateData = {...data};
+
+    try {
+      const type = isLikePost ? '0' : '1';
+      const {data} = await feelPost({
+        id,
+        type,
+      });
+      if (data.code == SUCCESS_CODE) {
+        updateData.feel = Number(updateData.feel) + (isLikePost ? -1 : 1);
+        updateData.is_felt = type;
+
+        store.dispatch(postInfoActions.updatePost(updateData));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

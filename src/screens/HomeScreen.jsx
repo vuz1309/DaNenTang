@@ -18,51 +18,34 @@ import {
 import AlertMessage from '../components/base/AlertMessage';
 import {useScrollHanler} from '../hooks/useScrollHandler';
 import {INVALID_TOKEN} from '../utils/constants';
-
+import {store} from '../state-management/redux/store';
+import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 const HomeScreen = () => {
-  const [listPost, setListPost] = React.useState([]);
   const [isLoading, setLoading] = React.useState(false);
   const userLogged = useSelector(state => state.userInfo.user);
-  const [params, setParams] = React.useState({
-    user_id: '',
-    in_campaign: '1',
-    campaign_id: '1',
-    latitude: '1.0',
-    longitude: '1.0',
-    last_id: '1',
-    index: '0',
-    count: '20',
-  });
 
+  const listPosts = useSelector(state => state.postInfo.posts);
+  const params = useSelector(state => state.postInfo.paramsConfig);
+  const {handleScroll, refreshing, setRefreshing} = useScrollHanler(
+    reload,
+    loadMore,
+  );
   const getListPostsApi = async () => {
     if (refreshing || isLoading) return;
-    params.user_id = userLogged.id;
-
     try {
       setLoading(true);
 
-      const {data} = await getListPost(params);
+      const {data} = await getListPost({...params, user_id: userLogged.id});
 
-      if (!JSON.parse(data.data.last_id)) {
-        console.log('lastid', data.data.last_id);
-        storeStringAsyncData(
-          AsyncStorageKey.HOMME_DATA_LASTID,
-          data.data.last_id,
-        );
+      if (JSON.parse(data.data.last_id)) {
+        store.dispatch(postInfoActions.setLastId(data.data.last_id));
       }
 
-      if (params.index === '0') setListPost(data.data.post);
-      else if (data.data.post.length > 0) {
-        const listPosts = [
-          ...listPost,
-          ...data.data.post.filter(
-            post => !listPost.find(p => p.id === post.id),
-          ),
-        ];
-        setListPost(listPosts);
+      if (params.index === '0') {
+        store.dispatch(postInfoActions.setPosts(data.data.post));
+      } else if (data.data.post.length > 0) {
+        store.dispatch(postInfoActions.addPosts(data.data.post));
       }
-
-      storeAsyncData(AsyncStorageKey.HOME_DATA, listPost);
     } catch (error) {
       if (error.code == INVALID_TOKEN.toString()) {
         AlertMessage('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
@@ -77,48 +60,38 @@ const HomeScreen = () => {
   };
 
   const reload = async () => {
-    setParams(_ => ({
-      user_id: '',
-      in_campaign: '1',
-      campaign_id: '1',
-      latitude: '1.0',
-      longitude: '1.0',
-      last_id: '1',
-      index: '0',
-      count: '20',
-    }));
+    if (refreshing) return;
 
-    storeStringAsyncData(AsyncStorageKey.HOMME_DATA_LASTID, '1');
+    store.dispatch(
+      postInfoActions.setParams({
+        user_id: '',
+        in_campaign: '1',
+        campaign_id: '1',
+        latitude: '1.0',
+        longitude: '1.0',
+        last_id: '1',
+        index: '0',
+        count: '20',
+      }),
+    );
+
+    store.dispatch(postInfoActions.setLastId('1'));
   };
 
   const loadMore = async () => {
-    const lastId =
-      (await getAsyncData(AsyncStorageKey.HOMME_DATA_LASTID)) || params.last_id;
-    setParams(prev => ({
-      ...prev,
-      index: (Number(prev.index) + 1).toString(),
-      last_id: lastId,
-    }));
+    if (isLoading) return;
+    store.dispatch(
+      postInfoActions.setParams({
+        ...params,
+        index: (Number(params.index) + 1).toString(),
+        last_id: store.getState().postInfo.lastId,
+      }),
+    );
   };
 
   React.useEffect(() => {
-    const getDataFromLocal = async () => {
-      const dataFromLocal = await getAsyncData(AsyncStorageKey.HOME_DATA);
-
-      if (dataFromLocal) {
-        setListPost(dataFromLocal);
-      }
-    };
-    getDataFromLocal();
-  }, []);
-  React.useEffect(() => {
     getListPostsApi();
   }, [params]);
-
-  const {handleScroll, refreshing, setRefreshing} = useScrollHanler(
-    reload,
-    loadMore,
-  );
 
   return (
     <ScrollView
@@ -135,7 +108,7 @@ const HomeScreen = () => {
       }>
       <SubHeader />
       <Stories />
-      <Post listPost={listPost} />
+      <Post listPost={listPosts} />
       {isLoading && (
         <View
           style={{
