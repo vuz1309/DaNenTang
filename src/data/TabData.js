@@ -1,7 +1,7 @@
 import FriendScreen from '../screens/friends/FriendScreen';
 import HomeScreen from '../screens/HomeScreen';
 // import MarketPlaceScreen from '../screens/MarketPlaceScreen';
-import NotificationScrren from '../screens/NotificationScrren';
+import NotificationScreen from '../screens/NotificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import WatchScreen from '../screens/WatchScreen';
 
@@ -52,7 +52,7 @@ export const TabData = [
   // },
   {
     id: 5,
-    route: NotificationScrren,
+    route: NotificationScreen,
     name: 'Notification',
     activeIconName: 'notifications',
     activeiconType: 'Ionicons',
