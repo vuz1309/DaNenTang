@@ -9,6 +9,8 @@ import {reportPostRequest} from '../../api/modules/post';
 import {SUCCESS_CODE} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import {store} from '../../state-management/redux/store';
+import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 
 const ConfirmScreen = ({items, postId}) => {
   const [loading, setLoading] = React.useState(false);
@@ -25,6 +27,8 @@ const ConfirmScreen = ({items, postId}) => {
 
       if (data.code == SUCCESS_CODE.toString()) {
         navigate(APP_ROUTE.HOME_TAB);
+
+        store.dispatch(postInfoActions.removePost({postId}));
       }
     } catch (error) {
       console.log('error report api:', JSON.stringify(error));
