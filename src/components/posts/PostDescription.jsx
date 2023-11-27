@@ -1,13 +1,16 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useMemo} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 const {Colors} = require('../../utils/Colors');
 const MAX_CAPTION_LENGTH = 50;
 
 const PostDescription = ({described, color = Colors.textColor}) => {
+  const {navigate} = useNavigation();
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   const extractLinks = text => {
-    const linkRegex = /(https?:\/\/[^\s]+)/g;
+    const linkRegex = /(https?:\/\/[^\s]+)|(#\w+)/g;
     const matches = text.match(linkRegex);
 
     if (!matches) {
@@ -25,14 +28,29 @@ const PostDescription = ({described, color = Colors.textColor}) => {
           {beforeText}
         </Text>,
       );
-      elements.push(
-        <Text
-          key={`link_${index}`}
-          style={{fontSize: 15, color: Colors.primaryColor}}
-          onPress={() => handleLinkPress(match)}>
-          {match}
-        </Text>,
-      );
+
+      if (match.startsWith('#')) {
+        // Handle hashtag
+        elements.push(
+          <Text
+            key={`hashtag_${index}`}
+            style={{fontSize: 15, color: Colors.primaryColor}}
+            onPress={() => handleHashtagPress(match)}>
+            {match}
+          </Text>,
+        );
+      } else {
+        // Handle regular link
+        elements.push(
+          <Text
+            key={`link_${index}`}
+            style={{fontSize: 15, color: Colors.primaryColor}}
+            onPress={() => handleLinkPress(match)}>
+            {match}
+          </Text>,
+        );
+      }
+
       lastIndex = startIndex + match.length;
     });
 
@@ -62,10 +80,11 @@ const PostDescription = ({described, color = Colors.textColor}) => {
       );
     }
   }, [isExpanded]);
-
+  const handleHashtagPress = keyWord => {
+    console.log('hastag press:', keyWord);
+  };
   const handleLinkPress = url => {
-    // Xử lý sự kiện khi người dùng nhấn vào liên kết
-    console.log('Link pressed:', url);
+    navigate(APP_ROUTE.WEBVIEW, {url});
   };
   return <View>{htmlContent}</View>;
 };

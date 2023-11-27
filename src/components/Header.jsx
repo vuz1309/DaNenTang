@@ -4,8 +4,6 @@ import {
   View,
   Modal,
   Text,
-  Pressable,
-  FlatList,
   TouchableOpacity,
   TextInput,
   StatusBar,
@@ -17,7 +15,7 @@ import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import {logger} from '../utils/helper';
 import {useState} from 'react';
-import {getSavedSearchRequest, searchRequest} from '../api/modules/search';
+import {getSavedSearchRequest} from '../api/modules/search';
 import useSearch from '../hooks/useSearch';
 import {SingleSavedItem} from './search/SingleSavedItem';
 
@@ -39,6 +37,48 @@ const Item = ({listItem}) => {
               />
               <View style={styles.userSection}>
                 <Text style={[styles.title]}>{item.author.name}</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.row}>
+              <VectorIcon
+                name="dots-three-horizontal"
+                type="Entypo"
+                size={25}
+                color={Colors.headerIconGrey}
+                style={styles.headerIcons}
+              />
+            </View>
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+};
+
+const SavedItem = ({listItem}) => {
+  if (listItem.length == 0) {
+    return;
+  }
+  const onPress = item => {
+    logger('pressed on: ', false, item.keyword);
+    //TODO: DATA LOGIC HERE
+  };
+  return (
+    <View>
+      {listItem.map(item => (
+        <View key={item.id} style={styles.postHeaderContainer}>
+          <View style={styles.postTopSec}>
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => logger('pressed on: ', true, item.keyword)}>
+              <Image
+                source={{
+                  uri: 'https://it4788.catan.io.vn/files/image-1700951038448-634881859.png',
+                }}
+                style={styles.userProfile}
+              />
+              <View style={styles.userSection}>
+                <Text style={[styles.title]}>{item.keyword}</Text>
               </View>
             </TouchableOpacity>
             <View style={styles.row}>

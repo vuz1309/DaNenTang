@@ -52,8 +52,9 @@ const AppChild = () => {
             />
             <Stack.Screen name={APP_ROUTE.REPORT} component={ReportScreen} />
 
-            <Stack.Screen name={'UploadScreen'} component={UploadScreen} />
+            <Stack.Screen name={APP_ROUTE.UPLOAD} component={UploadScreen} />
             <Stack.Screen name={APP_ROUTE.USER_SCREEN} component={UserScreen} />
+            <Stack.Screen name={APP_ROUTE.WEBVIEW} component={WebViewScreen} />
           </>
         ) : (
           <>
@@ -93,6 +94,7 @@ import {RequestUserPermission} from './src/utils/notification/notificationHelper
 import AllFriendsScreen from './src/screens/friends/AllFriends';
 import SuggestionScreen from './src/screens/friends/SuggestionScreen';
 import ReportScreen from './src/screens/reports/ReportScreen';
+import WebViewScreen from './src/screens/webView/WebViewScreen';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

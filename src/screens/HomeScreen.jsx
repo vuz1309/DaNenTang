@@ -20,16 +20,14 @@ import {useScrollHanler} from '../hooks/useScrollHandler';
 import {INVALID_TOKEN} from '../utils/constants';
 import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import Loading from '../components/base/Loading';
 const HomeScreen = () => {
   const [isLoading, setLoading] = React.useState(false);
   const userLogged = useSelector(state => state.userInfo.user);
 
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
-  const {handleScroll, refreshing, setRefreshing} = useScrollHanler(
-    reload,
-    loadMore,
-  );
+
   const getListPostsApi = async () => {
     if (refreshing || isLoading) return;
     try {
@@ -47,11 +45,6 @@ const HomeScreen = () => {
         store.dispatch(postInfoActions.addPosts(data.data.post));
       }
     } catch (error) {
-      if (error.code == INVALID_TOKEN.toString()) {
-        AlertMessage('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
-      } else {
-        // AlertMessage('Vui lòng kiểm tra lại mạng.');
-      }
       console.log('load data error', error);
     } finally {
       setRefreshing(false);
@@ -59,7 +52,7 @@ const HomeScreen = () => {
     }
   };
 
-  const reload = async () => {
+  const reload = () => {
     if (refreshing) return;
 
     store.dispatch(
@@ -78,7 +71,7 @@ const HomeScreen = () => {
     store.dispatch(postInfoActions.setLastId('1'));
   };
 
-  const loadMore = async () => {
+  const loadMore = () => {
     if (isLoading) return;
     store.dispatch(
       postInfoActions.setParams({
@@ -88,7 +81,10 @@ const HomeScreen = () => {
       }),
     );
   };
-
+  const {handleScroll, refreshing, setRefreshing} = useScrollHanler(
+    reload,
+    loadMore,
+  );
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);
@@ -109,18 +105,7 @@ const HomeScreen = () => {
       <SubHeader />
       <Stories />
       <Post listPost={listPosts} />
-      {isLoading && (
-        <View
-          style={{
-            heigh: 20,
-            width: '100%',
-            backgroundColor: Colors.background,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>Loading...</Text>
-        </View>
-      )}
+      {isLoading && <Loading />}
       <View
         style={{
           height: 10,

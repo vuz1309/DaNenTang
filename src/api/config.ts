@@ -3,7 +3,13 @@ import axios from 'axios';
 
 import {store} from '../state-management/redux/store';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
-import {BUG_SERVER, INVALID_TOKEN, USER_INVALID} from '../utils/constants';
+import {
+  BUG_SERVER,
+  INVALID_TOKEN,
+  USER_INVALID,
+  USER_NOT_REQUEST_FRIEND,
+  errors,
+} from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
 
 /**
@@ -30,6 +36,7 @@ export const createApiInstance = (
     },
     error => {
       console.log('error frontend');
+      AlertMessage('Vui lòng kiểm tra lại mạng!');
       Promise.reject(error);
     },
   );
@@ -54,11 +61,12 @@ export const createApiInstance = (
         console.log(JSON.stringify(error.response));
       }
       const {response} = error;
+
+      AlertMessage(
+        errors[response.data.code.toString()] || 'Lỗi chưa xác định',
+      );
       if (response.data.code == INVALID_TOKEN.toString()) {
         store.dispatch(userInfoActions.logOut());
-      } else if (response.data.code == BUG_SERVER.toString()) {
-        AlertMessage('Server lỗi!');
-      } else if (response.data.code == USER_INVALID.toString()) {
       }
       return Promise.reject({
         code: response.data.code,

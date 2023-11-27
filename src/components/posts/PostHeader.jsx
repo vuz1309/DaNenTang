@@ -97,9 +97,11 @@ const PostHeader = ({data}) => {
           </StyledTouchable>
 
           <View style={styles.userSection}>
-            <Text style={styles.username}>
+            <Text
+              onPress={() => navigate('UserScreen', {userId: data.author.id})}
+              style={styles.username}>
               {data.author.name}
-              <Text style={{fontWeight: '400'}}>
+              <Text style={{fontWeight: '400', fontSize: 16}}>
                 {' '}
                 Đang cảm thấy {data.state}
               </Text>
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   username: {
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.textColor,
     marginBottom: 2,
     fontWeight: '600',

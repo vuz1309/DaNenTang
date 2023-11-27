@@ -57,7 +57,7 @@ const FriendScreen = () => {
 
   const setAcceptFriendApi = async (user_id, is_accept = '1') => {
     try {
-      const {data} = setAcceptFriend({user_id, is_accept});
+      const {data} = await setAcceptFriend({user_id, is_accept});
       console.log(data);
     } catch (error) {
       AlertMessage('Vui lòng kiểm tra lại mạng!');
@@ -99,7 +99,9 @@ const FriendScreen = () => {
           <Text style={styles.buttonText}>Gợi ý</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate(APP_ROUTE.FRIEND_ALL)}
+          onPress={() =>
+            navigation.navigate(APP_ROUTE.FRIEND_ALL, {user: userLogged})
+          }
           style={styles.buttonWrapper}>
           <Text style={styles.buttonText}>Bạn bè</Text>
         </TouchableOpacity>
