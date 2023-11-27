@@ -99,7 +99,9 @@ const FriendScreen = () => {
           <Text style={styles.buttonText}>Gợi ý</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate(APP_ROUTE.FRIEND_ALL)}
+          onPress={() =>
+            navigation.navigate(APP_ROUTE.FRIEND_ALL, {user: userLogged})
+          }
           style={styles.buttonWrapper}>
           <Text style={styles.buttonText}>Bạn bè</Text>
         </TouchableOpacity>

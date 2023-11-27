@@ -1,12 +1,30 @@
 import React from 'react';
 import {WebView} from 'react-native-webview';
-import {View, Text, TouchableHighlight} from 'react-native';
+import {View, Text, TouchableHighlight, Linking} from 'react-native';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
 
 const WebViewScreen = ({navigation, route}) => {
   const {url} = route.params;
-  console.log(url);
+  const isAppLink = link => {
+    // Thay đổi logic kiểm tra tùy thuộc vào các mẫu URL của ứng dụng cụ thể
+    // Ví dụ: Kiểm tra nếu URL chứa 'myapp://'
+    return link.includes('myapp://');
+  };
+
+  const openApp = link => {
+    // Mở ứng dụng với Linking
+    Linking.openURL(link);
+  };
+
+  const handleWebViewNavigationStateChange = newNavState => {
+    const {url: newUrl} = newNavState;
+
+    // Kiểm tra xem URL mới có phải là liên kết đến ứng dụng không
+    if (isAppLink(newUrl)) {
+      openApp(newUrl);
+    }
+  };
   return (
     <View style={{flex: 1, backgroundColor: Colors.white}}>
       <View
@@ -46,7 +64,11 @@ const WebViewScreen = ({navigation, route}) => {
           />
         </View>
       </View>
-      <WebView source={{uri: url}} style={{flex: 1}} />
+      <WebView
+        onNavigationStateChange={handleWebViewNavigationStateChange}
+        source={{uri: url}}
+        style={{flex: 1}}
+      />
     </View>
   );
 };

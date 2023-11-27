@@ -17,6 +17,7 @@ import {
 } from '../../api/modules/friends.request';
 import AlertMessage from '../../components/base/AlertMessage';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
+import Loading from '../../components/base/Loading';
 
 const SuggestionScreen = ({navigation}) => {
   const [allSuggestions, setSuggestions] = React.useState([]);
@@ -138,14 +139,7 @@ const SuggestionScreen = ({navigation}) => {
             />
           ))}
         </View>
-        {isLoadMore && (
-          <Text
-            style={{
-              textAlign: 'center',
-            }}>
-            Đang tải...
-          </Text>
-        )}
+        {isLoadMore && <Loading />}
       </ScrollView>
     </View>
   );

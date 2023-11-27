@@ -10,7 +10,7 @@ const PostDescription = ({described, color = Colors.textColor}) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   const extractLinks = text => {
-    const linkRegex = /(https?:\/\/[^\s]+)/g;
+    const linkRegex = /(https?:\/\/[^\s]+)|(#\w+)/g;
     const matches = text.match(linkRegex);
 
     if (!matches) {
@@ -28,14 +28,29 @@ const PostDescription = ({described, color = Colors.textColor}) => {
           {beforeText}
         </Text>,
       );
-      elements.push(
-        <Text
-          key={`link_${index}`}
-          style={{fontSize: 15, color: Colors.primaryColor}}
-          onPress={() => handleLinkPress(match)}>
-          {match}
-        </Text>,
-      );
+
+      if (match.startsWith('#')) {
+        // Handle hashtag
+        elements.push(
+          <Text
+            key={`hashtag_${index}`}
+            style={{fontSize: 15, color: Colors.primaryColor}}
+            onPress={() => handleHashtagPress(match)}>
+            {match}
+          </Text>,
+        );
+      } else {
+        // Handle regular link
+        elements.push(
+          <Text
+            key={`link_${index}`}
+            style={{fontSize: 15, color: Colors.primaryColor}}
+            onPress={() => handleLinkPress(match)}>
+            {match}
+          </Text>,
+        );
+      }
+
       lastIndex = startIndex + match.length;
     });
 
@@ -65,7 +80,9 @@ const PostDescription = ({described, color = Colors.textColor}) => {
       );
     }
   }, [isExpanded]);
-
+  const handleHashtagPress = keyWord => {
+    console.log('hastag press:', keyWord);
+  };
   const handleLinkPress = url => {
     navigate(APP_ROUTE.WEBVIEW, {url});
   };

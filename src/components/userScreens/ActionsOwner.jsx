@@ -12,7 +12,7 @@ const ActionsOwner = ({userId}) => {
         gap: 10,
         marginTop: 10,
       }}>
-      <StyledButton
+      {/* <StyledButton
         title={'Thêm vào tin'}
         customStyle={{
           backgroundColor: Colors.primaryColor,
@@ -20,20 +20,22 @@ const ActionsOwner = ({userId}) => {
         }}
         customStyleText={{
           fontWeight: 'bold',
+          fontSize: 18,
         }}
         icon={{
           name: 'plus',
           type: 'Entypo',
         }}
-      />
+      /> */}
       <StyledButton
         title={'Chỉnh sửa'}
         customStyle={{
           backgroundColor: Themes.COLORS.lightGreyBg,
-          flex: 1.5,
+          flex: 2,
         }}
         customStyleText={{
           fontWeight: 'bold',
+          fontSize: 18,
           color: Colors.black,
         }}
         icon={{

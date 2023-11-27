@@ -10,14 +10,12 @@ import {
 } from 'react-native';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
-import {StyledButton} from '../components/base';
-import {Themes} from '../assets/themes';
 import {useSelector} from 'react-redux';
-import AlertMessage from '../components/base/AlertMessage';
 import {getUserInfo} from '../api/modules/userProfile.request';
 import {useScrollHanler} from '../hooks/useScrollHandler';
 import ActionsOwner from '../components/userScreens/ActionsOwner';
 import ActionsOtherUser from '../components/userScreens/ActionsOtherUser';
+import Loading from '../components/base/Loading';
 const nullImage = require('../assets/images/avatar_null.jpg');
 
 const UserScreen = ({navigation, route}) => {
@@ -40,19 +38,27 @@ const UserScreen = ({navigation, route}) => {
       setUserInfo(data.data);
     } catch (error) {
       console.log(error);
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
   };
   React.useEffect(() => {
     getUserInfoApi();
   }, []);
   if (!userInfo.id)
-    return <Text style={{flex: 1, alignItems: 'center'}}>Đang tải...</Text>;
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Loading />
+        <Text> Đang tải...</Text>
+      </View>
+    );
   return (
     <ScrollView
       onScroll={handleScroll}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          colors={[Colors.primaryColor]}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
       }
       style={styles.container}>
       <View style={styles.header}>
@@ -96,16 +102,32 @@ const UserScreen = ({navigation, route}) => {
         ) : (
           <Image style={styles.ava} source={nullImage} />
         )}
-        {Number(userInfo.online) && <View style={styles.isOnline}></View>}
+        {Number(userInfo.online) && <View style={styles.isOnline} />}
       </View>
+
       <View style={styles.info}>
         <Text style={{fontWeight: 'bold', color: Colors.black, fontSize: 25}}>
           {userInfo.username}
         </Text>
+        <Text style={{fontSize: 18, paddingTop: 12, color: Colors.textGrey}}>
+          <Text style={{fontWeight: '700', color: Colors.black}}>
+            {userInfo.listing}{' '}
+          </Text>
+          bạn bè
+        </Text>
+        {userInfo?.description?.trim() && (
+          <Text
+            style={{color: Colors.textColor, fontSize: 18, paddingVertical: 4}}>
+            {userInfo.description}
+          </Text>
+        )}
         {isOwner ? (
           <ActionsOwner userId={userId} />
         ) : (
-          <ActionsOtherUser userId={userId} />
+          <ActionsOtherUser
+            firstMode={Number(userInfo.is_friend)}
+            user={userInfo}
+          />
         )}
       </View>
     </ScrollView>
@@ -127,7 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.green,
     position: 'absolute',
     top: 220,
-    left: '30%',
+    left: '35%',
     elevation: 50,
     zIndex: 2,
   },

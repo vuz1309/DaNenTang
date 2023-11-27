@@ -19,9 +19,12 @@ import {getAllFriends} from '../../api/modules/friends.request';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import Loading from '../../components/base/Loading';
 
-const AllFriendsScreen = ({navigation}) => {
+const AllFriendsScreen = ({navigation, route}) => {
   const {navigate} = useNavigation();
+  const {user} = route.params;
+
   const userLogged = useSelector(
     /**
      *
@@ -29,6 +32,10 @@ const AllFriendsScreen = ({navigation}) => {
      * @returns
      */
     state => state.userInfo.user,
+  );
+  const isOwner = React.useMemo(
+    () => user.id === userLogged.id,
+    [user, userLogged],
   );
 
   const [allFriends, setFriends] = React.useState([]);
@@ -41,7 +48,7 @@ const AllFriendsScreen = ({navigation}) => {
   const getAllFriendsRequest = async () => {
     try {
       setIsLoadMore(true);
-      const {data} = await getAllFriends({...params, user_id: userLogged.id});
+      const {data} = await getAllFriends({...params, user_id: user.id});
 
       setTotal(data.data.total);
       setFriends(data.data.friends);
@@ -86,7 +93,9 @@ const AllFriendsScreen = ({navigation}) => {
               color={Colors.black}
             />
           </TouchableHighlight>
-          <Text style={{fontSize: 16, color: Colors.black}}>Bạn bè</Text>
+          <Text style={{fontSize: 18, fontWeight: '600', color: Colors.black}}>
+            {isOwner ? 'Bạn bè' : user.username}
+          </Text>
         </View>
         <TouchableHighlight>
           <VectorIcon
@@ -210,7 +219,7 @@ const AllFriendsScreen = ({navigation}) => {
             </Text>
           </View>
         )}
-        {isLoadMore && <Text style={{textAlign: 'center'}}>Đang tải...</Text>}
+        {isLoadMore && <Loading />}
       </ScrollView>
     </View>
   );

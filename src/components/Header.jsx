@@ -4,8 +4,6 @@ import {
   View,
   Modal,
   Text,
-  Pressable,
-  FlatList,
   TouchableOpacity,
   TextInput,
   StatusBar,
@@ -17,17 +15,8 @@ import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import {logger} from '../utils/helper';
 import {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import FriendStoryImg1 from '../assets/images/img2.jpeg';
-import FriendStoryImg2 from '../assets/images/img3.jpeg';
-import FriendStoryImg3 from '../assets/images/img4.jpeg';
-import FriendStoryImg4 from '../assets/images/img5.jpeg';
-import FriendStoryImg5 from '../assets/images/img6.jpeg';
-import FriendStoryImg6 from '../assets/images/img7.jpeg';
-import FriendStoryImg7 from '../assets/images/img8.jpeg';
-import {getSavedSearchRequest, searchRequest} from '../api/modules/search';
+import {getSavedSearchRequest} from '../api/modules/search';
 import useSearch from '../hooks/useSearch';
-import {StyledTouchable} from './base';
 
 const Item = ({listItem}) => {
   if (listItem.length == 0) {
@@ -42,7 +31,9 @@ const Item = ({listItem}) => {
       {listItem.map(item => (
         <View key={item.id} style={styles.postHeaderContainer}>
           <View style={styles.postTopSec}>
-          <TouchableOpacity style={styles.row} onPress={() => logger('pressed on: ', true, item.keyword)}>
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => logger('pressed on: ', true, item.keyword)}>
               <Image
                 source={{uri: item.author.avatar}}
                 style={styles.userProfile}
@@ -80,7 +71,9 @@ const SavedItem = ({listItem}) => {
       {listItem.map(item => (
         <View key={item.id} style={styles.postHeaderContainer}>
           <View style={styles.postTopSec}>
-            <TouchableOpacity style={styles.row} onPress={() => logger('pressed on: ', true, item.keyword)}>
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => logger('pressed on: ', true, item.keyword)}>
               <Image
                 source={{
                   uri: 'https://it4788.catan.io.vn/files/image-1700951038448-634881859.png',
@@ -88,7 +81,7 @@ const SavedItem = ({listItem}) => {
                 style={styles.userProfile}
               />
               <View style={styles.userSection}>
-                  <Text style={[styles.title]}>{item.keyword}</Text>
+                <Text style={[styles.title]}>{item.keyword}</Text>
               </View>
             </TouchableOpacity>
             <View style={styles.row}>
