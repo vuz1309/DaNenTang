@@ -3,17 +3,12 @@ import {
   Text,
   StyleSheet,
   TouchableHighlight,
-  Image,
   ScrollView,
-  Pressable,
-  Touchable,
+  RefreshControl,
 } from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
-import {Themes} from '../../assets/themes';
-import {FacebookRootState} from '../../state-management/redux/store';
 
-import {useSelector} from 'react-redux';
 import VectorIcon from '../../utils/VectorIcon';
 import AddFriendRequest from '../../components/friends/AddFriendRequest';
 import {
@@ -21,16 +16,9 @@ import {
   setRequestFriend,
 } from '../../api/modules/friends.request';
 import AlertMessage from '../../components/base/AlertMessage';
+import {useScrollHanler} from '../../hooks/useScrollHandler';
 
 const SuggestionScreen = ({navigation}) => {
-  const userLogged = useSelector(
-    /**
-     *
-     * @param {FacebookRootState} state
-     * @returns
-     */
-    state => state.userInfo.user,
-  );
   const [allSuggestions, setSuggestions] = React.useState([]);
   const [params, setParams] = React.useState({
     index: '0',
@@ -38,12 +26,21 @@ const SuggestionScreen = ({navigation}) => {
   });
 
   const getAll = async () => {
+    setIsLoadMore(true);
     try {
+      console.log(params);
       const {data} = await getSuggestionFriend(params);
-      setSuggestions(data.data);
-      console.log(data);
+      if (params.index == '0') setSuggestions(data.data);
+      else {
+        const newItems = data.data.filter(
+          it => !allSuggestions.find(sugg => sugg.id == it.id),
+        );
+        setSuggestions(prev => [...prev, ...newItems]);
+      }
     } catch (error) {
       AlertMessage('Vui lòng kiểm tra lại mạng!');
+    } finally {
+      setIsLoadMore(false);
     }
   };
   const setRequestApi = async user_id => {
@@ -51,13 +48,34 @@ const SuggestionScreen = ({navigation}) => {
       const {data} = await setRequestFriend({user_id});
       console.log(data);
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.log('request: ', error);
       if (error.status !== 400) AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
   };
+
+  const reload = () => {
+    if (refreshing) return;
+    setParams({
+      index: '0',
+      count: '20',
+    });
+  };
+  const loadMore = () => {
+    console.log('load more');
+    if (isLoadMore) return;
+    setParams(prev => ({
+      count: '20',
+      index: (Number(prev.index) + 1).toString(),
+    }));
+  };
+
+  const {handleScroll, isLoadMore, setIsLoadMore, refreshing} = useScrollHanler(
+    reload,
+    loadMore,
+  );
   React.useEffect(() => {
     getAll();
-  }, []);
+  }, [params]);
 
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
@@ -85,7 +103,17 @@ const SuggestionScreen = ({navigation}) => {
           />
         </TouchableHighlight>
       </View>
-      <ScrollView>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl
+            colors={[Colors.primaryColor]}
+            refreshing={refreshing}
+            onRefresh={reload}
+          />
+        }>
         <View
           style={{
             flexDirection: 'row',
@@ -110,6 +138,14 @@ const SuggestionScreen = ({navigation}) => {
             />
           ))}
         </View>
+        {isLoadMore && (
+          <Text
+            style={{
+              textAlign: 'center',
+            }}>
+            Đang tải...
+          </Text>
+        )}
       </ScrollView>
     </View>
   );

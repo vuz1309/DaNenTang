@@ -16,7 +16,10 @@ import {useSelector} from 'react-redux';
 import AlertMessage from '../components/base/AlertMessage';
 import {getUserInfo} from '../api/modules/userProfile.request';
 import {useScrollHanler} from '../hooks/useScrollHandler';
+import ActionsOwner from '../components/userScreens/ActionsOwner';
+import ActionsOtherUser from '../components/userScreens/ActionsOtherUser';
 const nullImage = require('../assets/images/avatar_null.jpg');
+
 const UserScreen = ({navigation, route}) => {
   const {userId} = route.params;
   const userLogged = useSelector(state => state.userInfo.user);
@@ -24,11 +27,11 @@ const UserScreen = ({navigation, route}) => {
   const reload = () => {
     getUserInfoApi();
   };
-  const {handleScroll, onRefresh, refreshing, setRefreshing} = useScrollHanler(
+  const {handleScroll, onRefresh, refreshing} = useScrollHanler(
     reload,
     () => {},
   );
-  const isOwner = React.useMemo(() => userId == userInfo.id, [userInfo]);
+  const isOwner = React.useMemo(() => userLogged.id == userId, [userId]);
   const getUserInfoApi = async () => {
     try {
       console.log(userId);
@@ -36,14 +39,15 @@ const UserScreen = ({navigation, route}) => {
       console.log(data);
       setUserInfo(data.data);
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.log(error);
       AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
   };
   React.useEffect(() => {
     getUserInfoApi();
   }, []);
-  if (!userInfo.id) return <Text>Loading...</Text>;
+  if (!userInfo.id)
+    return <Text style={{flex: 1, alignItems: 'center'}}>Đang tải...</Text>;
   return (
     <ScrollView
       onScroll={handleScroll}
@@ -57,16 +61,16 @@ const UserScreen = ({navigation, route}) => {
             name="arrowleft"
             type="AntDesign"
             size={22}
-            color={Colors.grey}
+            color={Colors.black}
           />
         </TouchableOpacity>
         <Text style={styles.headerText}>{userInfo.username}</Text>
         <TouchableOpacity>
           <VectorIcon
-            name="share"
-            type="FontAwesome5"
+            name="search1"
+            type="AntDesign"
             size={22}
-            color={Colors.grey}
+            color={Colors.black}
           />
         </TouchableOpacity>
       </View>
@@ -95,47 +99,14 @@ const UserScreen = ({navigation, route}) => {
         {Number(userInfo.online) && <View style={styles.isOnline}></View>}
       </View>
       <View style={styles.info}>
-        <Text style={{fontWeight: 'bold', color: 'grey', fontSize: 25}}>
+        <Text style={{fontWeight: 'bold', color: Colors.black, fontSize: 25}}>
           {userInfo.username}
         </Text>
-        <View style={styles.infoButton}>
-          <StyledButton
-            title={'Thêm vào tin'}
-            customStyle={{
-              backgroundColor: Themes.COLORS.dodgerBlue,
-              flex: 2,
-            }}
-            customStyleText={{
-              fontWeight: 'bold',
-            }}
-            icon={{
-              name: 'plus',
-              type: 'Entypo',
-            }}></StyledButton>
-          <StyledButton
-            title={'Chỉnh sửa'}
-            customStyle={{
-              backgroundColor: Themes.COLORS.logan,
-              flex: 1.5,
-            }}
-            customStyleText={{
-              fontWeight: 'bold',
-            }}
-            icon={{
-              name: 'mode-edit',
-              type: 'MaterialIcons',
-            }}></StyledButton>
-          <StyledButton
-            customStyle={{
-              backgroundColor: Themes.COLORS.logan,
-              flex: 0.5,
-              gap: 0,
-            }}
-            icon={{
-              name: 'dots-three-horizontal',
-              type: 'Entypo',
-            }}></StyledButton>
-        </View>
+        {isOwner ? (
+          <ActionsOwner userId={userId} />
+        ) : (
+          <ActionsOtherUser userId={userId} />
+        )}
       </View>
     </ScrollView>
   );
@@ -171,6 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     alignItems: 'center',
+    color: Colors.black,
   },
   avaContainer: {
     flexDirection: 'column',
@@ -185,8 +157,9 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     zIndex: 1,
     top: 80,
+    left: 10,
     borderColor: 'white',
-    borderWidth: 10,
+    borderWidth: 4,
     backgroundColor: Colors.white,
   },
   background: {
