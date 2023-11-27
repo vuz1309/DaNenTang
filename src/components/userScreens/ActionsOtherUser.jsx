@@ -6,11 +6,15 @@ import {Themes} from '../../assets/themes';
 const mainBtnConfig = {
   add: {
     text: 'Thêm bạn bè',
-    icon: 'user - plus',
+    icon: 'user-plus',
   },
   cancel: {
     text: 'Hủy lời mời',
     icon: 'user-minus',
+  },
+  friend: {
+    text: 'Bạn bè',
+    icon: 'user-check',
   },
 };
 const ActionsOtherUser = ({userId}) => {
@@ -36,7 +40,7 @@ const ActionsOtherUser = ({userId}) => {
         }}
         icon={{
           name: 'user-plus',
-          type: 'FontAwesome5',
+          type: 'Feather',
           color: Colors.black,
           size: 16,
         }}
