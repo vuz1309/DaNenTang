@@ -17,78 +17,28 @@ import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import {logger} from '../utils/helper';
 import {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import FriendStoryImg1 from '../assets/images/img2.jpeg';
-import FriendStoryImg2 from '../assets/images/img3.jpeg';
-import FriendStoryImg3 from '../assets/images/img4.jpeg';
-import FriendStoryImg4 from '../assets/images/img5.jpeg';
-import FriendStoryImg5 from '../assets/images/img6.jpeg';
-import FriendStoryImg6 from '../assets/images/img7.jpeg';
-import FriendStoryImg7 from '../assets/images/img8.jpeg';
 import {getSavedSearchRequest, searchRequest} from '../api/modules/search';
 import useSearch from '../hooks/useSearch';
-import {StyledTouchable} from './base';
+import {SingleSavedItem} from './search/SingleSavedItem';
 
 const Item = ({listItem}) => {
   if (listItem.length == 0) {
     return;
   }
-  const onPress = item => {
-    logger('pressed on: ', false, item.name);
-    //TODO: DATA LOGIC HERE
-  };
   return (
     <View>
       {listItem.map(item => (
         <View key={item.id} style={styles.postHeaderContainer}>
           <View style={styles.postTopSec}>
-          <TouchableOpacity style={styles.row} onPress={() => logger('pressed on: ', true, item.keyword)}>
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => logger('pressed on: ', true, item.keyword)}>
               <Image
                 source={{uri: item.author.avatar}}
                 style={styles.userProfile}
               />
               <View style={styles.userSection}>
                 <Text style={[styles.title]}>{item.author.name}</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.row}>
-              <VectorIcon
-                name="dots-three-horizontal"
-                type="Entypo"
-                size={25}
-                color={Colors.headerIconGrey}
-                style={styles.headerIcons}
-              />
-            </View>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-};
-
-const SavedItem = ({listItem}) => {
-  if (listItem.length == 0) {
-    return;
-  }
-  const onPress = item => {
-    logger('pressed on: ', false, item.keyword);
-    //TODO: DATA LOGIC HERE
-  };
-  return (
-    <View>
-      {listItem.map(item => (
-        <View key={item.id} style={styles.postHeaderContainer}>
-          <View style={styles.postTopSec}>
-            <TouchableOpacity style={styles.row} onPress={() => logger('pressed on: ', true, item.keyword)}>
-              <Image
-                source={{
-                  uri: 'https://it4788.catan.io.vn/files/image-1700951038448-634881859.png',
-                }}
-                style={styles.userProfile}
-              />
-              <View style={styles.userSection}>
-                  <Text style={[styles.title]}>{item.keyword}</Text>
               </View>
             </TouchableOpacity>
             <View style={styles.row}>
@@ -134,7 +84,7 @@ const Header = () => {
 
     const fetchSavedSearchData = async () => {
       try {
-        const response = await getSavedSearchRequest({index: 0, count: 5});
+        const response = await getSavedSearchRequest({index: 0, count: 20});
         setSavedData(response.data.data);
       } catch (err) {
         logger('err api: ', true, err);
@@ -209,7 +159,7 @@ const Header = () => {
 
             {text === '' ? (
               <View>
-                <View style={styles.rowBetween}>
+                <View style={[styles.rowBetween, {alignItems: 'center'}]}>
                   <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
                   <TouchableOpacity>
                     <Text style={styles.biggerText}>CHỈNH SỬA</Text>
@@ -223,7 +173,16 @@ const Header = () => {
                   }}
                 />
                 <ScrollView>
-                  <SavedItem listItem={savedData} />
+                  {/* <SavedItem listItem={savedData} /> */}
+                  <View style={{paddingBottom: 12}}>
+                    {savedData.map(item => (
+                      <SingleSavedItem
+                        id={item.id}
+                        key={item.id}
+                        keyword={item.keyword}
+                      />
+                    ))}
+                  </View>
                 </ScrollView>
               </View>
             ) : (
@@ -269,7 +228,7 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     color: 'black',
   },
   item: {
@@ -320,7 +279,7 @@ const styles = StyleSheet.create({
   biggerText: {
     marginTop: '3%',
     marginLeft: '3%',
-    fontSize: 22,
+    fontSize: 18,
     color: 'black',
     fontWeight: '600',
   },
