@@ -6,7 +6,7 @@ import {Themes} from '../../assets/themes';
 const mainBtnConfig = {
   add: {
     text: 'Thêm bạn bè',
-    icon: user - plus,
+    icon: 'user - plus',
   },
   cancel: {
     text: 'Hủy lời mời',
