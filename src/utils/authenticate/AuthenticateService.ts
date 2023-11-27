@@ -59,21 +59,18 @@ export const useLogin = (): LoginRequest => {
       setLoading(false);
     }
   };
-  const handleLoginSuccess = (response: any) => {
+  const handleLoginSuccess = ({data}: {data: any}) => {
     logger('Login Success!');
-    logger(response?.data?.data);
+    logger(data?.data);
 
     store.dispatch(
       userInfoActions.loginSuccess({
-        token: response?.data?.data?.token,
-        user: response?.data?.data,
+        token: data?.data?.token,
+        user: data?.data,
       }),
     );
 
-    AuthenticateService.handlerLogin(
-      response?.data?.data?.token,
-      response?.data?.data?.id,
-    );
+    AuthenticateService.handlerLogin(data?.data?.token, data?.data?.id);
   };
   return {
     loading,

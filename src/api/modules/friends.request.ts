@@ -11,7 +11,7 @@ export const getAllFriends = (
     user_id: '114',
   },
 ) => {
-  return requestJSONWithAuth('get_user_friends', params);
+  return requestJSONWithAuth('/get_user_friends', params);
 };
 
 export const getRequestFriends = (
@@ -23,20 +23,20 @@ export const getRequestFriends = (
     count: '20',
   },
 ) => {
-  return requestJSONWithAuth('get_requested_friends', params);
+  return requestJSONWithAuth('/get_requested_friends', params);
 };
 
 export const setRequestFriend = (params: {user_id: string}) => {
-  return requestJSONWithAuth('set_request_friend', params);
+  return requestJSONWithAuth('/set_request_friend', params);
 };
 
 export const setAcceptFriend = (
   params: {user_id: string; is_accept: string} = {user_id: '0', is_accept: '1'},
 ) => {
-  return requestJSONWithAuth('set_accept_friend', params);
+  return requestJSONWithAuth('/set_accept_friend', params);
 };
 export const getSuggestionFriend = (
   params: {index: string; count: string} = {index: '0', count: '5'},
 ) => {
-  return requestJSONWithAuth('get_suggested_friends', params);
+  return requestJSONWithAuth('/get_suggested_friends', params);
 };

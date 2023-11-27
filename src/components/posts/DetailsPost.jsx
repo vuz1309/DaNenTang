@@ -11,7 +11,7 @@ import React, {useState} from 'react';
 import {Colors} from '../../utils/Colors';
 
 import PostFooter from './PostFooter';
-// import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 import VectorIcon from '../../utils/VectorIcon';
 import PostDescription from './PostDescription';
 
@@ -44,7 +44,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
             />
           </TouchableOpacity>
         </View>
-        {/* <Carousel
+        <Carousel
           data={item.image}
           renderItem={({item}) => {
             return (
@@ -59,7 +59,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           sliderWidth={width}
           itemWidth={width}
           firstItem={firstItem}
-        /> */}
+        />
         {opacity == 1 && (
           <View style={styles.postInfo}>
             <View style={{paddingHorizontal: 14}}>

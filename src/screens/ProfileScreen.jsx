@@ -10,6 +10,7 @@ import {store} from '../state-management/redux/store';
 import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
+import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 const ProfileScreen = () => {
   const {userInfo} = store.getState();
   const {requestLogout} = useLogout(auth(), fireStore());
@@ -18,6 +19,19 @@ const ProfileScreen = () => {
       storeStringAsyncData(AsyncStorageKey.TOKEN, '');
 
       store.dispatch(userInfoActions.logOut());
+      store.dispatch(postInfoActions.setPosts([]));
+      store.dispatch(postInfoActions.setLastId('1'));
+      store.dispatch(
+        postInfoActions.setParams({
+          in_campaign: '1',
+          campaign_id: '1',
+          latitude: '1.0',
+          longitude: '1.0',
+          last_id: '1',
+          index: '0',
+          count: '20',
+        }),
+      );
       await requestLogout();
     } catch (error) {
       console.log(error);

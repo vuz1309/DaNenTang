@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import {store} from '../state-management/redux/store';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
-import {BUG_SERVER, INVALID_TOKEN} from '../utils/constants';
+import {BUG_SERVER, INVALID_TOKEN, USER_INVALID} from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
 
 /**
@@ -21,6 +21,11 @@ export const createApiInstance = (
 
   api.interceptors.request.use(
     config => {
+      if (auth) {
+        config.headers.Authorization = `Bearer ${
+          store.getState().userInfo.token
+        }`;
+      }
       return config;
     },
     error => {
@@ -53,6 +58,7 @@ export const createApiInstance = (
         store.dispatch(userInfoActions.logOut());
       } else if (response.data.code == BUG_SERVER.toString()) {
         AlertMessage('Server lỗi!');
+      } else if (response.data.code == USER_INVALID.toString()) {
       }
       return Promise.reject({
         code: response.data.code,
