@@ -24,6 +24,7 @@ const authRequestJSON = createApiInstance(
       Accept: '*/*',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${store.getState().userInfo.token}`,
+      // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgyLCJkZXZpY2VfaWQiOiJnb2xkZmlzaF94ODZfNjQiLCJpYXQiOjE3MDEwNzc4NTJ9.GPDUNWffHIQoUTKyhupYR2sChfcQ1ZLmj-CSdVX04NY`,
     },
   },
   {auth: true},

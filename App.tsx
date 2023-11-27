@@ -41,6 +41,7 @@ const AppChild = () => {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {userLogged ? (
           <>
+            {/* <Stack.Screen name= "Header" component={Header} /> */}
             <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
             <Stack.Screen
               name={APP_ROUTE.FRIEND_ALL}
@@ -93,6 +94,7 @@ import {RequestUserPermission} from './src/utils/notification/notificationHelper
 import AllFriendsScreen from './src/screens/friends/AllFriends';
 import SuggestionScreen from './src/screens/friends/SuggestionScreen';
 import ReportScreen from './src/screens/reports/ReportScreen';
+import Header from './src/components/Header';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(
