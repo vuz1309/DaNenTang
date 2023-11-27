@@ -47,6 +47,7 @@ const Light = {
     secondary: '#EFEFEF',
     textPrimary: '#000000',
     textSecondary: '#24264E',
+    lightGreyBg: '#F0F0F0',
   },
   fonts: {
     medium: 'Lexend-Medium',
@@ -62,6 +63,7 @@ const Dark = {
     secondary: '#607d8b',
     textPrimary: '#607d8b',
     textSecondary: '#607d8b',
+    lightGreyBg: '#F0F0F0',
   },
   fonts: {
     medium: 'Lexend-Medium',

@@ -12,7 +12,6 @@ export const authAndFileRequest = createApiInstance({
   headers: {
     Accept: '*/*',
     'Content-Type': 'multipart/form-data',
-    Authorization: `Bearer ${store.getState().userInfo.token}`,
   },
 });
 import {store} from '../state-management/redux/store';
@@ -23,7 +22,6 @@ const authRequestJSON = createApiInstance(
     headers: {
       Accept: '*/*',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${store.getState().userInfo.token}`,
     },
   },
   {auth: true},

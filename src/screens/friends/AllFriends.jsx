@@ -17,8 +17,11 @@ import VectorIcon from '../../utils/VectorIcon';
 import AlertMessage from '../../components/base/AlertMessage';
 import {getAllFriends} from '../../api/modules/friends.request';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 
 const AllFriendsScreen = ({navigation}) => {
+  const {navigate} = useNavigation();
   const userLogged = useSelector(
     /**
      *
@@ -126,7 +129,11 @@ const AllFriendsScreen = ({navigation}) => {
             <View key={fr.id} style={{paddingBottom: 12}}>
               <TouchableHighlight
                 underlayColor={Colors.lightgrey}
-                onPress={() => console.log('press')}>
+                onPress={() =>
+                  navigate(APP_ROUTE.USER_SCREEN, {
+                    userId: fr.id,
+                  })
+                }>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -203,6 +210,7 @@ const AllFriendsScreen = ({navigation}) => {
             </Text>
           </View>
         )}
+        {isLoadMore && <Text style={{textAlign: 'center'}}>Đang tải...</Text>}
       </ScrollView>
     </View>
   );

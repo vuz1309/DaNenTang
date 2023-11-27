@@ -45,8 +45,8 @@ const PostHeader = ({data}) => {
     const postId = data.id;
     toggleModalDelPost();
     try {
-      const data = deletePostRequest({id: postId});
-      console.log('REMOVE POST RESPONSE:', data);
+      const data = await deletePostRequest({id: postId});
+
       store.dispatch(
         postInfoActions.removePost({
           postId,
@@ -117,14 +117,13 @@ const PostHeader = ({data}) => {
             </View>
           </View>
         </View>
-        <View style={{...styles.row}}>
+        <View style={{...styles.row, gap: 8}}>
           <StyledTouchable onPress={toggleModalReport}>
             <VectorIcon
               name="dots-three-horizontal"
               type="Entypo"
               size={25}
               color={Colors.headerIconGrey}
-              style={styles.headerIcons}
             />
           </StyledTouchable>
           {Number(data.can_edit) > 0 && (
@@ -263,6 +262,7 @@ const styles = StyleSheet.create({
   },
   userSection: {
     marginLeft: 12,
+    flex: 1,
   },
   days: {
     fontSize: 14,
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   headerIcons: {
-    marginRight: 20,
+    marginRight: 10,
   },
   caption: {
     color: Colors.grey,

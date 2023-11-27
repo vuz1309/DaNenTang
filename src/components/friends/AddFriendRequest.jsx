@@ -2,8 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import {Themes} from '../../assets/themes';
-import Post4 from '../../assets/images/post4.jpeg';
+
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 const nullAvatar = require('../../assets/images/avatar_null.jpg');
 const AddFriendRequest = ({
   mainText = 'Chấp nhận',
@@ -16,7 +18,7 @@ const AddFriendRequest = ({
   textOnReject = '',
 }) => {
   const [text, setText] = React.useState('');
-
+  const {navigate} = useNavigation();
   if (!data)
     return (
       <View>
@@ -31,7 +33,11 @@ const AddFriendRequest = ({
   return (
     <TouchableHighlight
       underlayColor={Colors.lightgrey}
-      onPress={() => console.log('clickFriendCard')}>
+      onPress={() =>
+        navigate(APP_ROUTE.USER_SCREEN, {
+          userId: data.id,
+        })
+      }>
       <View
         style={{
           ...styles.requestItemWrapper,
@@ -78,7 +84,9 @@ const AddFriendRequest = ({
               ...styles.requestItemWrapper,
               marginTop: 8,
             }}>
-            {!text ? (
+            {text ? (
+              <Text style={{color: Colors.textGrey}}>{text}</Text>
+            ) : (
               <>
                 <TouchableHighlight
                   underlayColor={Colors.primaryColor}
@@ -105,8 +113,6 @@ const AddFriendRequest = ({
                   <Text style={styles.removeText}>{subText}</Text>
                 </TouchableHighlight>
               </>
-            ) : (
-              <Text style={{color: Colors.textGrey}}>{text}</Text>
             )}
           </View>
         </View>
