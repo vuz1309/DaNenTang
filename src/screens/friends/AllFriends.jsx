@@ -134,7 +134,7 @@ const AllFriendsScreen = ({route}) => {
           </TouchableHighlight> */}
         </View>
         {allFriends.length > 0 ? (
-          allFriends.map(fr => <FriendCard fr={fr} />)
+          allFriends.map(fr => <FriendCard key={fr.id} fr={fr} />)
         ) : (
           <View style={{flex: 1, justifyContent: 'center'}}>
             <Text style={{fontSize: 16, paddingHorizontal: 16}}>
