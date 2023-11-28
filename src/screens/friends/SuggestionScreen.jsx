@@ -139,7 +139,7 @@ const SuggestionScreen = ({navigation}) => {
             />
           ))}
         </View>
-        {isLoadMore && <Loading />}
+        {isLoadMore && <Loading color={Colors.primaryColor} />}
       </ScrollView>
     </View>
   );

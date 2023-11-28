@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useMemo} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {APP_ROUTE} from '../../navigation/config/routes';
 const {Colors} = require('../../utils/Colors');
 const MAX_CAPTION_LENGTH = 50;
@@ -32,22 +32,26 @@ const PostDescription = ({described, color = Colors.textColor}) => {
       if (match.startsWith('#')) {
         // Handle hashtag
         elements.push(
-          <Text
+          <TouchableHighlight
             key={`hashtag_${index}`}
-            style={{fontSize: 15, color: Colors.primaryColor}}
+            underlayColor={Colors.lightgrey}
             onPress={() => handleHashtagPress(match)}>
-            {match}
-          </Text>,
+            <Text style={{fontSize: 15, color: Colors.primaryColor}}>
+              {match}
+            </Text>
+          </TouchableHighlight>,
         );
       } else {
         // Handle regular link
         elements.push(
-          <Text
+          <TouchableHighlight
             key={`link_${index}`}
-            style={{fontSize: 15, color: Colors.primaryColor}}
-            onPress={() => handleLinkPress(match)}>
-            {match}
-          </Text>,
+            onPress={() => handleLinkPress(match)}
+            underlayColor={Colors.lightgrey}>
+            <Text style={{fontSize: 15, color: Colors.primaryColor}}>
+              {match}
+            </Text>
+          </TouchableHighlight>,
         );
       }
 
@@ -57,7 +61,7 @@ const PostDescription = ({described, color = Colors.textColor}) => {
     if (lastIndex < text.length) {
       const remainingText = text.substring(lastIndex);
       elements.push(
-        <Text style={{fontSize: 15, color}} key="remaining">
+        <Text style={{fontSize: 15, color}} key={`remaining_${lastIndex}`}>
           {remainingText}
         </Text>,
       );

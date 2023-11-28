@@ -60,18 +60,18 @@ const FriendScreen = () => {
       const {data} = await setAcceptFriend({user_id, is_accept});
       console.log(data);
     } catch (error) {
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
+      console.log(error);
     }
   };
 
   const getRequestedFriendsApi = async () => {
     try {
       const {data} = await getRequestFriends(params);
-      console.log('requested friends:', data);
+
       setRequestFriends(data.data.requests);
       setTotal(data.data.total);
     } catch (error) {
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
+      console.log(error);
     }
   };
   React.useEffect(() => {

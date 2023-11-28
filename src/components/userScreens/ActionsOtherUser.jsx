@@ -231,7 +231,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
               <FriendActions
                 action={() => {
                   setModalMode(0);
-                  blockUser();
+                  // blockUser();
                 }}
                 text={`Chặn ${user.username}`}
                 icon="user-alt-slash"
@@ -242,6 +242,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
                   setAcceptFriend('0');
                 }}
                 text={`Hủy kết bạn`}
+                color={Themes.COLORS.red}
                 icon="user-times"
               />
             </View>

@@ -20,11 +20,11 @@ import {useScrollHanler} from '../../hooks/useScrollHandler';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
 import Loading from '../../components/base/Loading';
+import FriendCard from '../../components/friends/FriendCard';
 
-const AllFriendsScreen = ({navigation, route}) => {
-  const {navigate} = useNavigation();
+const AllFriendsScreen = ({route}) => {
+  const {goBack} = useNavigation();
   const {user} = route.params;
-
   const userLogged = useSelector(
     /**
      *
@@ -76,16 +76,16 @@ const AllFriendsScreen = ({navigation, route}) => {
   };
   React.useEffect(() => {
     getAllFriendsRequest();
-  }, [params]);
+  }, [params, user]);
 
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
       <View style={styles.header}>
-        <View style={{gap: 12, flexDirection: 'row'}}>
+        <View style={{gap: 12, flexDirection: 'row', alignItems: 'center'}}>
           <TouchableHighlight
             underlayColor={Colors.lightgrey}
-            style={{borderRadius: 48}}
-            onPress={() => navigation.goBack()}>
+            style={{borderRadius: 48, padding: 8}}
+            onPress={() => goBack()}>
             <VectorIcon
               name="arrowleft"
               type="AntDesign"
@@ -97,7 +97,7 @@ const AllFriendsScreen = ({navigation, route}) => {
             {isOwner ? 'Bạn bè' : user.username}
           </Text>
         </View>
-        <TouchableHighlight>
+        <TouchableHighlight style={{borderRadius: 48, padding: 8}}>
           <VectorIcon
             name="search1"
             type="AntDesign"
@@ -134,84 +134,7 @@ const AllFriendsScreen = ({navigation, route}) => {
           </TouchableHighlight> */}
         </View>
         {allFriends.length > 0 ? (
-          allFriends.map(fr => (
-            <View key={fr.id} style={{paddingBottom: 12}}>
-              <TouchableHighlight
-                underlayColor={Colors.lightgrey}
-                onPress={() =>
-                  navigate(APP_ROUTE.USER_SCREEN, {
-                    userId: fr.id,
-                  })
-                }>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    padding: 12,
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      flexDirection: 'row',
-                      gap: 8,
-                    }}>
-                    <View
-                      style={{
-                        height: 50,
-                        width: 50,
-                        borderColor: Colors.borderGrey,
-                        borderWidth: 1,
-                        borderStyle: 'solid',
-                        borderRadius: 25,
-                      }}>
-                      {fr.avatar ? (
-                        <Image
-                          style={{
-                            height: '100%',
-                            width: '100%',
-                            borderRadius: 25,
-                          }}
-                          source={{uri: fr.avatar}}
-                          defaultSource={require('../../assets/images/avatar_null.jpg')}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            height: '100%',
-                            width: '100%',
-                            borderRadius: 25,
-                          }}
-                          source={require('../../assets/images/avatar_null.jpg')}
-                        />
-                      )}
-                    </View>
-                    <View>
-                      <Text
-                        style={{
-                          fontWeight: '700',
-                          fontSize: 20,
-                          color: Colors.black,
-                        }}>
-                        {fr.username}
-                      </Text>
-                      <Text style={{color: Colors.grey}}>
-                        {fr.same_friends} bạn chung
-                      </Text>
-                    </View>
-                  </View>
-                  <Pressable onPress={() => console.log('pres')}>
-                    <VectorIcon
-                      name="more-horizontal"
-                      type="Feather"
-                      size={24}
-                      color={Colors.grey}
-                    />
-                  </Pressable>
-                </View>
-              </TouchableHighlight>
-            </View>
-          ))
+          allFriends.map(fr => <FriendCard fr={fr} />)
         ) : (
           <View style={{flex: 1, justifyContent: 'center'}}>
             <Text style={{fontSize: 16, paddingHorizontal: 16}}>
@@ -229,7 +152,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 12,
+    padding: 4,
     borderBottomColor: Colors.borderGrey,
     borderBottomWidth: 1,
     borderStyle: 'solid',

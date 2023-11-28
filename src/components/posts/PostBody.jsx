@@ -1,10 +1,18 @@
-import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Pressable,
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState} from 'react';
 import {Colors} from '../../utils/Colors';
 import PostHeader from './PostHeader';
 import PostFooter from './PostFooter';
 import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
+import PostVideo from './PostVideo';
 
 /**
  *
@@ -13,12 +21,13 @@ import PostListImage from './PostListImage';
  */
 const PostBody = ({item}) => {
   const [isModalVisible, setModalVisible] = useState(false);
+  console.log(item);
   return (
     <>
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>
         <PostHeader data={item} />
 
-        {item.image.length > 0 && (
+        {!item.video && item.image.length > 0 && (
           <View style={styles.postImg}>
             <View style={{flex: 3, flexDirection: 'row'}}>
               {item.image.slice(0, 2).map((img, index) => (
@@ -71,6 +80,7 @@ const PostBody = ({item}) => {
             )}
           </View>
         )}
+        {item.video && <PostVideo videoUrl={item.video.url} />}
         <PostFooter data={item} />
       </View>
 

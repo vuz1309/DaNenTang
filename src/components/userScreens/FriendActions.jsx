@@ -3,7 +3,7 @@ import {Themes} from '../../assets/themes';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
 
-export const FriendActions = ({text, icon, action}) => {
+export const FriendActions = ({text, icon, action, color = Colors.black}) => {
   return (
     <TouchableHighlight
       underlayColor={Themes.COLORS.lightGreyBg}
@@ -31,13 +31,13 @@ export const FriendActions = ({text, icon, action}) => {
               name={icon}
               type="FontAwesome5"
               size={24}
-              color={Colors.black}
+              color={color}
             />
           </View>
         </View>
         <Text
           style={{
-            color: Colors.black,
+            color: color,
             fontWeight: '700',
             fontSize: 20,
           }}>
