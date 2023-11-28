@@ -22,17 +22,13 @@ import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
 const HomeScreen = () => {
-  const [isLoading, setLoading] = React.useState(false);
   const userLogged = useSelector(state => state.userInfo.user);
 
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
 
   const getListPostsApi = async () => {
-    if (refreshing || isLoading) return;
     try {
-      setLoading(true);
-
       const {data} = await getListPost({...params, user_id: userLogged.id});
 
       if (JSON.parse(data.data.last_id)) {
@@ -48,13 +44,13 @@ const HomeScreen = () => {
       console.log('load data error', error);
     } finally {
       setRefreshing(false);
-      setLoading(false);
+      setIsLoadMore(false);
     }
   };
 
   const reload = () => {
     if (refreshing) return;
-
+    setRefreshing(true);
     store.dispatch(
       postInfoActions.setParams({
         user_id: '',
@@ -72,7 +68,8 @@ const HomeScreen = () => {
   };
 
   const loadMore = () => {
-    if (isLoading) return;
+    if (isLoadMore) return;
+    setIsLoadMore(true);
     store.dispatch(
       postInfoActions.setParams({
         ...params,
@@ -81,10 +78,8 @@ const HomeScreen = () => {
       }),
     );
   };
-  const {handleScroll, refreshing, setRefreshing} = useScrollHanler(
-    reload,
-    loadMore,
-  );
+  const {handleScroll, isLoadMore, setIsLoadMore, refreshing, setRefreshing} =
+    useScrollHanler(reload, loadMore);
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);
@@ -105,7 +100,7 @@ const HomeScreen = () => {
       <SubHeader />
       <Stories />
       <Post listPost={listPosts} />
-      {isLoading && <Loading />}
+      {isLoadMore && <Loading />}
       <View
         style={{
           height: 10,

@@ -73,7 +73,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   };
 
   return (
-    <View style={styles.postFotterContainer}>
+    <View style={{marginTop: 8}}>
       <View style={styles.footerReactionSec}>
         {Number(data.feel) > 0 && (
           <View style={{...styles.row, backgroundColor: 'transparent'}}>
