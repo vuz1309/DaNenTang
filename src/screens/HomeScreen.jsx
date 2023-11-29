@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, RefreshControl, ScrollView} from 'react-native';
+import {StyleSheet, View, RefreshControl, ScrollView} from 'react-native';
 import React from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
@@ -9,15 +9,7 @@ import Post from '../components/posts/Post';
 
 import {getListPost} from '../api/modules/post';
 import {useSelector} from 'react-redux';
-import {
-  AsyncStorageKey,
-  getAsyncData,
-  storeAsyncData,
-  storeStringAsyncData,
-} from '../utils/authenticate/LocalStorage';
-import AlertMessage from '../components/base/AlertMessage';
 import {useScrollHanler} from '../hooks/useScrollHandler';
-import {INVALID_TOKEN} from '../utils/constants';
 import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
