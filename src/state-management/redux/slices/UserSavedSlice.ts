@@ -53,7 +53,7 @@ const userSavedInfo = createSlice({
   reducers: {addUserSaved, removeUserSaved},
 });
 
-const persistConfig = generatePersistConfig('userSavedInfo', []);
+const persistConfig = generatePersistConfig('userSavedInfo', ['userSaved']);
 
 export const userSavedInfoActions = userSavedInfo.actions;
 

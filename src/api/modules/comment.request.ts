@@ -37,3 +37,17 @@ export const getMarkComments = (body: {
 }) => {
   return requestJSONWithAuth('/get_mark_comment', body);
 };
+/**
+ * 
+ * @param body EX: "id": "1",
+  "index": "0",
+  "count": "10"
+ * @returns 
+ */
+export const getListFeels = (body: {
+  id: string;
+  index: string;
+  count: string;
+}) => {
+  return requestJSONWithAuth('/get-list-feels', body);
+};
