@@ -5,6 +5,7 @@ import {getDeviceId} from 'react-native-device-info';
 import AlertMessage from '../../components/base/AlertMessage';
 import {store} from '../../state-management/redux/store';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
+import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
 import TokenProvider from './TokenProvider';
 import {logger} from '../helper';
 import {storeStringAsyncData} from './LocalStorage';
@@ -45,14 +46,16 @@ export const useLogin = (): LoginRequest => {
 
       const response: any = await loginRequest(loginParams);
 
-      /**
-       * Author: Hieutm
-       * Keep Login : Default: True
-       */
-      storeStringAsyncData('email', options.username);
-      storeStringAsyncData('password', options.password);
-
       handleLoginSuccess(response);
+      store.dispatch(
+        userSavedInfoActions.addUserSaved({
+          email: loginParams.email,
+          password: loginParams.password,
+          username: response.data?.data?.username,
+          avatar: response.data?.data?.avatar,
+          id: response.data?.data?.id,
+        }),
+      );
     } catch (e) {
       AlertMessage(String(e));
     } finally {

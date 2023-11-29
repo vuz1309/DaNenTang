@@ -13,6 +13,8 @@ import {useScrollHanler} from '../hooks/useScrollHandler';
 import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
+import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
+import {TabName} from '../data/TabData';
 const HomeScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
 
@@ -27,6 +29,12 @@ const HomeScreen = () => {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
       }
 
+      store.dispatch(
+        notificationInfoActions.setNotification({
+          name: TabName.HOME,
+          number: Number(data.data.new_items),
+        }),
+      );
       if (params.index === '0') {
         store.dispatch(postInfoActions.setPosts(data.data.post));
       } else if (data.data.post.length > 0) {
@@ -40,7 +48,7 @@ const HomeScreen = () => {
     }
   };
 
-  const reload = () => {
+  const reload = async () => {
     if (refreshing) return;
     setRefreshing(true);
     store.dispatch(
@@ -59,7 +67,7 @@ const HomeScreen = () => {
     store.dispatch(postInfoActions.setLastId('1'));
   };
 
-  const loadMore = () => {
+  const loadMore = async () => {
     if (isLoadMore) return;
     setIsLoadMore(true);
     store.dispatch(

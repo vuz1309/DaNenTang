@@ -7,6 +7,9 @@ import {useSelector} from 'react-redux';
 import PostVideo from '../components/posts/PostVideo';
 import PostHeader from '../components/posts/PostHeader';
 import PostFooter from '../components/posts/PostFooter';
+import {store} from '../state-management/redux/store';
+import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
+import {TabName} from '../data/TabData';
 
 const WatchScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
@@ -50,7 +53,12 @@ const WatchScreen = () => {
         user_id: userLogged.id,
         last_id: lastId,
       });
-
+      store.dispatch(
+        notificationInfoActions.setNotification({
+          name: TabName.WATCH,
+          number: Number(data.data.new_items),
+        }),
+      );
       if (JSON.parse(data.data.last_id)) {
         console.log('undif');
         setLastId(data.data.last_id);
@@ -62,7 +70,6 @@ const WatchScreen = () => {
         );
         setPosts(prev => [...prev, ...newItems]);
       }
-      console.log(data.data.post);
     } catch (error) {
       console.log(error);
     } finally {

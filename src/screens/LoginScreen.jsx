@@ -11,35 +11,34 @@ import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
 import {useLogin} from '../utils/authenticate/AuthenticateService';
-// import {useLogin} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 import {RequestUserPermission} from '../utils/notification/notificationHelper';
+import Loading from '../components/base/Loading';
+import {validateEmail, validatePassword} from '../utils/validater';
+import LoadingOverlay from '../components/base/LoadingOverlay';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const goToRegisterScreen = () => {
     navigation.navigate(AUTHENTICATE_ROUTE.REGISTER);
-    // navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
 
-  const {requestLogin, loading, error} = useLogin();
+  const {requestLogin, loading} = useLogin();
 
   const onLogin = async () => {
-    // if (!validateEmail(email)) {
-    //   AlertMessage("Email không hợp lệ!");
-    //   return;
-    // }
-    // if (!validatePassword(password)) {
-    //   AlertMessage("Mật khẩu không chính xác!");
-    //   return;
-    // }
+    if (!validateEmail(email) || !validatePassword(password)) {
+      AlertMessage('Tài khoản hoặc mật khẩu không chính xác!');
+      return;
+    }
+
     await RequestUserPermission();
     requestLogin({email, password});
   };
 
   return (
     <View style={styles.container}>
+      <LoadingOverlay isLoading={loading} />
       <View style={styles.subContainer}>
         <Image source={Logo} style={styles.logoStyle} />
         <TextInput

@@ -55,12 +55,12 @@ const AppChild = () => {
           </>
         ) : (
           <>
-            {userSaved.length > 0 && (
+            {
               <Stack.Screen
                 name={AUTHENTICATE_ROUTE.LOGINBYSAVED}
                 component={LoginBySaved}
               />
-            )}
+            }
             <Stack.Screen
               name={AUTHENTICATE_ROUTE.LOGIN}
               component={LoginScreen}

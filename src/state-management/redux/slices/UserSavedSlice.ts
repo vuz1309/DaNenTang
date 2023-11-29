@@ -40,7 +40,8 @@ const addUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
   }
 };
 const removeUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
-  const index = state.userSaved.findIndex(user => user.id === payload.id);
+  console.log('paylaod remove:', payload);
+  const index = state.userSaved.findIndex(user => user.id === payload);
   if (index >= 0) {
     state.userSaved.splice(index, 1);
   }
@@ -54,7 +55,7 @@ const userSavedInfo = createSlice({
 
 const persistConfig = generatePersistConfig('userSavedInfo', []);
 
-export const userInfoActions = userSavedInfo.actions;
+export const userSavedInfoActions = userSavedInfo.actions;
 
 export default persistReducer<IUserSavedState>(
   persistConfig,
