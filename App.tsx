@@ -29,9 +29,6 @@ const AppChild = () => {
   const userLogged = useSelector(
     (state: FacebookRootState) => state.userInfo.user,
   );
-  const userSaved = useSelector(
-    (state: FacebookRootState) => state.userSavedInfo.userSaved,
-  );
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
@@ -55,12 +52,12 @@ const AppChild = () => {
           </>
         ) : (
           <>
-            {
-              <Stack.Screen
-                name={AUTHENTICATE_ROUTE.LOGINBYSAVED}
-                component={LoginBySaved}
-              />
-            }
+            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen
+              name={AUTHENTICATE_ROUTE.LOGINBYSAVED}
+              component={LoginBySaved}
+            />
+
             <Stack.Screen
               name={AUTHENTICATE_ROUTE.LOGIN}
               component={LoginScreen}
@@ -99,6 +96,7 @@ import SuggestionScreen from './src/screens/friends/SuggestionScreen';
 import ReportScreen from './src/screens/reports/ReportScreen';
 import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
+import SplashScreen from './src/screens/SplashScreen';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(
