@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import {Colors} from '../../utils/Colors';
 import {Themes} from '../../assets/themes';
-import {FacebookRootState} from '../../state-management/redux/store';
+import {FacebookRootState, store} from '../../state-management/redux/store';
 
 import AddFriendRequest from '../../components/friends/AddFriendRequest';
 import {useSelector} from 'react-redux';
@@ -23,6 +23,8 @@ import {
 } from '../../api/modules/friends.request';
 import AlertMessage from '../../components/base/AlertMessage';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
+import {notificationInfoActions} from '../../state-management/redux/slices/NotificationsSlice';
+import {TabName} from '../../data/TabData';
 
 const FriendScreen = () => {
   const navigation = useNavigation();
@@ -42,17 +44,23 @@ const FriendScreen = () => {
     index: '0',
     count: '20',
   });
-  const reload = () => {
+  const reload = async () => {
+    if (refreshing) return;
     setParams({
       index: '0',
       count: '20',
     });
-
-    getRequestedFriendsApi();
   };
-  const {handleScroll, onRefresh, refreshing} = useScrollHanler(
+  const loadMore = async () => {
+    if (isLoadMore) return;
+    setParams({
+      index: (Number(params.index) + 1).toString(),
+      count: '20',
+    });
+  };
+  const {handleScroll, onRefresh, refreshing, isLoadMore} = useScrollHanler(
     reload,
-    () => {},
+    loadMore,
   );
 
   const setAcceptFriendApi = async (user_id, is_accept = '1') => {
@@ -70,13 +78,19 @@ const FriendScreen = () => {
 
       setRequestFriends(data.data.requests);
       setTotal(data.data.total);
+      store.dispatch(
+        notificationInfoActions.setNotification({
+          name: TabName.FRIENDS,
+          number: Number(data.data.total),
+        }),
+      );
     } catch (error) {
       console.log(error);
     }
   };
   React.useEffect(() => {
     getRequestedFriendsApi();
-  }, []);
+  }, [params]);
 
   return (
     <ScrollView

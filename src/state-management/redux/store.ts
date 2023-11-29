@@ -12,12 +12,18 @@ import userInfoReducer, {IUserInfoState} from './slices/UserInfoSlice';
 import postInfoReducer, {IPostsState} from './slices/HomeListPost';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../sagas/RootSaga';
+import UserSavedSlice, {IUserSavedState} from './slices/UserSavedSlice';
+import NotificationsSlice, {
+  INotificationState,
+} from './slices/NotificationsSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const rootReducer = {
   userInfo: userInfoReducer,
   postInfo: postInfoReducer,
+  userSavedInfo: UserSavedSlice,
+  notiInfo: NotificationsSlice,
 };
 
 const store = configureStore({
@@ -37,6 +43,8 @@ const store = configureStore({
 export interface FacebookRootState {
   userInfo: IUserInfoState;
   postInfo: IPostsState;
+  userSavedInfo: IUserSavedState;
+  notiInfo: INotificationState;
 }
 
 sagaMiddleware.run(rootSaga);

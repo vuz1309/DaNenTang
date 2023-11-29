@@ -1,11 +1,5 @@
 import {StatusBar} from 'react-native';
-import React, {
-  useEffect,
-  useState,
-  createContext,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, {useEffect, createContext} from 'react';
 import LoginScreen from './src/screens/LoginScreen';
 import {Colors} from './src/utils/Colors';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -35,6 +29,9 @@ const AppChild = () => {
   const userLogged = useSelector(
     (state: FacebookRootState) => state.userInfo.user,
   );
+  const userSaved = useSelector(
+    (state: FacebookRootState) => state.userSavedInfo.userSaved,
+  );
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
@@ -58,10 +55,17 @@ const AppChild = () => {
           </>
         ) : (
           <>
+            {
+              <Stack.Screen
+                name={AUTHENTICATE_ROUTE.LOGINBYSAVED}
+                component={LoginBySaved}
+              />
+            }
             <Stack.Screen
               name={AUTHENTICATE_ROUTE.LOGIN}
               component={LoginScreen}
             />
+
             <Stack.Screen
               name={AUTHENTICATE_ROUTE.REGISTER}
               component={RegisterScreen}
@@ -90,11 +94,11 @@ const AppChild = () => {
 };
 
 import {PermissionsAndroid} from 'react-native';
-import {RequestUserPermission} from './src/utils/notification/notificationHelper';
 import AllFriendsScreen from './src/screens/friends/AllFriends';
 import SuggestionScreen from './src/screens/friends/SuggestionScreen';
 import ReportScreen from './src/screens/reports/ReportScreen';
 import WebViewScreen from './src/screens/webView/WebViewScreen';
+import LoginBySaved from './src/screens/auths/LoginBySaved';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(
