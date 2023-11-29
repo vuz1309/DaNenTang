@@ -6,6 +6,7 @@ import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {
   BUG_SERVER,
   INVALID_TOKEN,
+  NETWORK_ERROR,
   USER_INVALID,
   USER_NOT_REQUEST_FRIEND,
   errors,
@@ -41,13 +42,15 @@ export const createApiInstance = (
     },
   );
   api.interceptors.response.use(
-    /**
-     * Nếu response nhận về là json về convert về dạng camelCase
-     * @author NTVu - 14/09/2023
-     * @param {import('axios').AxiosResponse} response
-     * @returns {import('axios').AxiosResponse}
-     */
-    response => {
+    (
+      /**
+       * Nếu response nhận về là json về convert về dạng camelCase
+       * @author NTVu - 14/09/2023
+       * @param {import('axios').AxiosResponse} response
+       * @returns {import('axios').AxiosResponse}
+       */
+      response: import('axios').AxiosResponse,
+    ): import('axios').AxiosResponse => {
       return response;
     },
     /**
@@ -58,8 +61,16 @@ export const createApiInstance = (
      */
     error => {
       if (!silent) {
-        console.log(JSON.stringify(error.response));
+        console.log('error api', JSON.stringify(error));
       }
+      if (error.name.includes('Network')) {
+        AlertMessage('Vui lòng kiểm tra lại mạng!');
+        return Promise.reject({
+          message: 'Kết nối mạng không ổn định.',
+          code: NETWORK_ERROR,
+        });
+      }
+
       const {response} = error;
 
       AlertMessage(

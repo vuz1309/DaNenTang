@@ -42,25 +42,26 @@ const WatchScreen = () => {
     campaign_id: '1',
     latitude: '1.0',
     longitude: '1.0',
-    last_id: '6',
     index: '0',
     count: '10',
   });
   const getListVideosApi = async () => {
     try {
+      console.log('params videos: ', params, lastId);
       const {data} = await getListVideos({
         ...params,
         user_id: userLogged.id,
         last_id: lastId,
       });
+      console.log('video res:', data);
       store.dispatch(
         notificationInfoActions.setNotification({
           name: TabName.WATCH,
           number: Number(data.data.new_items),
         }),
       );
-      if (JSON.parse(data.data.last_id)) {
-        console.log('undif');
+
+      if (data.data.last_id != 'undefined') {
         setLastId(data.data.last_id);
       }
       if (params.index == '0') setPosts(data.data.post);

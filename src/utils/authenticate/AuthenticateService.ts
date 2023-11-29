@@ -57,7 +57,7 @@ export const useLogin = (): LoginRequest => {
         }),
       );
     } catch (e) {
-      AlertMessage(String(e));
+      console.log(String(e));
     } finally {
       setLoading(false);
     }

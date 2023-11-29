@@ -24,8 +24,8 @@ const HomeScreen = () => {
   const getListPostsApi = async () => {
     try {
       const {data} = await getListPost({...params, user_id: userLogged.id});
-
-      if (JSON.parse(data.data.last_id)) {
+      console.log(data);
+      if (data.data.last_id != 'undefined') {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
       }
 

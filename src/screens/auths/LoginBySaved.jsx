@@ -27,14 +27,14 @@ export const LoginBySaved = ({}) => {
   const userSaved = useSelector(state => state.userSavedInfo.userSaved);
   React.useEffect(() => {
     console.log('userSaved:', userSaved);
-    if (userSaved.length == 0) navigate(AUTHENTICATE_ROUTE.LOGIN);
+    // if (userSaved.length == 0) navigate(AUTHENTICATE_ROUTE.LOGIN);
   }, [userSaved]);
 
   const handleRemoveAccount = () => {
     if (!isShowModal) return;
     setIsShowModal(0);
     store.dispatch(
-      userSavedInfoActions.removeUserSaved(isShowModal.toString()),
+      userSavedInfoActions.removeUserSaved(isShowModal.id.toString()),
     );
   };
   const {requestLogin, loading} = useLogin();
@@ -42,7 +42,7 @@ export const LoginBySaved = ({}) => {
     requestLogin({email, password});
   };
 
-  const [isShowModal, setIsShowModal] = React.useState(0);
+  const [isShowModal, setIsShowModal] = React.useState({id: 0, username: ''});
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
@@ -58,40 +58,51 @@ export const LoginBySaved = ({}) => {
         Tài khoản đã lưu
       </Text>
       <View style={{height: 400}}>
-        <ScrollView style={{flex: 1}}>
-          {userSaved.map(user => (
-            <TouchableHighlight
-              underlayColor={Colors.lightgrey}
-              onPress={() => loginRequest(user.email, user.password)}
-              key={user.id}
-              style={styles.userContainer}>
-              <>
-                <View style={styles.avatar}>
-                  {user.avatar ? (
-                    <Image
-                      source={{uri: user.avatar}}
-                      defaultSource={NullImg}
-                      style={styles.userAvatar}
+        {userSaved.length > 0 ? (
+          <ScrollView style={{flex: 1}}>
+            {userSaved.map(user => (
+              <TouchableHighlight
+                underlayColor={Colors.lightgrey}
+                onPress={() => loginRequest(user.email, user.password)}
+                key={user.id}
+                style={styles.userContainer}>
+                <>
+                  <View style={styles.avatar}>
+                    {user.avatar ? (
+                      <Image
+                        source={{uri: user.avatar}}
+                        defaultSource={NullImg}
+                        style={styles.userAvatar}
+                      />
+                    ) : (
+                      <Image source={NullImg} style={styles.userAvatar} />
+                    )}
+                  </View>
+                  <Text style={styles.username}>{user.username}</Text>
+                  <StyledTouchable
+                    onPress={() =>
+                      setIsShowModal({
+                        id: Number(user.id),
+                        username: user.username,
+                      })
+                    }
+                    style={styles.moreBtn}>
+                    <VectorIcon
+                      name="more-vertical"
+                      type="Feather"
+                      size={24}
+                      color={Colors.black}
                     />
-                  ) : (
-                    <Image source={NullImg} style={styles.userAvatar} />
-                  )}
-                </View>
-                <Text style={styles.username}>{user.username}</Text>
-                <StyledTouchable
-                  onPress={() => setIsShowModal(Number(user.id))}
-                  style={styles.moreBtn}>
-                  <VectorIcon
-                    name="more-vertical"
-                    type="Feather"
-                    size={24}
-                    color={Colors.black}
-                  />
-                </StyledTouchable>
-              </>
-            </TouchableHighlight>
-          ))}
-        </ScrollView>
+                  </StyledTouchable>
+                </>
+              </TouchableHighlight>
+            ))}
+          </ScrollView>
+        ) : (
+          <Text style={{textAlign: 'center'}}>
+            Chưa có tài khoản nào được lưu
+          </Text>
+        )}
         <TouchableHighlight
           underlayColor={Colors.lightgrey}
           onPress={() => navigate(AUTHENTICATE_ROUTE.LOGIN)}
@@ -145,9 +156,9 @@ export const LoginBySaved = ({}) => {
         />
       </View>
       <Modal
-        isVisible={!!isShowModal}
+        isVisible={!!isShowModal.id}
         backdropColor="transparent"
-        onBackdropPress={() => setIsShowModal(0)}>
+        onBackdropPress={() => setIsShowModal({id: 0})}>
         <View
           style={{
             backgroundColor: Colors.white,
@@ -158,14 +169,41 @@ export const LoginBySaved = ({}) => {
               width: 0,
               height: 2,
             },
-            position: 'absolute',
-            right: 0,
-            top: '40%',
+
             shadowOpacity: 0.25,
             shadowRadius: 4,
             elevation: 5,
-            alignSelf: 'flex-start',
           }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              borderBottomColor: Colors.borderGrey,
+              borderStyle: 'solid',
+              borderBottomWidth: 1,
+              padding: 8,
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                color: Colors.black,
+                fontSize: 18,
+              }}>
+              Tài khoản:{' '}
+              <Text style={{fontWeight: 'bold'}}>{isShowModal.username}</Text>
+            </Text>
+            <TouchableHighlight
+              onPress={() => setIsShowModal({id: 0, username: ''})}
+              underlayColor={Colors.lightgrey}
+              style={{padding: 8, borderRadius: 20}}>
+              <VectorIcon
+                name="close"
+                type="AntDesign"
+                size={24}
+                color={Colors.black}
+              />
+            </TouchableHighlight>
+          </View>
           <TouchableHighlight
             underlayColor={Colors.lightgrey}
             onPress={handleRemoveAccount}
@@ -198,7 +236,13 @@ const styles = StyleSheet.create({
   logoStyle: {
     height: 50,
     width: 50,
-    marginVertical: '20%',
+    marginTop: '20%',
+    marginBottom: 40,
+    transform: [
+      {
+        scale: 1.6,
+      },
+    ],
   },
   container: {
     padding: 16,

@@ -18,6 +18,7 @@ import {
 import AlertMessage from '../../components/base/AlertMessage';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
 import Loading from '../../components/base/Loading';
+import HeaderSearch from '../layouts/HeaderSearch';
 
 const SuggestionScreen = ({navigation}) => {
   const [allSuggestions, setSuggestions] = React.useState([]);
@@ -80,30 +81,7 @@ const SuggestionScreen = ({navigation}) => {
 
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
-      <View style={styles.header}>
-        <View style={{gap: 12, flexDirection: 'row'}}>
-          <TouchableHighlight
-            underlayColor={Colors.lightgrey}
-            style={{borderRadius: 48}}
-            onPress={() => navigation.goBack()}>
-            <VectorIcon
-              name="arrowleft"
-              type="AntDesign"
-              size={24}
-              color={Colors.black}
-            />
-          </TouchableHighlight>
-          <Text style={{fontSize: 16, color: Colors.black}}>Gợi ý</Text>
-        </View>
-        <TouchableHighlight>
-          <VectorIcon
-            name="search1"
-            type="AntDesign"
-            size={24}
-            color={Colors.black}
-          />
-        </TouchableHighlight>
-      </View>
+      <HeaderSearch title={'Gợi ý'} onBack={navigation.goBack} />
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}

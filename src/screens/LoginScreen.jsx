@@ -16,6 +16,7 @@ import {RequestUserPermission} from '../utils/notification/notificationHelper';
 import Loading from '../components/base/Loading';
 import {validateEmail, validatePassword} from '../utils/validater';
 import LoadingOverlay from '../components/base/LoadingOverlay';
+import {StyledButton} from '../components/base';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,9 +39,17 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <LoadingOverlay isLoading={loading} />
       <View style={styles.subContainer}>
         <Image source={Logo} style={styles.logoStyle} />
+        <Text
+          style={{
+            color: Colors.primaryColor,
+            fontWeight: 'bold',
+            fontSize: 28,
+            marginBottom: 24,
+          }}>
+          FACEBOOK
+        </Text>
         <TextInput
           placeholder="Email"
           inputMode="email"
@@ -58,15 +67,36 @@ const LoginScreen = ({navigation}) => {
           style={styles.inputBox}
           secureTextEntry={true}
         />
-        <TouchableOpacity onPress={onLogin} style={styles.loginButton}>
-          <Text style={styles.login}>Đăng nhập</Text>
-        </TouchableOpacity>
+
+        <StyledButton
+          title="Đăng nhập"
+          onPress={onLogin}
+          isLoading={loading}
+          customStyle={styles.loginButton}
+          customStyleText={styles.login}
+        />
         <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
-        <TouchableOpacity
-          style={styles.newAccount}
-          onPress={goToRegisterScreen}>
-          <Text style={styles.newAccountText}>Tạo tài khoản</Text>
-        </TouchableOpacity>
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 16,
+            marginTop: '25%',
+          }}>
+          <TouchableOpacity
+            style={styles.newAccount}
+            onPress={() =>
+              navigation.navigate(AUTHENTICATE_ROUTE.LOGINBYSAVED)
+            }>
+            <Text style={styles.newAccountText}>Tài khoản đã lưu</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.newAccount}
+            onPress={goToRegisterScreen}>
+            <Text style={styles.newAccountText}>Tạo tài khoản</Text>
+          </TouchableOpacity>
+        </View>
         <Image source={MetaLogo} style={styles.metaLogoStyle} />
       </View>
     </View>
@@ -77,10 +107,17 @@ const styles = StyleSheet.create({
   logoStyle: {
     height: 50,
     width: 50,
-    marginVertical: '20%',
+    marginTop: '20%',
+    marginBottom: 40,
+    transform: [
+      {
+        scale: 1.6,
+      },
+    ],
   },
   container: {
     padding: 16,
+    flex: 1,
   },
   subContainer: {
     justifyContent: 'center',
@@ -92,21 +129,21 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 12,
     width: '95%',
-    marginTop: 12,
+    marginTop: 16,
     color: Colors.black,
   },
   loginButton: {
     backgroundColor: Colors.primaryColor,
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 16,
     width: '95%',
     alignItems: 'center',
     marginTop: 12,
   },
   login: {
     color: Colors.white,
-    fontSize: 15,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '700',
   },
   forgotPass: {
     color: Colors.grey,
@@ -121,11 +158,10 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     width: '95%',
     alignItems: 'center',
-    marginTop: '35%',
   },
   newAccountText: {
     color: Colors.primaryColor,
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: '400',
   },
   metaLogoStyle: {
