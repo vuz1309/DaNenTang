@@ -171,7 +171,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
                 display: reactionModal ? 'flex' : 'none',
                 backgroundColor: Colors.white,
               }}>
-              <Text>Nhấn vào đây để đóng</Text>
+              <Text style={{color: Colors.textGrey}}>Nhấn vào đây để đóng</Text>
             </Pressable>
           }
 
