@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
 import React, {useContext} from 'react';
 import {Colors} from '../utils/Colors';
 import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
@@ -11,6 +11,10 @@ import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import VectorIcon from '../utils/VectorIcon';
+import tempImage from '../assets/images/img1.jpeg';
+import { getFreeDiskStorageOldSync } from 'react-native-device-info';
+
 const ProfileScreen = () => {
   const {userInfo} = store.getState();
   const {requestLogout} = useLogout(auth(), fireStore());
@@ -40,7 +44,42 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile Screen</Text>
+      <View style={styles.header}>
+        <Text style={styles.menu}>Menu</Text>
+        <View style={styles.menuIcon}>
+        <VectorIcon
+                name="settings-sharp"
+                type="Ionicons"
+                size={25}
+                color={Colors.black}
+                style={styles.headerIcons}
+              />
+        <VectorIcon
+              name="search"
+              type="Ionicons"
+              size={25}
+              color={Colors.black}
+              style={styles.headerIcons}
+            />
+
+        </View>
+      </View>
+      <View style={styles.profile}>
+                <Image style ={[styles.profileImage,{marginLeft:10}]} source={tempImage}/>
+                <View style={styles.profileUser}>
+                  <Text style={styles.userName}>Ngo Duc Cuong</Text>
+                  <Text>Xem trang cá nhân của bạn</Text>
+                </View>
+                <View style={styles.OtherProfile}>
+                  <Image style ={styles.profileImage} source={tempImage}/>
+                  <Image style ={styles.profileImage} source={tempImage}/>
+                  <Image style ={styles.profileImage} source={tempImage}/>
+                </View>
+      </View>
+      <View>
+        <VectorIcon/>
+        <Text>Trợ giúp và hỗ trợ</Text>
+      </View>
       <TouchableOpacity onPress={onLogout} style={styles.logoutButton}>
         <Text style={styles.logout}>Đăng xuất</Text>
       </TouchableOpacity>
@@ -51,8 +90,66 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#CDCDCD'
+
+  },
+  header:{
+    flexDirection:'row',
+    marginBottom:20,
+
+  }, 
+  profile:{
+    height:100,
+    justifyContent:'center',
+    justifyContent:'center',
+    flexDirection:'row',
+    marginHorizontal:20,
+    borderRadius:20,
+    backgroundColor:Colors.white,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.25,
+    // elevation: 5, // Android only
+  },
+  userName:{
+      fontSize:18,
+      color:Colors.black,
+      fontWeight:700,
+
+  },  
+  OtherProfile:{
+    flex:2,
+    flexDirection:'row',
+  },
+  profileUser:{
+    flex:4  ,
+    marginLeft:30,
+  },
+  profileImage:{
+      borderRadius:50,
+      width:40,
+      height:40,
+      borderColor:Colors.white,
+      borderWidth:1,
+      marginRight:-20,
+  },
+  headerIcons:{
+    marginLeft:10,
+  },
+  menu:{
+    flex:8,
+    fontSize: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    color: Colors.black,
+    fontWeight: '700',
+  },
+   menuIcon:{
+    flex:2,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    flexDirection:'row',
   },
   title: {
     fontSize: 22,
