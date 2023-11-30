@@ -14,7 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
 const nullAvatar = require('../assets/images/avatar_null.jpg');
-const SubHeader = () => {
+const SubHeader = ({onClick}) => {
   const navigation = useNavigation();
   const userLogged = useSelector(state => state.userInfo.user);
 
@@ -34,7 +34,7 @@ const SubHeader = () => {
         )}
       </TouchableOpacity>
       <View style={styles.inputBox}>
-        <TouchableOpacity onPress={() => navigation.navigate('UploadScreen')}>
+        <TouchableOpacity onPress={onClick}>
           <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
         </TouchableOpacity>
       </View>

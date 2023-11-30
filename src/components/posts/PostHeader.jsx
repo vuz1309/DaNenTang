@@ -212,6 +212,29 @@ const PostHeader = ({data}) => {
         }}>
         <View style={styles.modalContent}>
           <TouchableHighlight
+              onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
+              underlayColor={Colors.lightgrey}
+              style={{
+                alignItems: 'center',
+                padding: 16,
+                flexDirection: 'row',
+                gap: 12,
+              }}>
+            <>
+              <View>
+                <VectorIcon
+                    name="edit"
+                    type="Feather"
+                    size={24}
+                    color={Colors.headerIconGrey}
+                />
+              </View>
+              <Text style={{color: Colors.textColor, fontSize: 20}}>
+                Chỉnh sửa bài viết
+              </Text>
+            </>
+          </TouchableHighlight>
+          <TouchableHighlight
             onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
             underlayColor={Colors.lightgrey}
             style={{
@@ -231,6 +254,29 @@ const PostHeader = ({data}) => {
               </View>
               <Text style={{color: Colors.textColor, fontSize: 20}}>
                 Báo cáo bài viết
+              </Text>
+            </>
+          </TouchableHighlight>
+          <TouchableHighlight
+              onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
+              underlayColor={Colors.lightgrey}
+              style={{
+                alignItems: 'center',
+                padding: 16,
+                flexDirection: 'row',
+                gap: 12,
+              }}>
+            <>
+              <View>
+                <VectorIcon
+                    name="cross"
+                    type="Entypo"
+                    size={24}
+                    color={Colors.headerIconGrey}
+                />
+              </View>
+              <Text style={{color: 'red', fontSize: 20}}>
+                Xóa bài viết
               </Text>
             </>
           </TouchableHighlight>
