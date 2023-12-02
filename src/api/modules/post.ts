@@ -31,7 +31,7 @@ export const getPostRequest = (params: {id: string}) => {
   return requestJSONWithAuth('/get_post', params);
 };
 
-export const editPostRequest = async (post: {
+export const editPost = async (post: {
   image?: Array<string>;
   video?: any;
   described?: string;

@@ -20,28 +20,31 @@ import FriendStoryImg1 from '../assets/images/img2.jpeg';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {APP_ROUTE} from '../navigation/config/routes';
 
-import {addPost, getPostRequest} from '../api/modules/post';
+import {addPost, editPost, getPostRequest} from '../api/modules/post';
 import AlertMessage from "../components/base/AlertMessage";
 import {store} from "../state-management/redux/store";
 import {postInfoActions} from "../state-management/redux/slices/HomeListPost";
+import {useSelector} from "react-redux";
 
-const UploadScreen = ({navigation, onClose, title}) => {
+const UploadScreen = ({onClose, title}) => {
+    const user = useSelector(state => state.userInfo.user);
     const [text, setText] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [images, setImages] = useState([]);
     const [status, setStatus] = useState('Hyped');
     const [isExit, setIsExit] = useState(false);
-    const [crrIndex, setCrrIndex] = useState(0);
     const defaultImg = 'https://static.thenounproject.com/png/3752804-200.png';
+    const posted = useSelector(state => state.postInfo.posts[0]);
+
     useEffect(() => {
         setIsModalOpen(false);
+        console.log("heeloo")
+        console.log("post",posted);
+        if(title==='edit'){
+            setText(posted.described);
+            setImages(posted.image);
+        }
     }, []);
-    const mock = {
-        id: 1,
-        name: 'Quang Tran',
-        profileImg: FriendStoryImg1,
-        storyImg: FriendStoryImg1,
-    };
     const [post, setPost] = useState({
         images: [],
         described: '',
@@ -133,14 +136,32 @@ const UploadScreen = ({navigation, onClose, title}) => {
         formData.append('auto_accept', newPost.auto_accept);
 
         try {
-            const {data} = await addPost(newPost).then();
-            AlertMessage("Đăng bài mới thành công: ", data.data.id)
-            console.log(data)
-            const res = await getPostRequest({id: data.data.id});
-            store.dispatch(postInfoActions.shiftPost(res.data.data));
+            if (title==='upload') {
+                const {data} = await addPost(newPost).then();
+                AlertMessage("Đăng bài mới thành công: ", data.data.id)
+                console.log(data)
+                const res = await getPostRequest({id: data.data.id});
+                store.dispatch(postInfoActions.shiftPost(res.data.data));
 
-            //quay trở lại màn hình chính
-            onClose();
+                //quay trở lại
+                onClose();
+            }
+            else{
+                const {data} = await editPost({
+                    ...newPost,
+                    id:posted.id,
+                    image_del: '',
+                    image_sort: ''
+                }
+                ).then();
+                AlertMessage("Cập nhật bài viết thành công: ", data.data.id)
+                // const res = await getPostRequest({id: data.data.id});
+                // console.log("edited",res)
+                // store.dispatch(postInfoActions.shiftPost(res.data.data));
+
+                //quay trở lại
+                onClose();
+            }
         } catch (err) {
             console.log(JSON.stringify(err));
         }
@@ -190,9 +211,9 @@ const UploadScreen = ({navigation, onClose, title}) => {
 
             {/*avatar and name*/}
             <View style={styles.avaContainer}>
-                <Image style={styles.ava} source={mock.profileImg}/>
+                <Image style={styles.ava} source={{uri:user.avatar}}/>
                 <View>
-                    <Text style={{fontWeight: 'bold', fontSize: 18}}>{mock.name}</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 18}}>{user.username}</Text>
                     <View style={styles.infoStt}>
                         <VectorIcon
                             name="globe"
@@ -334,7 +355,7 @@ const UploadScreen = ({navigation, onClose, title}) => {
                             </Text>
                         </View>
                         <TouchableOpacity
-                            onPress={() => onClose}>
+                            onPress={() => onClose()}>
                             <View style={styles.option}>
                                 <VectorIcon
                                     name="trash-2"

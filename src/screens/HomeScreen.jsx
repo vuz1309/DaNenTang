@@ -19,7 +19,6 @@ import UploadScreen from "./UploadScreen";
 const HomeScreen = () => {
     const userLogged = useSelector(state => state.userInfo.user);
     const [isModalVisible, setModalVisible] = useState(false);
-
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
         console.log(isModalVisible)
@@ -102,7 +101,10 @@ const HomeScreen = () => {
                 transparent={false}
                 visible={isModalVisible}
             >
-                <UploadScreen onClose={()=>toggleModal()}></UploadScreen>
+                <UploadScreen
+                    onClose={()=>toggleModal()}
+                    title={'upload'}
+                ></UploadScreen>
             </Modal>
             <SubHeader onClick={()=>toggleModal()}/>
             <Stories/>

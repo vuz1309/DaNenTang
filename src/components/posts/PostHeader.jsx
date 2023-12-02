@@ -20,6 +20,7 @@ import PostDescription from './PostDescription';
 import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 import {deletePostRequest} from '../../api/modules/post';
+import UploadScreen from "../../screens/UploadScreen";
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data}) => {
   const {navigate} = useNavigation();
@@ -31,7 +32,10 @@ const PostHeader = ({data}) => {
   const toggleModalReport = () => {
     setShowModalReport(!isShowModalReport);
   };
-
+  const [isEditPost, setEditPost] = React.useState(false);
+  const toggleEditModal = () => {
+    setEditPost(!isEditPost);
+  }
   const [isModalVisible, setModalVisible] = React.useState(false);
   const handleCopyToClipboard = () => {
     Clipboard.setString(data.described);
@@ -212,7 +216,7 @@ const PostHeader = ({data}) => {
         }}>
         <View style={styles.modalContent}>
           <TouchableHighlight
-              onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
+              onPress={() => toggleEditModal()}
               underlayColor={Colors.lightgrey}
               style={{
                 alignItems: 'center',
@@ -281,6 +285,19 @@ const PostHeader = ({data}) => {
             </>
           </TouchableHighlight>
         </View>
+      </Modal>
+      <Modal
+          animationType="slide"
+          transparent={false}
+          visible={isEditPost}
+          style={{ margin: 0, justifyContent: 'flex-end' }}
+          backdropOpacity={0.7}
+      >
+        <UploadScreen onClose={()=>{
+          toggleEditModal();
+          toggleModalReport()
+        }} title={'edit'}
+        ></UploadScreen>
       </Modal>
     </View>
   );
