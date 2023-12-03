@@ -69,7 +69,7 @@ const styles = StyleSheet.create(
             padding: 16
         },
         wrapperTextInput: {
-            marginTop: '10%',
+            marginTop: '20%',
             flexDirection: 'row',
             justifyContent: 'space-between',
         },
@@ -83,14 +83,14 @@ const styles = StyleSheet.create(
             margin: 10,
             width: '45%',
             height: 40,
-            borderWidth: 0.5,
+            borderBottomWidth: 0.5,
             borderColor: 'gray',
             paddingHorizontal: 8,
         },
         nextButton: {
             backgroundColor: Colors.primaryColor,
             width: '95%',
-            height: '17%',
+            height: '15%',
             marginTop: '10%',
         },
         biggerText: {
@@ -99,7 +99,6 @@ const styles = StyleSheet.create(
             fontFamily: "Arial",
             textAlign: "center",
             fontWeight: "bold",
-            width: '60%',
             marginTop: '10%'
         },
     }

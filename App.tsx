@@ -83,6 +83,10 @@ const AppChild = () => {
               name={ONBOARDING_ROUTE.CREATE_PASSWORD}
               component={CreatePassword}
             />
+            <Stack.Screen
+              name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
+              component={CheckVerifyCode}
+            />
           </>
         )}
       </Stack.Navigator>
@@ -97,6 +101,7 @@ import ReportScreen from './src/screens/reports/ReportScreen';
 import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
 import SplashScreen from './src/screens/SplashScreen';
+import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

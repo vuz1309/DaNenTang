@@ -63,7 +63,7 @@ export const createApiInstance = (
       if (!silent) {
         console.log('error api', JSON.stringify(error));
       }
-      if (error.name.includes('Network')) {
+      if (error.name.includse('Network')) {
         AlertMessage('Vui lòng kiểm tra lại mạng!');
         return Promise.reject({
           message: 'Kết nối mạng không ổn định.',
