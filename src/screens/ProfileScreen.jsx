@@ -4,19 +4,20 @@ import {Colors} from '../utils/Colors';
 import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
-import {UserContext} from '../../App';
-import AuthenticateService from '../utils/authenticate/AuthenticateService';
+import Modal from 'react-native-modal';
 import {store} from '../state-management/redux/store';
 import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import {StyledTouchable} from '../components/base';
+import {Themes} from '../assets/themes';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
 import { getFreeDiskStorageOldSync } from 'react-native-device-info';
 
 const ProfileScreen = () => {
-  const {userInfo} = store.getState();
+  const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
   const {requestLogout} = useLogout(auth(), fireStore());
   const onLogout = async () => {
     try {
@@ -314,7 +315,33 @@ const ProfileScreen = () => {
       <TouchableOpacity onPress={onLogout} style={styles.logoutButton}>
         <Text style={styles.logout}>Đăng xuất</Text>
       </TouchableOpacity>
-      </View>
+        <Modal
+        isVisible={!!isShowModalLogout}
+        backdropColor="transparent"
+        onBackdropPress={() => setIsShowModalLogout(false)}>
+        <View style={styles.modalWrapper}>
+          <Text style={{fontWeight: 'bold', color: Colors.black, fontSize: 20}}>
+            Bạn có chắc chắn muốn đăng xuất?
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              gap: 16,
+              marginTop: 24,
+            }}>
+            <StyledTouchable onPress={onLogout}>
+              <Text style={{color: Themes.COLORS.red, fontSize: 20}}>
+                Đăng xuất
+              </Text>
+            </StyledTouchable>
+            <StyledTouchable onPress={() => setIsShowModalLogout(false)}>
+              <Text style={{color: Colors.black, fontSize: 20}}>Không</Text>
+            </StyledTouchable>
+          </View>
+        </View>
+      </Modal>
+    </View>
     </ScrollView>
   );
 };
@@ -460,6 +487,21 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     marginBottom: 30,
+  },
+  modalWrapper: {
+    backgroundColor: Colors.white,
+    borderRadius: 8,
+    overflow: 'hidden',
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    padding: 24,
+
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 

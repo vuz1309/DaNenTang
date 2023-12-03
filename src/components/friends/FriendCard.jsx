@@ -107,7 +107,7 @@ const FriendCard = ({fr}) => {
             <FriendActions
               action={() => {
                 setIsShowModal(0);
-                // blockUser();
+                blockUser();
               }}
               text={`Chặn ${fr.username}`}
               icon="user-alt-slash"

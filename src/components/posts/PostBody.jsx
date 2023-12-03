@@ -21,7 +21,7 @@ import PostVideo from './PostVideo';
  */
 const PostBody = ({item}) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  console.log(item);
+
   return (
     <>
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>

@@ -38,15 +38,23 @@ const PostHeader = ({data}) => {
     AlertMessage('Copy thành công.');
   };
   const toggleModalDelPost = () => {
-    setModalVisible(!isModalVisible);
+    if (Number(data.can_edit) > 0) setModalVisible(!isModalVisible);
+    else {
+      store.dispatch(
+        postInfoActions.removePost({
+          postId: data.id,
+        }),
+      );
+    }
   };
 
   const removePost = async () => {
     const postId = data.id;
-    toggleModalDelPost();
+    // toggleModalDelPost();
+    setModalVisible(false);
     try {
       const data = await deletePostRequest({id: postId});
-
+      console.log('remove post:', data);
       store.dispatch(
         postInfoActions.removePost({
           postId,
@@ -128,7 +136,7 @@ const PostHeader = ({data}) => {
               color={Colors.headerIconGrey}
             />
           </StyledTouchable>
-          {Number(data.can_edit) > 0 && (
+          {
             <StyledTouchable onPress={toggleModalDelPost}>
               <VectorIcon
                 name="close"
@@ -137,7 +145,7 @@ const PostHeader = ({data}) => {
                 color={Colors.headerIconGrey}
               />
             </StyledTouchable>
-          )}
+          }
         </View>
       </View>
       <TouchableHighlight
@@ -201,41 +209,67 @@ const PostHeader = ({data}) => {
           </View>
         </View>
       </Modal>
-      <Modal
-        isVisible={isShowModalReport}
-        onBackdropPress={toggleModalReport}
-        animationOut={undefined}
-        style={{
-          justifyContent: 'flex-end',
-          margin: 0,
-          padding: 0,
-        }}>
-        <View style={styles.modalContent}>
-          <TouchableHighlight
-            onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
-            underlayColor={Colors.lightgrey}
-            style={{
-              alignItems: 'center',
-              padding: 16,
-              flexDirection: 'row',
-              gap: 12,
-            }}>
-            <>
-              <View>
-                <VectorIcon
-                  name="report"
-                  type="Octicons"
-                  size={24}
-                  color={Colors.headerIconGrey}
-                />
-              </View>
-              <Text style={{color: Colors.textColor, fontSize: 20}}>
-                Báo cáo bài viết
-              </Text>
-            </>
-          </TouchableHighlight>
-        </View>
-      </Modal>
+      {isShowModalReport && (
+        <Modal
+          isVisible={true}
+          onBackdropPress={toggleModalReport}
+          animationOut={undefined}
+          style={{
+            justifyContent: 'flex-end',
+            margin: 0,
+            padding: 0,
+          }}>
+          <View style={styles.modalContent}>
+            <TouchableHighlight
+              onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
+              underlayColor={Colors.lightgrey}
+              style={{
+                alignItems: 'center',
+                padding: 16,
+                flexDirection: 'row',
+                gap: 12,
+              }}>
+              <>
+                <View>
+                  <VectorIcon
+                    name="report"
+                    type="Octicons"
+                    size={24}
+                    color={Colors.headerIconGrey}
+                  />
+                </View>
+                <Text style={{color: Colors.textColor, fontSize: 20}}>
+                  Báo cáo bài viết
+                </Text>
+              </>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => console.log('edit post')}
+              underlayColor={Colors.lightgrey}
+              style={{
+                alignItems: 'center',
+                padding: 16,
+                flexDirection: 'row',
+                gap: 12,
+                display: Number(data.can_edit) > 0 ? 'flex' : 'none',
+              }}>
+              <>
+                <View>
+                  <VectorIcon
+                    name="edit"
+                    type="AntDesign"
+                    size={24}
+                    color={Colors.headerIconGrey}
+                  />
+                </View>
+                <Text style={{color: Colors.textColor, fontSize: 20}}>
+                  Chỉnh sửa bài viết
+                </Text>
+              </>
+            </TouchableHighlight>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };

@@ -46,8 +46,7 @@ const UserScreen = ({navigation, route}) => {
   if (!userInfo.id)
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Loading />
-        <Text> Đang tải...</Text>
+        <Loading color={Colors.primaryColor} />
       </View>
     );
   return (
@@ -88,6 +87,7 @@ const UserScreen = ({navigation, route}) => {
             source={{
               uri: userInfo.cover_image,
             }}
+            defaultSource={nullImage}
           />
         ) : (
           <Image style={styles.background} source={nullImage} />

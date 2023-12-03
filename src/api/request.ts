@@ -1,11 +1,14 @@
 import axios from 'axios';
 import {BE_URL, createApiInstance} from './config';
 
-const request = axios.create({
-  baseURL: BE_URL,
-  timeout: 8000,
-  headers: {Accept: '*/*', 'Content-Type': 'application/json'},
-});
+export const request = createApiInstance(
+  {
+    baseURL: BE_URL,
+    timeout: 8000,
+    headers: {Accept: '*/*', 'Content-Type': 'application/json'},
+  },
+  {auth: false, silent: false},
+);
 export const authAndFileRequest = createApiInstance({
   baseURL: BE_URL,
   timeout: 8000,
@@ -24,7 +27,7 @@ const authRequestJSON = createApiInstance(
       'Content-Type': 'application/json',
     },
   },
-  {auth: true},
+  {auth: true, silent: false},
 );
 
 export const serverRequest = axios.create({
@@ -42,5 +45,3 @@ export const requestJSONWithAuth = (url: string, params: object) => {
   console.log('token request', store.getState().userInfo.token);
   return authRequestJSON.post(url, params);
 };
-
-export default request;

@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, RefreshControl, ScrollView} from 'react-native';
+import {StyleSheet, View, RefreshControl, ScrollView} from 'react-native';
 import React from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
@@ -9,18 +9,12 @@ import Post from '../components/posts/Post';
 
 import {getListPost} from '../api/modules/post';
 import {useSelector} from 'react-redux';
-import {
-  AsyncStorageKey,
-  getAsyncData,
-  storeAsyncData,
-  storeStringAsyncData,
-} from '../utils/authenticate/LocalStorage';
-import AlertMessage from '../components/base/AlertMessage';
 import {useScrollHanler} from '../hooks/useScrollHandler';
-import {INVALID_TOKEN} from '../utils/constants';
 import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
+import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
+import {TabName} from '../data/TabData';
 const HomeScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
 
@@ -30,11 +24,17 @@ const HomeScreen = () => {
   const getListPostsApi = async () => {
     try {
       const {data} = await getListPost({...params, user_id: userLogged.id});
-
-      if (JSON.parse(data.data.last_id)) {
+      console.log(data);
+      if (data.data.last_id != 'undefined') {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
       }
 
+      store.dispatch(
+        notificationInfoActions.setNotification({
+          name: TabName.HOME,
+          number: Number(data.data.new_items),
+        }),
+      );
       if (params.index === '0') {
         store.dispatch(postInfoActions.setPosts(data.data.post));
       } else if (data.data.post.length > 0) {
@@ -48,7 +48,7 @@ const HomeScreen = () => {
     }
   };
 
-  const reload = () => {
+  const reload = async () => {
     if (refreshing) return;
     setRefreshing(true);
     store.dispatch(
@@ -67,7 +67,7 @@ const HomeScreen = () => {
     store.dispatch(postInfoActions.setLastId('1'));
   };
 
-  const loadMore = () => {
+  const loadMore = async () => {
     if (isLoadMore) return;
     setIsLoadMore(true);
     store.dispatch(
