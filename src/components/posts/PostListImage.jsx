@@ -55,6 +55,7 @@ const PostListImage = ({data, onClose}) => {
     () => convertTimeToFacebookStyle(data.created),
     [data.created],
   );
+
   if (!data) return <Text>Loading...</Text>;
   return (
     <>
@@ -65,6 +66,8 @@ const PostListImage = ({data, onClose}) => {
           justifyContent: 'flex-end',
         }}
         swipeDirection={'right'}
+        animationIn={'slideInRight'}
+        onBackButtonPress={onClose}
         onSwipeComplete={onClose}>
         <View style={styles.postHeaderContainer}>
           <StatusBar

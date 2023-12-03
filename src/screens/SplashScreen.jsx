@@ -14,7 +14,7 @@ const SplashScreen = ({navigation}) => {
       } else if (userSaved.length > 0)
         navigation.navigate(AUTHENTICATE_ROUTE.LOGINBYSAVED);
       else navigation.navigate(AUTHENTICATE_ROUTE.LOGIN);
-    }, 3000);
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, []);
@@ -37,10 +37,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Màu nền của Splash
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
     resizeMode: 'contain',
-    marginTop: '35%',
+    marginTop: '25%',
   },
 });
 

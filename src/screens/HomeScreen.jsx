@@ -23,6 +23,7 @@ const HomeScreen = () => {
 
   const getListPostsApi = async () => {
     try {
+      console.log('home post param:', params);
       const {data} = await getListPost({...params, user_id: userLogged.id});
       console.log(data);
       if (data.data.last_id != 'undefined') {

@@ -40,3 +40,10 @@ export const getSuggestionFriend = (
 ) => {
   return requestJSONWithAuth('/get_suggested_friends', params);
 };
+
+export const deleteFriendRequest = (params: {user_id: string}) => {
+  return requestJSONWithAuth('/del_request_friend', params);
+};
+export const unFriend = (params: {user_id: string}) => {
+  return requestJSONWithAuth('/unfriend', params);
+};

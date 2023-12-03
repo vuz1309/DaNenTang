@@ -4,12 +4,13 @@ import {StyledButton} from '../base';
 import {Colors} from '../../utils/Colors';
 import {Themes} from '../../assets/themes';
 import {
+  deleteFriendRequest,
   setAcceptFriend,
   setRequestFriend,
+  unFriend,
 } from '../../api/modules/friends.request';
 import Modal from 'react-native-modal';
 import VectorIcon from '../../utils/VectorIcon';
-import AlertMessage from '../base/AlertMessage';
 import {FriendActions} from './FriendActions';
 import {setBlockRequest} from '../../api/modules/block.request';
 
@@ -51,8 +52,8 @@ const ActionsOtherUser = ({firstMode, user}) => {
       } else if (mode === 2) {
         setMode(mainBtnConfig[mode].nextMode);
         // CALL API cancel
-        // const {data} = await setRequestFriend({user_id: userId});
-        // console.log(data);
+        const {data} = await deleteFriendRequest({user_id: user.id});
+        console.log(data);
         // handle cancel
       } else {
         setModalMode(mode);
@@ -79,6 +80,18 @@ const ActionsOtherUser = ({firstMode, user}) => {
         user_id: user.id,
       });
       console.log(data);
+      navigate(APP_ROUTE.HOME_TAB);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const onUnFriend = async () => {
+    try {
+      const {data} = await unFriend({
+        user_id: user.id,
+      });
+      console.log(data);
+      setMode(0);
     } catch (error) {
       console.log(error);
     }
@@ -231,7 +244,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
               <FriendActions
                 action={() => {
                   setModalMode(0);
-                  // blockUser();
+                  blockUser();
                 }}
                 text={`Chặn ${user.username}`}
                 icon="user-alt-slash"
@@ -239,7 +252,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
               <FriendActions
                 action={() => {
                   setModalMode(0);
-                  setAcceptFriend('0');
+                  onUnFriend();
                 }}
                 text={`Hủy kết bạn`}
                 color={Themes.COLORS.red}

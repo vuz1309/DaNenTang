@@ -63,11 +63,7 @@ const updatePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
       post[key] = payload[key];
     });
 };
-const persisConfig = generatePersistConfig('postInfo', [
-  'posts',
-  'lastId',
-  'paramsConfig',
-]);
+const persisConfig = generatePersistConfig('postInfo', ['posts']);
 
 const postsSlice = createSlice({
   name: 'postInfo',

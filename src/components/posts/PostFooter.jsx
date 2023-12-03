@@ -13,7 +13,10 @@ import Like from '../../assets/images/like.jpeg';
 import Heart from '../../assets/images/heart.jpeg';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
-import {feelPost as feelPostApi} from '../../api/modules/comment.request';
+import {
+  delFeelPost,
+  feelPost as feelPostApi,
+} from '../../api/modules/comment.request';
 import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 
@@ -55,18 +58,22 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
 
   const [showModalReactions, setShowModalReactions] = useState(false);
 
+  const handleDelFeel = async () => {
+    const updateData = {...data};
+    try {
+      const {data} = await delFeelPost({id: data.id});
+      console.log('del feel:', data);
+      store.dispatch(postInfoActions.updatePost(updateData));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleClickLike = async (type = '1') => {
     if (type == feelPost) return;
     const updateData = {...data};
     setFeelPost(type);
     if (type == '-1') {
-      updateData.feel = (Number(updateData.feel) - 1).toString();
-      updateData.is_felt = type;
-
-      // handle un feel api(TODO)
-
-      store.dispatch(postInfoActions.updatePost(updateData));
-      return;
+      return await handleDelFeel();
     }
 
     const id = data.id;
@@ -91,9 +98,8 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   };
   const handleReactionClick = () => {
     if (Number(data.comment_mark) > 0) {
-      // open modal comment
+      // open modal comment (TODO)
     } else {
-      // open modal list comment
       setShowModalReactions(true);
     }
   };
@@ -107,7 +113,13 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           style={styles.footerReactionSec}>
           <>
             {Number(data.feel) > 0 && (
-              <View style={{...styles.row, backgroundColor: 'transparent'}}>
+              <View
+                style={{
+                  ...styles.row,
+                  height: '100%',
+                  backgroundColor: 'transparent',
+                  transform: [{translateY: 8}],
+                }}>
                 <Image source={Like} style={styles.reactionIcon} />
                 <Image source={Heart} style={styles.reactionIcon} />
 
@@ -157,20 +169,10 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           {
             <Pressable
               onPress={() => setReactionModal(false)}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: ScreenHeight,
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                alignItems: 'center',
-
-                zIndex: 1,
-                display: reactionModal ? 'flex' : 'none',
-                backgroundColor: Colors.white,
-              }}>
+              style={[
+                styles.closeReactions,
+                {display: reactionModal ? 'flex' : 'none'},
+              ]}>
               <Text style={{color: Colors.textGrey}}>Nhấn vào đây để đóng</Text>
             </Pressable>
           }
@@ -259,7 +261,6 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     marginRight: -4,
-    backgroundColor: 'black',
     borderRadius: 10,
   },
   row: {
@@ -308,6 +309,20 @@ const styles = StyleSheet.create({
     top: -30,
     left: 0,
     zIndex: 15,
+  },
+  closeReactions: {
+    position: 'absolute',
+    width: '100%',
+    height: ScreenHeight,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+
+    zIndex: 1,
+
+    backgroundColor: Colors.white,
   },
 });
 
