@@ -8,9 +8,33 @@ import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
 import {FriendActions} from '../userScreens/FriendActions';
 import {Themes} from '../../assets/themes';
-const FriendCard = ({fr}) => {
+import {unFriend} from '../../api/modules/friends.request';
+import {setBlockRequest} from '../../api/modules/block.request';
+const FriendCard = ({fr, reload}) => {
   const [isShowModal, setIsShowModal] = React.useState();
   const {navigate} = useNavigation();
+  const blockUser = async () => {
+    try {
+      const {data} = await setBlockRequest({
+        user_id: fr.id,
+      });
+      console.log('block:', data);
+      reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const onUnFriend = async () => {
+    try {
+      const {data} = await unFriend({
+        user_id: fr.id,
+      });
+      console.log('un friend:', data);
+      reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View key={fr.id} style={{paddingBottom: 12}}>
       <TouchableHighlight
@@ -107,7 +131,7 @@ const FriendCard = ({fr}) => {
             <FriendActions
               action={() => {
                 setIsShowModal(0);
-                // blockUser();
+                blockUser();
               }}
               text={`Chặn ${fr.username}`}
               icon="user-alt-slash"
@@ -115,6 +139,7 @@ const FriendCard = ({fr}) => {
             <FriendActions
               action={() => {
                 setIsShowModal(0);
+                onUnFriend();
               }}
               text={`Hủy kết bạn`}
               color={Themes.COLORS.red}

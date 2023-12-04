@@ -21,6 +21,7 @@ import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
 import Loading from '../../components/base/Loading';
 import FriendCard from '../../components/friends/FriendCard';
+import HeaderSearch from '../layouts/HeaderSearch';
 
 const AllFriendsScreen = ({route}) => {
   const {goBack} = useNavigation();
@@ -80,32 +81,10 @@ const AllFriendsScreen = ({route}) => {
 
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
-      <View style={styles.header}>
-        <View style={{gap: 12, flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableHighlight
-            underlayColor={Colors.lightgrey}
-            style={{borderRadius: 48, padding: 8}}
-            onPress={() => goBack()}>
-            <VectorIcon
-              name="arrowleft"
-              type="AntDesign"
-              size={24}
-              color={Colors.black}
-            />
-          </TouchableHighlight>
-          <Text style={{fontSize: 18, fontWeight: '600', color: Colors.black}}>
-            {isOwner ? 'Bạn bè' : user.username}
-          </Text>
-        </View>
-        <TouchableHighlight style={{borderRadius: 48, padding: 8}}>
-          <VectorIcon
-            name="search1"
-            type="AntDesign"
-            size={24}
-            color={Colors.black}
-          />
-        </TouchableHighlight>
-      </View>
+      <HeaderSearch
+        title={isOwner ? 'Bạn bè' : user.username}
+        onBack={goBack}
+      />
       <ScrollView
         onScroll={handleScroll}
         style={styles.container}
@@ -134,7 +113,9 @@ const AllFriendsScreen = ({route}) => {
           </TouchableHighlight> */}
         </View>
         {allFriends.length > 0 ? (
-          allFriends.map(fr => <FriendCard key={fr.id} fr={fr} />)
+          allFriends.map(fr => (
+            <FriendCard reload={reload} key={fr.id} fr={fr} />
+          ))
         ) : (
           <View style={{flex: 1, justifyContent: 'center'}}>
             <Text style={{fontSize: 16, paddingHorizontal: 16}}>

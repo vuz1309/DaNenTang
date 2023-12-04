@@ -10,8 +10,8 @@ export const getUserInfo = (body: {user_id: string}) => {
  * Field: username, description, avatar, address, city, country, cover_image: link,
  * @returns
  */
-export const setUserInfo = async (body: any) => {
-  return await authAndFileRequest.post('/set_user_info', body);
+export const setUserInfo = (body: FormData) => {
+  return authAndFileRequest.post('/set_user_info', body);
 };
 
 /**
@@ -21,5 +21,5 @@ export const setUserInfo = async (body: any) => {
  * @returns
  */
 export const changeProfileAfterSignup = (body: FormData) => {
-  return requestJSONWithAuth('/change_profile_after_signup', body);
+  return authAndFileRequest.post('/change_profile_after_signup', body);
 };

@@ -4,12 +4,18 @@ import HomeScreen from '../screens/HomeScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import WatchScreen from '../screens/WatchScreen';
-
+export const TabName = {
+  HOME: 'Home',
+  FRIENDS: 'Friends',
+  WATCH: 'Watch',
+  NOTIFICATION: 'Notification',
+  PROFILE: 'Profile',
+};
 export const TabData = [
   {
     id: 1,
     route: HomeScreen,
-    name: 'Home',
+    name: TabName.HOME,
     activeIconName: 'home',
     activeiconType: 'Entypo',
     inactiveIconName: 'home-outline',
@@ -20,7 +26,7 @@ export const TabData = [
   {
     id: 2,
     route: FriendScreen,
-    name: 'Friends',
+    name: TabName.FRIENDS,
     activeIconName: 'people-sharp',
     activeiconType: 'Ionicons',
     inactiveIconName: 'people-outline',
@@ -31,7 +37,7 @@ export const TabData = [
   {
     id: 3,
     route: WatchScreen,
-    name: 'Watch',
+    name: TabName.WATCH,
     activeIconName: 'youtube-tv',
     activeiconType: 'MaterialCommunityIcons',
     inactiveIconName: 'television-play',
@@ -53,7 +59,7 @@ export const TabData = [
   {
     id: 5,
     route: NotificationScreen,
-    name: 'Notification',
+    name: TabName.NOTIFICATION,
     activeIconName: 'notifications',
     activeiconType: 'Ionicons',
     inactiveIconName: 'notifications-outline',
@@ -64,7 +70,7 @@ export const TabData = [
   {
     id: 6,
     route: ProfileScreen,
-    name: 'Profile',
+    name: TabName.PROFILE,
     activeIconName: 'person',
     activeiconType: 'Ionicons',
     inactiveIconName: 'person-outline',

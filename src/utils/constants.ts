@@ -5,11 +5,13 @@ export const USER_INVALID = 9995;
 export const POST_NOT_EXIST = 9992;
 export const USER_NOT_REQUEST_FRIEND = 9994;
 export const USER_IS_BLOCKED = 3001;
+export const NETWORK_ERROR = 9999;
 export const errors: any = {
   [USER_NOT_REQUEST_FRIEND]: 'Đối phương đã hủy yêu cầu kết bạn!',
-  [POST_NOT_EXIST]: 'Bài viết không tồn tại!',
+  [POST_NOT_EXIST]: 'Bài viết không tồn tại hoặc đã bị khóa!',
   [USER_INVALID]: 'Người dùng không hợp lệ hoặc đã bị khóa.',
   [BUG_SERVER]: 'Server lỗi!',
   [INVALID_TOKEN]: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.',
   [USER_IS_BLOCKED]: 'Người dùng đã bị chặn bởi bạn.',
+  [NETWORK_ERROR]: 'Vui lòng kiểm tra lại mạng!',
 };

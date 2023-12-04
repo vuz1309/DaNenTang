@@ -35,6 +35,7 @@ const PostDescription = ({described, color = Colors.textColor}) => {
           <TouchableHighlight
             key={`hashtag_${index}`}
             underlayColor={Colors.lightgrey}
+            style={{alignSelf: 'flex-start'}}
             onPress={() => handleHashtagPress(match)}>
             <Text style={{fontSize: 15, color: Colors.primaryColor}}>
               {match}
