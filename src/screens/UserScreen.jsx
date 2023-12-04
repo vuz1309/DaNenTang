@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  RefreshControl,
+  RefreshControl, Modal,
 } from 'react-native';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
@@ -16,12 +16,14 @@ import {useScrollHanler} from '../hooks/useScrollHandler';
 import ActionsOwner from '../components/userScreens/ActionsOwner';
 import ActionsOtherUser from '../components/userScreens/ActionsOtherUser';
 import Loading from '../components/base/Loading';
+import EditUserInfo from "../components/userScreens/EditUserInfo";
 const nullImage = require('../assets/images/avatar_null.jpg');
 
 const UserScreen = ({navigation, route}) => {
   const {userId} = route.params;
   const userLogged = useSelector(state => state.userInfo.user);
   const [userInfo, setUserInfo] = React.useState({});
+  const [isEdit, setIsEdit] = React.useState(false);
   const reload = () => {
     getUserInfoApi();
   };
@@ -33,8 +35,10 @@ const UserScreen = ({navigation, route}) => {
   const getUserInfoApi = async () => {
     try {
       console.log(userId);
-      const {data} = await getUserInfo({user_id: userId});
-      console.log(data);
+      const res = await getUserInfo({user_id: userId});
+      console.log(res)
+      const {data} = res;
+      console.log("user:",data);
       setUserInfo(data.data);
     } catch (error) {
       console.log(error);
@@ -50,6 +54,13 @@ const UserScreen = ({navigation, route}) => {
         <Text> Đang tải...</Text>
       </View>
     );
+
+  const toggleEditModal= async()=> {
+    if (isEdit)
+    await getUserInfoApi();
+    setIsEdit(!isEdit)
+  }
+
   return (
     <ScrollView
       onScroll={handleScroll}
@@ -61,6 +72,13 @@ const UserScreen = ({navigation, route}) => {
         />
       }
       style={styles.container}>
+      <Modal
+          animationType="slide"
+          transparent={false}
+          visible={isEdit}
+      >
+        <EditUserInfo userInfo={userInfo} closeModal={()=>toggleEditModal()}></EditUserInfo>
+      </Modal>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <VectorIcon
@@ -115,6 +133,12 @@ const UserScreen = ({navigation, route}) => {
           </Text>
           bạn bè
         </Text>
+        <Text style={{fontSize: 18, paddingTop: 12, color: Colors.textGrey}}>
+          <Text style={{fontWeight: '700', color: Colors.black}}>
+            {userInfo.coins}{' '}
+          </Text>
+          coins
+        </Text>
         {userInfo?.description?.trim() && (
           <Text
             style={{color: Colors.textColor, fontSize: 18, paddingVertical: 4}}>
@@ -122,7 +146,7 @@ const UserScreen = ({navigation, route}) => {
           </Text>
         )}
         {isOwner ? (
-          <ActionsOwner userId={userId} />
+          <ActionsOwner userId={userId} action={()=>toggleEditModal()}/>
         ) : (
           <ActionsOtherUser
             firstMode={Number(userInfo.is_friend)}
