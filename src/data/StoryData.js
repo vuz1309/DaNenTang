@@ -9,44 +9,38 @@ import FriendStoryImg7 from '../assets/images/img8.jpeg';
 export const StoryData = [
   {
     id: 1,
-    name: 'Sizan Dan',
+    name: 'Vũ ',
     profileImg: FriendStoryImg1,
     storyImg: FriendStoryImg1,
   },
   {
     id: 2,
-    name: 'Daniel Taylor',
+    name: 'Vũ Nguyễn',
     profileImg: FriendStoryImg2,
     storyImg: FriendStoryImg2,
   },
   {
     id: 3,
-    name: 'Emma Davis',
+    name: 'Quang Trần',
     profileImg: FriendStoryImg3,
     storyImg: FriendStoryImg3,
   },
   {
     id: 4,
-    name: 'Michael Brown',
+    name: 'Hiếu brazor',
     profileImg: FriendStoryImg4,
     storyImg: FriendStoryImg4,
   },
   {
     id: 5,
-    name: 'Emily Wilson',
+    name: 'Cường CuO',
     profileImg: FriendStoryImg5,
     storyImg: FriendStoryImg5,
   },
   {
     id: 6,
-    name: 'Mark Johnson',
+    name: 'Vân Alex',
     profileImg: FriendStoryImg6,
     storyImg: FriendStoryImg6,
-  },
-  {
-    id: 7,
-    name: 'Jane Smith',
-    profileImg: FriendStoryImg7,
-    storyImg: FriendStoryImg7,
   },
 ];

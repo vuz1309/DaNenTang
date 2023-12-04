@@ -7,17 +7,21 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import Profile from '../assets/images/img1.jpeg';
-import CameraRoll from '../assets/images/cameraroll.png';
 import {Colors} from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import VectorIcon from '../utils/VectorIcon';
+import {Themes} from '../assets/themes';
+import {formatNumberSplitBy} from '../helpers/helpers';
 
 const nullAvatar = require('../assets/images/avatar_null.jpg');
 const SubHeader = () => {
   const navigation = useNavigation();
   const userLogged = useSelector(state => state.userInfo.user);
-
+  const coins = React.useMemo(
+    () => formatNumberSplitBy(Number(userLogged?.coins || '0')),
+    [userLogged, [userLogged?.coins]],
+  );
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -38,7 +42,16 @@ const SubHeader = () => {
           <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
         </TouchableOpacity>
       </View>
-      <Image source={CameraRoll} style={styles.cameraRoll} />
+
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <VectorIcon
+          name="coins"
+          type="FontAwesome5"
+          color={Themes.COLORS.yellow}
+          size={20}
+        />
+        <Text style={{fontWeight: '700', color: Colors.black}}>{coins}</Text>
+      </View>
     </View>
   );
 };
@@ -47,6 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 16,
     padding: 18,
     backgroundColor: Colors.white,
     alignItems: 'center',
@@ -61,7 +75,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderGrey,
     borderRadius: 30,
     paddingHorizontal: 20,
-    width: '70%',
+    flex: 1,
     paddingVertical: 8,
   },
   inputStyle: {

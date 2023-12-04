@@ -13,4 +13,5 @@ export const errors: any = {
   [BUG_SERVER]: 'Server lỗi!',
   [INVALID_TOKEN]: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.',
   [USER_IS_BLOCKED]: 'Người dùng đã bị chặn bởi bạn.',
+  [NETWORK_ERROR]: 'Vui lòng kiểm tra lại mạng!',
 };

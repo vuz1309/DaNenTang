@@ -26,3 +26,13 @@ export function convertTimeToFacebookStyle(inputTime) {
     return `${yearsDifference} năm trước`;
   }
 }
+
+/**
+ * Format number về dạng phân cách để dễ nhìn, VD: 1000 -> 1.000
+ * @author NTVu
+ * @param {Number} number
+ * @param {String} splitBy
+ */
+export function formatNumberSplitBy(number, splitBy = '.') {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, splitBy);
+}

@@ -96,7 +96,12 @@ const ConfirmScreen = ({items, postId}) => {
               borderBottomWidth: 1,
               borderStyle: 'solid',
             }}>
-            <Text style={{fontSize: 16, textAlign: 'center'}}>
+            <Text
+              style={{
+                fontSize: 16,
+                textAlign: 'center',
+                color: Colors.textGrey,
+              }}>
               Bạn có thể báo cáo nếu cho rằng nột dung này vi phạm{' '}
               <Text style={{fontWeight: '600', color: Colors.black}}>
                 Tiêu chuẩn cộng đồng{' '}

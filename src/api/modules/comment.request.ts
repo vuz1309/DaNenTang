@@ -3,6 +3,10 @@ import {requestJSONWithAuth} from '../request';
 export const feelPost = (body: {id: string; type: string}) => {
   return requestJSONWithAuth('/feel', body);
 };
+
+export const delFeelPost = (body: {id: string}) => {
+  return requestJSONWithAuth('/delete_feel', body);
+};
 /**
  * 
  * @param body example "id": "1",
@@ -49,5 +53,5 @@ export const getListFeels = (body: {
   index: string;
   count: string;
 }) => {
-  return requestJSONWithAuth('/get-list-feels', body);
+  return requestJSONWithAuth('/get_list_feels', body);
 };
