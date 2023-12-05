@@ -5,7 +5,7 @@ import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import React from 'react';
 import {View, StyleSheet, Text, TouchableHighlight} from 'react-native';
-import {reportPostRequest} from '../../api/modules/post';
+import {reportPostRequest} from '../../api/modules/post.request';
 import {SUCCESS_CODE} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
@@ -111,7 +111,7 @@ const ConfirmScreen = ({items, postId}) => {
             </Text>
           </View>
         </View>
-        <Text
+        {/* <Text
           style={{
             marginTop: 24,
             color: Colors.black,
@@ -120,9 +120,15 @@ const ConfirmScreen = ({items, postId}) => {
             paddingHorizontal: 8,
           }}>
           Các bước khác mà bạn có thể thực hiện
-        </Text>
-        <View style={{marginVertical: 12, paddingHorizontal: 8}}>
-          <TouchableHighlight
+        </Text> */}
+        <View
+          style={{
+            marginVertical: 12,
+            paddingHorizontal: 8,
+            flex: 1,
+            justifyContent: 'flex-end',
+          }}>
+          {/* <TouchableHighlight
             underlayColor={Colors.lightgrey}
             style={{
               flexDirection: 'row',
@@ -173,7 +179,7 @@ const ConfirmScreen = ({items, postId}) => {
                 </Text>
               </View>
             </>
-          </TouchableHighlight>
+          </TouchableHighlight> */}
 
           <StyledButton
             title={'Xong'}

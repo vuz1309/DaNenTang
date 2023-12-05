@@ -1,9 +1,11 @@
-import {View, Text, Touchable, TouchableHighlight, Modal} from 'react-native';
+import {View, Text, TouchableHighlight, Modal} from 'react-native';
 import React, {useMemo} from 'react';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
 import {StyledButton} from '../../components/base';
 import ConfirmScreen from './ConfirmScreen';
+import {setBlockRequest} from '../../api/modules/block.request';
+import {useNavigation} from '@react-navigation/native';
 
 const reportOptions = [
   'Ảnh khỏa thân',
@@ -50,7 +52,8 @@ const OptionItem = ({opt, chooseReportItem, isChoosed}) => {
 };
 const ReportScreen = ({navigation, route}) => {
   const {postId} = route.params;
-
+  const {author} = route.params;
+  // const {goBack} = useNavigation();
   const [isContinue, setContinue] = React.useState(false);
   const [reportOptionsChoosed, setOptionsChoosed] = React.useState({});
   const chooseReportItem = opt => {
@@ -59,7 +62,15 @@ const ReportScreen = ({navigation, route}) => {
       [opt]: !prev[opt],
     }));
   };
-
+  const handleBlock = async () => {
+    try {
+      const {data} = await setBlockRequest({user_id: author.id});
+      console.log(data);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const items = React.useMemo(() => {
     return Object.keys(reportOptionsChoosed).filter(
       key => reportOptionsChoosed[key],
@@ -167,6 +178,7 @@ const ReportScreen = ({navigation, route}) => {
         <View style={{marginTop: 12}}>
           <TouchableHighlight
             underlayColor={Colors.lightgrey}
+            onPress={handleBlock}
             style={{
               flexDirection: 'row',
               gap: 12,
@@ -181,38 +193,13 @@ const ReportScreen = ({navigation, route}) => {
                 type="Feather"
                 size={24}
               />
+
               <View style={{flexWrap: 'wrap'}}>
                 <Text style={{color: Colors.black, fontSize: 18}}>
-                  Chặn Phạm
+                  Chặn {author.name}
                 </Text>
                 <Text style={{fontSize: 15, width: '90%'}}>
                   Các bạn sẽ không thể nhìn thấy hoặc liên hệ với nhau
-                </Text>
-              </View>
-            </>
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={Colors.lightgrey}
-            style={{
-              flexDirection: 'row',
-              gap: 12,
-              alignItems: 'center',
-              paddingVertical: 12,
-              width: '100%',
-            }}>
-            <>
-              <VectorIcon
-                name="x-circle"
-                type="Feather"
-                color={Colors.headerIconGrey}
-                size={24}
-              />
-              <View style={{flexWrap: 'wrap'}}>
-                <Text style={{color: Colors.black, fontSize: 18}}>
-                  Bỏ theo dõi Phạm
-                </Text>
-                <Text style={{fontSize: 15}}>
-                  Dừng xem bài viết nhưng vẫn là bạn bè
                 </Text>
               </View>
             </>

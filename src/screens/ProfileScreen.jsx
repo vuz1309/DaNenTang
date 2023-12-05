@@ -1,9 +1,10 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useContext} from 'react';
 import {Colors} from '../utils/Colors';
-import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
-import auth from '@react-native-firebase/auth';
-import fireStore from '@react-native-firebase/firestore';
+// import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
+// import auth from '@react-native-firebase/auth';
+// import fireStore from '@react-native-firebase/firestore';
+import {logout} from '../api/modules/userProfile.request';
 import Modal from 'react-native-modal';
 import {store} from '../state-management/redux/store';
 import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
@@ -14,26 +15,26 @@ import {StyledTouchable} from '../components/base';
 import {Themes} from '../assets/themes';
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
-  const {requestLogout} = useLogout(auth(), fireStore());
+  // const {requestLogout} = useLogout(auth(), fireStore());
   const onLogout = async () => {
     try {
-      storeStringAsyncData(AsyncStorageKey.TOKEN, '');
-
       store.dispatch(userInfoActions.logOut());
       store.dispatch(postInfoActions.setPosts([]));
-      store.dispatch(postInfoActions.setLastId('1'));
+      store.dispatch(postInfoActions.setLastId('99999'));
+
+      await logout();
+
       store.dispatch(
         postInfoActions.setParams({
           in_campaign: '1',
           campaign_id: '1',
           latitude: '1.0',
           longitude: '1.0',
-          last_id: '1',
+          last_id: '99999',
           index: '0',
           count: '20',
         }),
       );
-      await requestLogout();
     } catch (error) {
       console.log(error);
     }
@@ -48,6 +49,8 @@ const ProfileScreen = () => {
         <Text style={styles.logout}>Đăng xuất</Text>
       </TouchableOpacity>
       <Modal
+        animationIn={'slideInDown'}
+        animationOut={'slideOutDown'}
         isVisible={!!isShowModalLogout}
         backdropColor="transparent"
         onBackdropPress={() => setIsShowModalLogout(false)}>
