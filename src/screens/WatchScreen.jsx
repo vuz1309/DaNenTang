@@ -2,7 +2,7 @@ import {StyleSheet, Text, View, RefreshControl, ScrollView} from 'react-native';
 import React from 'react';
 import {Colors} from '../utils/Colors';
 import {useScrollHanler} from '../hooks/useScrollHandler';
-import {getListVideos} from '../api/modules/post';
+import {getListVideos} from '../api/modules/post.request';
 import {useSelector} from 'react-redux';
 import PostVideo from '../components/posts/PostVideo';
 import PostHeader from '../components/posts/PostHeader';

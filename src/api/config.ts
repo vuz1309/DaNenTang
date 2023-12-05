@@ -73,12 +73,12 @@ export const createApiInstance = (
 
       const {response} = error;
 
-      AlertMessage(
-        errors[response.data.code.toString()] || 'Lỗi chưa xác định',
-      );
       if (response.data.code == INVALID_TOKEN.toString()) {
         store.dispatch(userInfoActions.logOut());
-      }
+      } else
+        AlertMessage(
+          errors[response.data.code.toString()] || 'Lỗi chưa xác định',
+        );
       return Promise.reject({
         code: response.data.code,
         message: response.data.message,

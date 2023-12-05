@@ -20,7 +20,7 @@ import FriendStoryImg1 from '../assets/images/img2.jpeg';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {APP_ROUTE} from '../navigation/config/routes';
 
-import {addPost} from '../api/modules/post';
+import {addPost} from '../api/modules/post.request';
 
 const UploadScreen = ({navigation, route}) => {
   const [text, setText] = useState('');

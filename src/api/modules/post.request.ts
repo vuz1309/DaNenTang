@@ -67,3 +67,10 @@ export const getListVideos = (body: {
 }) => {
   return requestJSONWithAuth('/get_list_videos', body);
 };
+
+export const getNewPosts = (body: {count: string}) => {
+  return requestJSONWithAuth('/get_new_posts', body);
+};
+export const setViewdPost = (body: {id: string}) => {
+  return requestJSONWithAuth('/set_viewed_post', body);
+};

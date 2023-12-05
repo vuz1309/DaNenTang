@@ -43,12 +43,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
             />
           </TouchableOpacity>
         </View>
-        {/* 
-        <ZoomableImage
-          onClose={onClose}
-          urls={item.image.map(i => ({url: i.url}))}
-          index={firstItem}
-        /> */}
+
         <View style={{flex: 1}}>
           <ImageViewer
             imageUrls={item.image.map(i => ({url: i.url}))}
