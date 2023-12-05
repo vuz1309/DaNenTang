@@ -5,7 +5,7 @@ import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
 import Post from '../components/posts/Post';
 
-import {getListPost} from '../api/modules/post';
+import {getListPost} from '../api/modules/post.request';
 import {useSelector} from 'react-redux';
 import {useScrollHanler} from '../hooks/useScrollHandler';
 import {store} from '../state-management/redux/store';
@@ -58,6 +58,7 @@ const HomeScreen = () => {
         longitude: '1.0',
         index: '0',
         count: '20',
+        last_id: '99999',
       }),
     );
 
@@ -77,6 +78,7 @@ const HomeScreen = () => {
   };
   const {handleScroll, isLoadMore, setIsLoadMore, refreshing, setRefreshing} =
     useScrollHanler(reload, loadMore);
+
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);

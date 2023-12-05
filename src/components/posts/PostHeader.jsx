@@ -19,7 +19,8 @@ import {useNavigation} from '@react-navigation/native';
 import PostDescription from './PostDescription';
 import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
-import {deletePostRequest} from '../../api/modules/post';
+import {deletePostRequest} from '../../api/modules/post.request';
+import Loading from '../base/Loading';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data}) => {
   const {navigate} = useNavigation();
@@ -65,7 +66,7 @@ const PostHeader = ({data}) => {
     }
   };
 
-  if (!data) return <Text>Loading...</Text>;
+  if (!data) return <Loading />;
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
@@ -78,7 +79,9 @@ const PostHeader = ({data}) => {
             },
           ]}>
           <StyledTouchable
-            onPress={() => navigate('UserScreen', {userId: data.author.id})}
+            onPress={() =>
+              navigate(APP_ROUTE.USER_SCREEN, {userId: data.author.id})
+            }
             style={{
               borderWidth: 1,
               borderColor: Colors.borderGrey,
@@ -221,7 +224,12 @@ const PostHeader = ({data}) => {
           }}>
           <View style={styles.modalContent}>
             <TouchableHighlight
-              onPress={() => navigate(APP_ROUTE.REPORT, {postId: data.id})}
+              onPress={() =>
+                navigate(APP_ROUTE.REPORT, {
+                  postId: data.id,
+                  author: data.author,
+                })
+              }
               underlayColor={Colors.lightgrey}
               style={{
                 alignItems: 'center',
