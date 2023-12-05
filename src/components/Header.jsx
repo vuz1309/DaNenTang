@@ -9,7 +9,7 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import FacebookLogo from '../assets/images/fblogo.png';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
@@ -18,7 +18,10 @@ import {useState} from 'react';
 import {getSavedSearchRequest} from '../api/modules/search';
 import useSearch from '../hooks/useSearch';
 import {SingleSavedItem} from './search/SingleSavedItem';
-
+import {Layout} from './base/Layout';
+import {CommentModal} from './modal/CommentModal';
+import ModalizeManager from './modal/ModalizeManager';
+import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 const Item = ({listItem}) => {
   if (listItem.length == 0) {
     return;
@@ -98,6 +101,12 @@ const SavedItem = ({listItem}) => {
 };
 
 const Header = () => {
+  const [showingCommentModal, setShowingCommentModal] = useState(false);
+  const onShowComment = () => {
+    logger('opening comment modal ...');
+    setShowingCommentModal(!showingCommentModal);
+  };
+
   const [selectedId, setSelectedId] = useState();
   const [text, setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -119,9 +128,6 @@ const Header = () => {
     useSearch({onComplete: onCompleteSearch, keyword: text});
 
   React.useEffect(() => {
-    // const  fetchSearchData = ()  => useSearch({onComplete: onCompleteSearch, keyword:text});
-    // fetchSearchData();
-
     const fetchSavedSearchData = async () => {
       try {
         const response = await getSavedSearchRequest({index: 0, count: 20});
@@ -153,10 +159,11 @@ const Header = () => {
             type="Fontisto"
             size={22}
             color={Colors.grey}
+            onPress={onShowComment}
           />
         </View>
       </View>
-
+     {showingCommentModal ? (<CommentModal isOpen={true} />) : (logger('not opening')) }
       {modalVisible ? (
         <Modal
           animationType="fade"
@@ -202,7 +209,9 @@ const Header = () => {
                 <View style={[styles.rowBetween, {alignItems: 'center'}]}>
                   <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
                   <TouchableOpacity>
-                    <Text style={styles.biggerText}>CHỈNH SỬA</Text>
+                    <Text style={styles.biggerText} onPress={onShowComment}>
+                      CHỈNH SỬA
+                    </Text>
                   </TouchableOpacity>
                 </View>
                 <View
@@ -213,7 +222,6 @@ const Header = () => {
                   }}
                 />
                 <ScrollView>
-                  {/* <SavedItem listItem={savedData} /> */}
                   <View style={{paddingBottom: 12}}>
                     {savedData.map(item => (
                       <SingleSavedItem

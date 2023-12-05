@@ -102,6 +102,7 @@ import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
 import SplashScreen from './src/screens/SplashScreen';
 import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
+import { Layout } from './src/components/base/Layout';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

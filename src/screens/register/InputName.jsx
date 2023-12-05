@@ -6,6 +6,9 @@ import VectorIcon from "../../utils/VectorIcon";
 import {AUTHENTICATE_ROUTE, ONBOARDING_ROUTE} from "../../navigation/config/routes";
 import {logger} from "../../utils/helper";
 import {getStringAsyncData, storeStringAsyncData} from "../../utils/authenticate/LocalStorage";
+import ModalizeManager from "../../components/modal/ModalizeManager";
+import CommentModal from "../../components/modal/CommentModal";
+import NewModalizeManager from "../../components/modal/NewModalizeManager";
 
 
 const InputName = ({navigation}) => {

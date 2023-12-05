@@ -12,7 +12,11 @@ export function generatePersistConfig(key: string, whitelist: string[]) {
     stateReconciler: autoMergeLevel2,
   };
 }
-
+export function wait(timeout: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
 export function logger(msg: any, isWarning?: boolean, params?: any): void {
   if (__DEV__ && !isWarning) {
     if (params) {
