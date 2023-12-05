@@ -31,7 +31,7 @@ const AppChild = () => {
   );
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
+      <StatusBar backgroundColor={Colors.white} barStyle="light-content" />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {userLogged ? (
           <>

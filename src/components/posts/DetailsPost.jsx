@@ -14,6 +14,7 @@ import PostFooter from './PostFooter';
 import Carousel from 'react-native-snap-carousel';
 import VectorIcon from '../../utils/VectorIcon';
 import PostDescription from './PostDescription';
+import ZoomableImage from '../base/ZoomableImage';
 
 const {width} = Dimensions.get('window');
 
@@ -48,12 +49,14 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           data={item.image}
           renderItem={({item}) => {
             return (
-              <Image
-                style={{height: '100%', width: '100%'}}
-                resizeMode="contain"
-                source={{uri: item.url}}
-                defaultSource={require('../../assets/images/avatar_null.jpg')}
-              />
+              <ZoomableImage imageUrl={item.url}>
+                {/* <Image
+                  style={{height: '100%', width: '100%'}}
+                  resizeMode="contain"
+                  source={{uri: item.url}}
+                  defaultSource={require('../../assets/images/avatar_null.jpg')}
+                /> */}
+              </ZoomableImage>
             );
           }}
           sliderWidth={width}

@@ -5,8 +5,6 @@ import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
 import Post from '../components/posts/Post';
 
-// import {ScrollView} from 'react-native-gesture-handler';
-
 import {getListPost} from '../api/modules/post';
 import {useSelector} from 'react-redux';
 import {useScrollHanler} from '../hooks/useScrollHandler';
@@ -16,14 +14,15 @@ import Loading from '../components/base/Loading';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
 const HomeScreen = () => {
-  const userLogged = useSelector(state => state.userInfo.user);
+  // const userLogged = useSelector(state => state.userInfo.user);
 
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
 
   const getListPostsApi = async () => {
     try {
-      const {data} = await getListPost({...params, user_id: userLogged.id});
+      console.log('home post param:', params);
+      const {data} = await getListPost({...params});
       console.log(data);
       if (data.data.last_id != 'undefined') {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
@@ -53,12 +52,10 @@ const HomeScreen = () => {
     setRefreshing(true);
     store.dispatch(
       postInfoActions.setParams({
-        user_id: '',
         in_campaign: '1',
         campaign_id: '1',
         latitude: '1.0',
         longitude: '1.0',
-        last_id: '1',
         index: '0',
         count: '20',
       }),
