@@ -62,7 +62,7 @@ const AddFriendRequest = ({
             />
           )}
         </View>
-        <View>
+        <View style={{flex: 1}}>
           <Text style={styles.userName}>
             {data.username || '(Chưa có tên)'}
           </Text>
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    width: '100%',
   },
   avatar: {
     height: 80,
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
   buttonCtl: {
     padding: 8,
     borderRadius: 8,
-    width: '41%',
+    flex: 1,
   },
   acceptText: {
     color: Colors.white,
