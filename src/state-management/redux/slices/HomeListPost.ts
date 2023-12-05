@@ -18,7 +18,6 @@ const initialState: IPostsState = {
   status: CommonStatus.IDLE,
   posts: [],
   paramsConfig: {
-    user_id: '',
     in_campaign: '1',
     campaign_id: '1',
     latitude: '1.0',
