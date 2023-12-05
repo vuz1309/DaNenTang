@@ -84,16 +84,20 @@ const PostBody = ({item}) => {
         <PostFooter data={item} />
       </View>
 
-      {isModalVisible && item.image.length == 1 && (
+      {!!isModalVisible && item.image.length == 1 && (
         <DetailsPost
           isModalVisible={isModalVisible}
           item={item}
-          onClose={() => setModalVisible(false)}
+          onClose={() => setModalVisible(0)}
         />
       )}
 
-      {isModalVisible && item.image.length > 1 && (
-        <PostListImage data={item} onClose={() => setModalVisible(false)} />
+      {!!isModalVisible && item.image.length > 1 && (
+        <PostListImage
+          data={item}
+          onClose={() => setModalVisible(0)}
+          index={isModalVisible - 1}
+        />
       )}
     </>
   );
