@@ -13,7 +13,7 @@ const Tab = createMaterialTopTabNavigator();
 const TopTabBar = () => {
   const [isShowHeader, setisShowHeader] = React.useState(true);
   const notis = useSelector(state => state.notiInfo.newNotiOfTabs);
-  console.log('notis', notis);
+
   return (
     <>
       {isShowHeader && <Header />}

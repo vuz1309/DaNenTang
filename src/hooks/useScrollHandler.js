@@ -12,7 +12,11 @@ export const useScrollHanler = (reload, loadMore) => {
     const contentHeight = event.nativeEvent.contentSize.height;
     const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
 
-    if (offsetY + scrollViewHeight >= contentHeight - 50 && !refreshing) {
+    if (
+      offsetY + scrollViewHeight >= contentHeight - 50 &&
+      !refreshing &&
+      !isLoadMore
+    ) {
       loadMore?.();
     }
   };

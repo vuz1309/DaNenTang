@@ -1,4 +1,4 @@
-import {requestJSONWithAuth} from '../request';
+import {authAndFileRequest, requestJSONWithAuth} from '../request';
 
 export const getUserInfo = (body: {user_id: string}) => {
   return requestJSONWithAuth('/get_user_info', body);
@@ -11,7 +11,7 @@ export const getUserInfo = (body: {user_id: string}) => {
  * @returns
  */
 export const setUserInfo = (body: FormData) => {
-  return requestJSONWithAuth('/set_user_info', body);
+  return authAndFileRequest.post('/set_user_info', body);
 };
 
 /**
@@ -21,5 +21,5 @@ export const setUserInfo = (body: FormData) => {
  * @returns
  */
 export const changeProfileAfterSignup = (body: FormData) => {
-  return requestJSONWithAuth('/change_profile_after_signup', body);
+  return authAndFileRequest.post('/change_profile_after_signup', body);
 };

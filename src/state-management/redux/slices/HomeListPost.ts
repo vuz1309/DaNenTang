@@ -18,7 +18,6 @@ const initialState: IPostsState = {
   status: CommonStatus.IDLE,
   posts: [],
   paramsConfig: {
-    user_id: '',
     in_campaign: '1',
     campaign_id: '1',
     latitude: '1.0',
@@ -63,11 +62,7 @@ const updatePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
       post[key] = payload[key];
     });
 };
-const persisConfig = generatePersistConfig('postInfo', [
-  'posts',
-  'lastId',
-  'paramsConfig',
-]);
+const persisConfig = generatePersistConfig('postInfo', ['posts']);
 
 const postsSlice = createSlice({
   name: 'postInfo',
