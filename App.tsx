@@ -46,7 +46,6 @@ const AppChild = () => {
             />
             <Stack.Screen name={APP_ROUTE.REPORT} component={ReportScreen} />
 
-            <Stack.Screen name={APP_ROUTE.UPLOAD} component={UploadScreen} />
             <Stack.Screen name={APP_ROUTE.USER_SCREEN} component={UserScreen} />
             <Stack.Screen name={APP_ROUTE.WEBVIEW} component={WebViewScreen} />
           </>
