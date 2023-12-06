@@ -79,13 +79,12 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
       console.log(error);
     }
   };
-  const handleFeel = async id => {
+  const handleFeel = async (id, type) => {
     try {
       const {data} = await feelPostApi({
         id,
         type,
       });
-
       return data;
     } catch (error) {
       console.log(error);
@@ -93,34 +92,33 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   };
   const handleClickLike = async (type = '1') => {
     if (type == feelPost) return;
-    const updateData = {...data};
+
     const id = data.id;
-
     setFeelPost(type);
-    let data = {};
-    if (type == FEEL_ENUM.UN_FEEL) {
-      data = await handleDelFeel();
-    } else {
-      data = await handleFeel();
-    }
+    const res =
+      type == FEEL_ENUM.UN_FEEL
+        ? await handleDelFeel(id)
+        : await handleFeel(id, type);
+    console.log('res', res);
+    // data.feel = (
+    //   Number(res.data.kudos) + Number(res.data.disappointed)
+    // ).toString();
+    // data.is_felt = type;
 
-    try {
-      updateData.feel = (
-        Number(data.data.kudos) + Number(data.data.disappointed)
-      ).toString();
-      updateData.is_felt = type;
-
-      store.dispatch(postInfoActions.updatePost(updateData));
-    } catch (error) {
-      console.log(error);
-    }
+    store.dispatch(
+      postInfoActions.updatePost({
+        ...data,
+        is_felt: type,
+        feel: (
+          Number(res.data.kudos) + Number(res.data.disappointed)
+        ).toString(),
+      }),
+    );
   };
   const handleReactionClick = () => {
     if (Number(data.comment_mark) > 0) {
       // open modal comment (TODO)
-    } else {
-      setShowModalReactions(true);
-    }
+    } else if (Number(data.feel) > 0) setShowModalReactions(true);
   };
 
   return (
