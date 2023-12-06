@@ -1,9 +1,64 @@
 import React from 'react';
-import {View, StyleSheet, ToastAndroid, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ToastAndroid,
+  TouchableOpacity,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {FriendActions} from '../userScreens/FriendActions';
 import {Colors} from '../../utils/Colors';
-import RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+
+async function hasAndroidPermission() {
+  const getCheckPermissionPromise = () => {
+    if (Platform.Version >= 33) {
+      return Promise.all([
+        PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        ),
+        PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+        ),
+      ]).then(
+        ([hasReadMediaImagesPermission, hasReadMediaVideoPermission]) =>
+          hasReadMediaImagesPermission && hasReadMediaVideoPermission,
+      );
+    } else {
+      return PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      );
+    }
+  };
+
+  const hasPermission = await getCheckPermissionPromise();
+  if (hasPermission) {
+    return true;
+  }
+  const getRequestPermissionPromise = () => {
+    if (Platform.Version >= 33) {
+      return PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+      ]).then(
+        statuses =>
+          statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] ===
+            PermissionsAndroid.RESULTS.GRANTED &&
+          statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO] ===
+            PermissionsAndroid.RESULTS.GRANTED,
+      );
+    } else {
+      return PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ).then(status => status === PermissionsAndroid.RESULTS.GRANTED);
+    }
+  };
+
+  return await getRequestPermissionPromise();
+}
 const MenuImage = ({cancel, saveToLocal}) => {
   return (
     <TouchableOpacity onPress={cancel} style={{zIndex: 9, flex: 1}}>
@@ -33,27 +88,58 @@ const ZoomableImage = ({urls, onClose, index}) => {
   const getImageExtension = url => {
     return url.split('.').pop();
   };
-  const handleSaveImage = async imageUrl => {
-    try {
-      console.log(imageUrl);
-      const timestamp = new Date().getTime();
-      const fileName = `image_${timestamp}.${getImageExtension(imageUrl)}`;
-      const response = await RNFS.downloadFile({
-        fromUrl: imageUrl,
-        toFile: `${RNFS.PicturesDirectoryPath}/${fileName}`,
-      }).promise;
+  const handleSaveImage = async imgUrl => {
+    const newImgUri = imgUrl.lastIndexOf('/');
+    const timestamp = new Date().getTime();
+    const imageName = imgUrl.substring(newImgUri);
 
-      if (response.statusCode === 200) {
-        ToastAndroid.show(
-          'Hình ảnh đã được tải và lưu vào điện thoại',
-          ToastAndroid.SHORT,
-        );
-      } else {
-        ToastAndroid.show('Lỗi khi tải và lưu hình ảnh', ToastAndroid.SHORT);
+    const dirs = RNFetchBlob.fs.dirs;
+    const path =
+      Platform.OS === 'ios'
+        ? `${dirs['MainBundleDir']}/${timestamp}${imageName}`
+        : `${dirs.PictureDir}/${timestamp}${imageName}`;
+
+    if (Platform.OS === 'android') {
+      if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+        return;
       }
-    } catch (error) {
-      console.error('Lỗi khi tải và lưu hình ảnh:', error);
-      ToastAndroid.show('Lỗi khi tải và lưu hình ảnh', ToastAndroid.SHORT);
+      RNFetchBlob.config({
+        fileCache: true,
+        appendExt: getImageExtension(imgUrl),
+        indicator: true,
+        IOSBackgroundTask: true,
+        path: path,
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          notification: true,
+          path: path,
+          description: 'Image',
+        },
+      })
+        .fetch('GET', imgUrl)
+        .then(res => {
+          console.log(res, 'end downloaded');
+          ToastAndroid.show(
+            'Hình ảnh đã được tải và lưu vào điện thoại',
+            ToastAndroid.SHORT,
+          );
+        })
+        .catch(error => {
+          console.error('Lỗi khi tải và lưu hình ảnh:', error);
+          ToastAndroid.show('Lỗi khi tải và lưu hình ảnh', ToastAndroid.SHORT);
+        });
+    } else {
+      CameraRoll.saveToCameraRoll(imgUrl)
+        .then(() => {
+          ToastAndroid.show(
+            'Hình ảnh đã được lưu vào điện thoại',
+            ToastAndroid.SHORT,
+          );
+        })
+        .catch(error => {
+          console.error('Lỗi khi lưu hình ảnh vào Camera Roll:', error);
+          ToastAndroid.show('Lỗi khi lưu hình ảnh', ToastAndroid.SHORT);
+        });
     }
   };
   return (
