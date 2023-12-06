@@ -22,11 +22,11 @@ const initialState: IPostsState = {
     campaign_id: '1',
     latitude: '1.0',
     longitude: '1.0',
-    last_id: '1',
+    last_id: '9999',
     index: '0',
     count: '20',
   },
-  lastId: '1',
+  lastId: '9999',
 };
 const setParams: Reducer<PayloadAction<any>> = (state, {payload}) => {
   state.paramsConfig = payload;

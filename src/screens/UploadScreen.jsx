@@ -20,7 +20,7 @@ import FriendStoryImg1 from '../assets/images/img2.jpeg';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {APP_ROUTE} from '../navigation/config/routes';
 
-import {addPost, editPost, getPostRequest} from '../api/modules/post';
+import {addPost, editPost, getPostRequest} from '../api/modules/post.request';
 import AlertMessage from "../components/base/AlertMessage";
 import {store} from "../state-management/redux/store";
 import {postInfoActions} from "../state-management/redux/slices/HomeListPost";

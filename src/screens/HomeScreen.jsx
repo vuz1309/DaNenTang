@@ -5,7 +5,7 @@ import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
 import Post from '../components/posts/Post';
 
-import {getListPost} from '../api/modules/post';
+import {getListPost} from '../api/modules/post.request';
 import {useSelector} from 'react-redux';
 
 import {useScrollHanler} from '../hooks/useScrollHandler';
@@ -66,7 +66,7 @@ const HomeScreen = () => {
 
                 index: '0',
                 count: '20',
-            }),
+            last_id: '99999',}),
         );
 
         store.dispatch(postInfoActions.setLastId('1'));

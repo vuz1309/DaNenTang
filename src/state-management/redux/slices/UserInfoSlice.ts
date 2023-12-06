@@ -16,12 +16,6 @@ export interface IUser {
   coins?: string;
   active?: string;
 }
-export interface IUserSaved {
-  email: string;
-  password: string;
-  username: string;
-  avatar: string;
-}
 
 export interface IUserInfoState {
   token?: string;

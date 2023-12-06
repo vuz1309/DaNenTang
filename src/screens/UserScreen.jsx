@@ -111,16 +111,23 @@ const UserScreen = ({navigation, route}) => {
         ) : (
           <Image style={styles.background} source={nullImage} />
         )}
-        {userInfo.avatar ? (
-          <Image
-            style={styles.ava}
-            source={{
-              uri: userInfo.avatar,
-            }}
-          />
-        ) : (
-          <Image style={styles.ava} source={nullImage} />
-        )}
+        <TouchableOpacity
+          style={styles.ava}
+          onPress={() => console.log('open modal view')}>
+          {userInfo.avatar ? (
+            <Image
+              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              source={{
+                uri: userInfo.avatar,
+              }}
+            />
+          ) : (
+            <Image
+              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              source={nullImage}
+            />
+          )}
+        </TouchableOpacity>
         {Number(userInfo.online) && <View style={styles.isOnline} />}
       </View>
 
@@ -208,6 +215,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 4,
     backgroundColor: Colors.white,
+    overflow: 'hidden',
   },
   background: {
     width: '100%',
