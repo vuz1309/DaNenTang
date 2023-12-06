@@ -56,8 +56,8 @@ const UploadScreen = ({onClose, title}) => {
     const openLibrary = () => {
         let options = {};
         launchImageLibrary(options, r => {
-            let tmp = r.assets[0].uri;
-            console.log(tmp);
+
+            let tmp = r.assets[0];
             let newImgList = [];
             if (images.length < 4) {
                 newImgList = [...images, tmp];
@@ -113,7 +113,7 @@ const UploadScreen = ({onClose, title}) => {
     };
     const onCreateNewPost = async () => {
         const newPost = {
-            image: images.filter(e => e.uri !== ''),
+            image: images,
             described: text,
             status,
             video: null,
@@ -129,22 +129,29 @@ const UploadScreen = ({onClose, title}) => {
         //   });
 
         const formData = new FormData();
+        // newPost.image.forEach(item => {
+        //     // Kiểm tra định dạng của uri
+        //     if (item.uri) {
+        //         formData.append('image', item);
+        //     }
+        // });
         formData.append('image', newPost.image);
         formData.append('described', newPost.described);
         formData.append('status', newPost.status);
-        formData.append('video', newPost.video);
+        newPost.video && formData.append('video', newPost.video);
         formData.append('auto_accept', newPost.auto_accept);
 
         try {
             if (title==='upload') {
-                const {data} = await addPost(newPost).then();
+                console.log('upload form:', formData)
+                const {data} = await addPost(newPost);
                 AlertMessage("Đăng bài mới thành công: ", data.data.id)
                 console.log(data)
                 const res = await getPostRequest({id: data.data.id});
                 store.dispatch(postInfoActions.shiftPost(res.data.data));
-
+                console.log("uploaded",res.data.data);
                 //quay trở lại
-                onClose();
+                // onClose();
             }
             else{
                 const {data} = await editPost({
@@ -246,9 +253,11 @@ const UploadScreen = ({onClose, title}) => {
                         if (index === 0 || index === 1)
                             return (
                                 <Image
+                                    key={index}
                                     style={styles.image}
-                                    source={{uri: e !== '' ? e : defaultImg}}
-                                    index={index}
+                                    source={e}
+
+
                                 />
                             );
                     })}

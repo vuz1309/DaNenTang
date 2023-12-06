@@ -31,7 +31,7 @@ export const getPostRequest = (params: {id: string}) => {
 };
 
 export const editPost = async (post: {
-  image?: Array<string>;
+  image?: Array<any>;
   video?: any;
   described?: string;
   status?: string;

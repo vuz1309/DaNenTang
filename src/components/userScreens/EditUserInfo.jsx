@@ -21,23 +21,17 @@ import {userInfoActions} from "../../state-management/redux/slices/UserInfoSlice
 import {launchImageLibrary} from "react-native-image-picker";
 import {use} from "i18next";
 
-const HeaderOption = ({name, action}) => {
+const HeaderOption = ({name}) => {
     return (
         <View style={styles.headerOption}>
             <Text style={{
                 fontSize: 20,
                 fontWeight: 'bold',
             }}>{name}</Text>
-            <TouchableOpacity onPress={() => action()}>
-                <Text style={{
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    color: Colors.primaryColor
-                }}>Cập nhật</Text>
-            </TouchableOpacity>
         </View>
     )
 }
+
 const EditUserInfo = ({userInfo, closeModal}) => {
     const [userData, setUserData] = React.useState({
             username: userInfo.username,
@@ -51,7 +45,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
         }
     )
     const [isModalVisible, setModalVisible] = React.useState(false);
-
+    const [currentAva, setCurrentAva]= React.useState(userData.avatar)
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
@@ -59,7 +53,8 @@ const EditUserInfo = ({userInfo, closeModal}) => {
     const openLibrary = (title) => {
         let options = {};
         launchImageLibrary(options, r => {
-            let tmp = r.assets[0].uri;
+            let tmp = r.assets[0];
+            setCurrentAva(tmp.uri)
             console.log(tmp);
             if (title === 'avatar') setUserData((prevState) => ({
                 ...prevState,
@@ -89,12 +84,9 @@ const EditUserInfo = ({userInfo, closeModal}) => {
             formData.append('country', userData.country);
             formData.append('cover_image', userData.cover_image);
             formData.append('link', userData.link);
-            const rq = await setUserInfo(formData).then((res) => {
-                console.log(res);
-                AlertMessage("Đã cập nhật thông tin");
-                closeModal();
-            });
-            console.log(rq)
+            console.log(formData);
+            const {data} = await setUserInfo(formData)
+            console.log('user updated: ',data)
 
         } catch (err) {
             console.log(err)
@@ -121,18 +113,25 @@ const EditUserInfo = ({userInfo, closeModal}) => {
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.headerText}>Chỉnh sửa thông tin</Text>
+                <TouchableOpacity onPress={() => handleEdit()}>
+                    <Text style={{
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: Colors.primaryColor
+                    }}>Cập nhật</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.editOption}>
-                <HeaderOption name={'Ảnh nền'} action={() => handleEdit()}/>
+                <HeaderOption name={'Ảnh nền'}/>
                 <View style={{
                     alignItems: 'center'
                 }}>
                     <TouchableOpacity onPress={() => openLibrary('avatar')}>
-                        {userData.avatar ? (
+                        {currentAva ? (
                             <Image
                                 style={styles.ava}
                                 source={{
-                                    uri: userData.avatar,
+                                    uri: currentAva,
                                 }}
                             />
                         ) : (
@@ -142,7 +141,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
                 </View>
             </View>
             <View style={styles.editOption}>
-                <HeaderOption name={'Ảnh đại diện'} action={() => handleEdit()}/>
+                <HeaderOption name={'Ảnh đại diện'}/>
                 <View style={{
                     alignItems: 'center'
                 }}>
@@ -161,7 +160,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
                 </View>
             </View>
             <View style={styles.editOption}>
-                <HeaderOption name={'Thông tin'} action={() => handleEdit()}/>
+                <HeaderOption name={'Thông tin'}/>
                 <View style={styles.infoOption}>
                     <Text style={{
                         fontSize: 15,

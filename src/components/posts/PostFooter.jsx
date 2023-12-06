@@ -63,6 +63,10 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
     try {
       const {data} = await delFeelPost({id: data.id});
       console.log('del feel:', data);
+      updateData.feel = (
+          Number(data.data.kudos) + Number(data.data.disappointed)
+      ).toString();
+      updateData.is_felt = '-1';
       store.dispatch(postInfoActions.updatePost(updateData));
     } catch (error) {
       console.log(error);
@@ -84,14 +88,14 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
         type,
       });
       console.log('like reponse', data);
-      if (data.code == SUCCESS_CODE) {
+
         updateData.feel = (
           Number(data.data.kudos) + Number(data.data.disappointed)
         ).toString();
         updateData.is_felt = type;
 
         store.dispatch(postInfoActions.updatePost(updateData));
-      }
+
     } catch (error) {
       console.log(error);
     }
