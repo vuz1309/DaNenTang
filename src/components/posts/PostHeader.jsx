@@ -21,6 +21,7 @@ import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 import {deletePostRequest} from '../../api/modules/post.request';
 import Loading from '../base/Loading';
+import UploadScreen from "../../screens/UploadScreen";
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data, isShowRemove = true}) => {
   const {navigate} = useNavigation();
@@ -35,7 +36,10 @@ const PostHeader = ({data, isShowRemove = true}) => {
   const toggleModalReport = () => {
     setShowModalReport(!isShowModalReport);
   };
-
+  const [isEditPost, setEditPost] = React.useState(false);
+  const toggleEditModal = () => {
+    setEditPost(!isEditPost);
+  }
   const [isModalVisible, setModalVisible] = React.useState(false);
   const handleCopyToClipboard = () => {
     Clipboard.setString(data.described);
