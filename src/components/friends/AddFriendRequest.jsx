@@ -98,7 +98,9 @@ const AddFriendRequest = ({
                     ...styles.buttonCtl,
                     backgroundColor: Colors.primaryColor,
                   }}>
-                  <Text style={styles.acceptText}>{mainText}</Text>
+                  <Text style={[styles.acceptText, styles.text]}>
+                    {mainText}
+                  </Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                   underlayColor={Colors.lightgrey}
@@ -110,7 +112,9 @@ const AddFriendRequest = ({
                     ...styles.buttonCtl,
                     backgroundColor: Colors.lightgrey,
                   }}>
-                  <Text style={styles.removeText}>{subText}</Text>
+                  <Text style={[styles.removeText, styles.text]}>
+                    {subText}
+                  </Text>
                 </TouchableHighlight>
               </>
             )}
@@ -180,8 +184,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   avatar: {
-    height: 80,
-    width: 80,
+    height: 70,
+    width: 70,
   },
   avatarImg: {
     width: '100%',
@@ -210,17 +214,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flex: 1,
   },
-  acceptText: {
-    color: Colors.white,
-    fontSize: 18,
+  text: {
+    fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
   },
+  acceptText: {
+    color: Colors.white,
+  },
   removeText: {
     color: Colors.black,
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
   },
   time: {
     position: 'absolute',

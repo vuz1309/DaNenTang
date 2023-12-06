@@ -22,13 +22,16 @@ import {postInfoActions} from '../../state-management/redux/slices/HomeListPost'
 import {deletePostRequest} from '../../api/modules/post.request';
 import Loading from '../base/Loading';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
-const PostHeader = ({data}) => {
+const PostHeader = ({data, isShowRemove = true}) => {
   const {navigate} = useNavigation();
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
     [data.created],
   );
   const [isShowModalReport, setShowModalReport] = React.useState(false);
+  const showRemoveBtn = useMemo(() => {
+    return isShowRemove || Number(data.can_edit) > 0;
+  }, []);
   const toggleModalReport = () => {
     setShowModalReport(!isShowModalReport);
   };
@@ -139,7 +142,7 @@ const PostHeader = ({data}) => {
               color={Colors.headerIconGrey}
             />
           </StyledTouchable>
-          {
+          {showRemoveBtn && (
             <StyledTouchable onPress={toggleModalDelPost}>
               <VectorIcon
                 name="close"
@@ -148,7 +151,7 @@ const PostHeader = ({data}) => {
                 color={Colors.headerIconGrey}
               />
             </StyledTouchable>
-          }
+          )}
         </View>
       </View>
       <TouchableHighlight

@@ -37,7 +37,7 @@ export const FriendActions = ({text, icon, action, color = Colors.black}) => {
         </View>
         <Text
           style={{
-            color: color,
+            color,
             fontWeight: '700',
             fontSize: 20,
           }}>
