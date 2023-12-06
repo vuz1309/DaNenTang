@@ -20,6 +20,7 @@ const APP_ROUTE = {
   USER_SCREEN: 'UserScreen',
   WEBVIEW: 'WebView',
   UPLOAD: 'UploadScreen',
+  COMMENT_PAGE : '@APP_ROUTE/COMMENT_PAGE',
 };
 
 export {APP_ROUTE, AUTHENTICATE_ROUTE, ONBOARDING_ROUTE};

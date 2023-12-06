@@ -18,10 +18,8 @@ import {useState} from 'react';
 import {getSavedSearchRequest} from '../api/modules/search';
 import useSearch from '../hooks/useSearch';
 import {SingleSavedItem} from './search/SingleSavedItem';
-import {Layout} from './base/Layout';
-import {CommentModal} from './modal/CommentModal';
-import ModalizeManager from './modal/ModalizeManager';
-import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
+import { requestJSONWithAuth , request} from '../api/request';
+
 const Item = ({listItem}) => {
   if (listItem.length == 0) {
     return;
@@ -101,20 +99,22 @@ const SavedItem = ({listItem}) => {
 };
 
 const Header = () => {
-  const [showingCommentModal, setShowingCommentModal] = useState(false);
-  const onShowComment = () => {
-    logger('opening comment modal ...');
-    setShowingCommentModal(!showingCommentModal);
-  };
-
   const [selectedId, setSelectedId] = useState();
   const [text, setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [savedData, setSavedData] = useState([]);
   const [searchData, setSearchData] = useState([]);
-  const onPressSearch = () => {
+  const onPressSearch = async () => {
     logger('Opening search modal ...');
     setModalVisible(true);
+    try {
+      const response = await getSavedSearchRequest({index: 0, count: 20});
+      logger('saved search: ', true, response);
+      setSavedData(response.data.data);
+    } catch (err) {
+      logger('err saved search data api: ', true, err);
+      setSavedData([]);
+    }
   };
   const handleChangeText = text => {
     setText(text);
@@ -124,21 +124,9 @@ const Header = () => {
     logger('completed search! Data: ', data);
     setSearchData(data);
   };
-  const fetchSearchData = () =>
+  const fetchSearchData = () => {
     useSearch({onComplete: onCompleteSearch, keyword: text});
-
-  React.useEffect(() => {
-    const fetchSavedSearchData = async () => {
-      try {
-        const response = await getSavedSearchRequest({index: 0, count: 20});
-        setSavedData(response.data.data);
-      } catch (err) {
-        logger('err api: ', true, err);
-        setSavedData([]);
-      }
-    };
-    fetchSavedSearchData();
-  }, []);
+  }
 
   return (
     <View style={styles.container}>
@@ -159,11 +147,10 @@ const Header = () => {
             type="Fontisto"
             size={22}
             color={Colors.grey}
-            onPress={onShowComment}
           />
         </View>
       </View>
-     {showingCommentModal ? (<CommentModal isOpen={true} />) : (logger('not opening')) }
+
       {modalVisible ? (
         <Modal
           animationType="fade"
@@ -209,7 +196,7 @@ const Header = () => {
                 <View style={[styles.rowBetween, {alignItems: 'center'}]}>
                   <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
                   <TouchableOpacity>
-                    <Text style={styles.biggerText} onPress={onShowComment}>
+                    <Text style={styles.biggerText}>
                       CHỈNH SỬA
                     </Text>
                   </TouchableOpacity>
