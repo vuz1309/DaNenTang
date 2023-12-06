@@ -14,7 +14,7 @@ import {TabName} from '../data/TabData';
 const WatchScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
   const [posts, setPosts] = React.useState([]);
-  const [lastId, setLastId] = React.useState('1');
+  const [lastId, setLastId] = React.useState('19999');
   const reload = () => {
     if (refreshing) return;
     setRefreshing(true);
@@ -23,11 +23,11 @@ const WatchScreen = () => {
       campaign_id: '1',
       latitude: '1.0',
       longitude: '1.0',
-      last_id: '1',
+      last_id: '9999',
       index: '0',
       count: '10',
     });
-    setLastId('1');
+    setLastId('9999');
   };
   const loadMore = () => {
     if (isLoadMore) return;
@@ -100,7 +100,7 @@ const WatchScreen = () => {
         <View
           style={{backgroundColor: Colors.white, marginBottom: 12}}
           key={po.id}>
-          <PostHeader data={po} />
+          <PostHeader data={po} isShowRemove={false} />
 
           <PostVideo videoUrl={po.video.url} />
 
