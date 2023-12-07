@@ -15,6 +15,7 @@ import {Colors} from '../../utils/Colors';
 import PostFooter from './PostFooter';
 import VectorIcon from '../../utils/VectorIcon';
 import PostDescription from './PostDescription';
+import ZoomableImage from '../base/ZoomableImage';
 
 const DetailsPost = ({item, onClose, firstItem = 0}) => {
   const [opacity, setOpacity] = useState(1);
@@ -43,25 +44,12 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
             />
           </TouchableOpacity>
         </View>
-        {/* 
+
         <ZoomableImage
-          onClose={onClose}
           urls={item.image.map(i => ({url: i.url}))}
+          onClose={onClose}
           index={firstItem}
-        /> */}
-        <View style={{flex: 1}}>
-          <ImageViewer
-            imageUrls={item.image.map(i => ({url: i.url}))}
-            enableSwipeDown={true}
-            maxScale={3}
-            minScale={1}
-            onSwipeDown={() => {
-              setOpacity(0.3);
-              onClose();
-            }}
-            index={firstItem}
-          />
-        </View>
+        />
         {opacity == 1 && (
           <View style={styles.postInfo}>
             <View style={{paddingHorizontal: 14}}>

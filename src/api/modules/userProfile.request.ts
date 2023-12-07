@@ -23,3 +23,7 @@ export const setUserInfo = (body: FormData) => {
 export const changeProfileAfterSignup = (body: FormData) => {
   return authAndFileRequest.post('/change_profile_after_signup', body);
 };
+
+export const logout = () => {
+  return requestJSONWithAuth('/logout', {});
+};

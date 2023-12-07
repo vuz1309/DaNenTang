@@ -11,3 +11,10 @@ export interface TypeRegisterRequest extends AxiosRequestConfig {
   password: string;
   uuid: string;
 }
+export interface TypeCheckVerifyCode extends AxiosRequestConfig {
+  email: string;
+  code_verify: string;
+}
+export interface TypeGetVerifyCode extends AxiosRequestConfig {
+  email: string;
+}

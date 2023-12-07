@@ -9,7 +9,7 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import FacebookLogo from '../assets/images/fblogo.png';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
@@ -18,6 +18,7 @@ import {useState} from 'react';
 import {getSavedSearchRequest} from '../api/modules/search';
 import useSearch from '../hooks/useSearch';
 import {SingleSavedItem} from './search/SingleSavedItem';
+import { requestJSONWithAuth , request} from '../api/request';
 
 const Item = ({listItem}) => {
   if (listItem.length == 0) {
@@ -103,9 +104,17 @@ const Header = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [savedData, setSavedData] = useState([]);
   const [searchData, setSearchData] = useState([]);
-  const onPressSearch = () => {
+  const onPressSearch = async () => {
     logger('Opening search modal ...');
     setModalVisible(true);
+    try {
+      const response = await getSavedSearchRequest({index: 0, count: 20});
+      logger('saved search: ', true, response);
+      setSavedData(response.data.data);
+    } catch (err) {
+      logger('err saved search data api: ', true, err);
+      setSavedData([]);
+    }
   };
   const handleChangeText = text => {
     setText(text);
@@ -115,24 +124,9 @@ const Header = () => {
     logger('completed search! Data: ', data);
     setSearchData(data);
   };
-  const fetchSearchData = () =>
+  const fetchSearchData = () => {
     useSearch({onComplete: onCompleteSearch, keyword: text});
-
-  React.useEffect(() => {
-    // const  fetchSearchData = ()  => useSearch({onComplete: onCompleteSearch, keyword:text});
-    // fetchSearchData();
-
-    const fetchSavedSearchData = async () => {
-      try {
-        const response = await getSavedSearchRequest({index: 0, count: 20});
-        setSavedData(response.data.data);
-      } catch (err) {
-        logger('err api: ', true, err);
-        setSavedData([]);
-      }
-    };
-    fetchSavedSearchData();
-  }, []);
+  }
 
   return (
     <View style={styles.container}>
@@ -202,7 +196,9 @@ const Header = () => {
                 <View style={[styles.rowBetween, {alignItems: 'center'}]}>
                   <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
                   <TouchableOpacity>
-                    <Text style={styles.biggerText}>CHỈNH SỬA</Text>
+                    <Text style={styles.biggerText}>
+                      CHỈNH SỬA
+                    </Text>
                   </TouchableOpacity>
                 </View>
                 <View
@@ -213,7 +209,6 @@ const Header = () => {
                   }}
                 />
                 <ScrollView>
-                  {/* <SavedItem listItem={savedData} /> */}
                   <View style={{paddingBottom: 12}}>
                     {savedData.map(item => (
                       <SingleSavedItem

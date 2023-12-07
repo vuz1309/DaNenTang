@@ -8,7 +8,7 @@ import {
   Dimensions,
   TouchableHighlight,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import Like from '../../assets/images/like.jpeg';
 import Heart from '../../assets/images/heart.jpeg';
 import {Colors} from '../../utils/Colors';
@@ -24,22 +24,32 @@ import {SUCCESS_CODE} from '../../utils/constants';
 import {Themes} from '../../assets/themes';
 
 import ListReactions from '../comments/ListReactions';
+import { APP_ROUTE } from '../../navigation/config/routes';
+import { logger } from '../../utils/helper';
+import { useNavigation } from '@react-navigation/native';
+import {formatNumberSplitBy} from '../../helpers/helpers';
 
 const ScreenHeight = Dimensions.get('window').height;
 
+const FEEL_ENUM = {
+  UN_FEEL: '-1',
+  LIKE: '0',
+  DISLIKE: '1',
+};
+
 export const feelConfigs = {
-  '-1': {
+  [FEEL_ENUM.UN_FEEL]: {
     icon: 'like2',
     color: null,
     text: 'Thích',
   },
-  0: {
+  [FEEL_ENUM.LIKE]: {
     icon: 'dislike1',
     color: Themes.COLORS.red,
     text: 'Yêu',
     img: Heart,
   },
-  1: {
+  [FEEL_ENUM.DISLIKE]: {
     icon: 'like1',
     color: Colors.primaryColor,
     text: 'Thích',
@@ -53,55 +63,66 @@ export const feelConfigs = {
  * @returns
  */
 const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
+  const {navigate} = useNavigation();
   const [reactionModal, setReactionModal] = useState(false);
   const [feelPost, setFeelPost] = useState(data.is_felt);
 
   const [showModalReactions, setShowModalReactions] = useState(false);
-
-  const handleDelFeel = async () => {
-    const updateData = {...data};
+  const feelText = useMemo(() => {
+    if (feelPost === FEEL_ENUM.UN_FEEL) return data.feel;
+    else if (Number(data.feel) > 1)
+      return `Bạn và ${formatNumberSplitBy(Number(data.feel) - 1)} người khác`;
+    return 'Bạn';
+  }, [data.is_felt, data.feel]);
+  const handleDelFeel = async id => {
     try {
-      const {data} = await delFeelPost({id: data.id});
+      const {data} = await delFeelPost({id});
       console.log('del feel:', data);
-      store.dispatch(postInfoActions.updatePost(updateData));
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleFeel = async (id, type) => {
+    try {
+      const {data} = await feelPostApi({
+        id,
+        type,
+      });
+      return data;
     } catch (error) {
       console.log(error);
     }
   };
   const handleClickLike = async (type = '1') => {
     if (type == feelPost) return;
-    const updateData = {...data};
-    setFeelPost(type);
-    if (type == '-1') {
-      return await handleDelFeel();
-    }
 
     const id = data.id;
+    setFeelPost(type);
+    const res =
+      type == FEEL_ENUM.UN_FEEL
+        ? await handleDelFeel(id)
+        : await handleFeel(id, type);
+    console.log('res', res);
+    // data.feel = (
+    //   Number(res.data.kudos) + Number(res.data.disappointed)
+    // ).toString();
+    // data.is_felt = type;
 
-    try {
-      const {data} = await feelPostApi({
-        id,
-        type,
-      });
-      console.log('like reponse', data);
-      if (data.code == SUCCESS_CODE) {
-        updateData.feel = (
-          Number(data.data.kudos) + Number(data.data.disappointed)
-        ).toString();
-        updateData.is_felt = type;
-
-        store.dispatch(postInfoActions.updatePost(updateData));
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    store.dispatch(
+      postInfoActions.updatePost({
+        ...data,
+        is_felt: type,
+        feel: (
+          Number(res.data.kudos) + Number(res.data.disappointed)
+        ).toString(),
+      }),
+    );
   };
   const handleReactionClick = () => {
     if (Number(data.comment_mark) > 0) {
       // open modal comment (TODO)
-    } else {
-      setShowModalReactions(true);
-    }
+    } else if (Number(data.feel) > 0) setShowModalReactions(true);
   };
 
   return (
@@ -124,7 +145,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
                 <Image source={Heart} style={styles.reactionIcon} />
 
                 <Text style={{...styles.reactionCount, ...textStyles}}>
-                  {data.feel}
+                  {feelText}
                 </Text>
               </View>
             )}
@@ -147,7 +168,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               <TouchableOpacity
                 style={{transform: [{scale: 1.5}]}}
                 onPress={() => {
-                  handleClickLike('1');
+                  handleClickLike(FEEL_ENUM.DISLIKE);
                   setReactionModal(false);
                 }}>
                 <View>
@@ -157,7 +178,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               <TouchableOpacity
                 style={{transform: [{scale: 1.5}]}}
                 onPress={() => {
-                  handleClickLike('0');
+                  handleClickLike(FEEL_ENUM.LIKE);
                   setReactionModal(false);
                 }}>
                 <View>
@@ -178,7 +199,13 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           }
 
           <TouchableOpacity
-            onPress={() => handleClickLike(feelPost == '-1' ? '1' : '-1')}
+            onPress={() =>
+              handleClickLike(
+                feelPost == FEEL_ENUM.UN_FEEL
+                  ? FEEL_ENUM.DISLIKE
+                  : FEEL_ENUM.UN_FEEL,
+              )
+            }
             onLongPress={() => setReactionModal(true)}>
             <View style={styles.row}>
               {feelConfigs[feelPost].img ? (
@@ -220,17 +247,24 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
             </View>
           </TouchableOpacity>
 
-          <View style={styles.row}>
-            <VectorIcon
-              name="chatbox-outline"
-              type="Ionicons"
-              size={25}
-              color={textStyles.color}
-            />
-            <Text style={{...styles.reactionCount, ...textStyles}}>
-              Bình luận
-            </Text>
+            <TouchableOpacity
+            onPress={() => {navigate(APP_ROUTE.COMMENT_PAGE, {item : data})}}
+            >
+          <View style={styles.row} >
+
+              <VectorIcon
+                name="chatbox-outline"
+                type="Ionicons"
+                size={25}
+                color={textStyles.color}
+              />
+              <Text  style={{...styles.reactionCount, ...textStyles}}>
+                Bình luận
+              </Text>
           </View>
+
+            </TouchableOpacity>
+
 
           <View style={styles.row}>
             <VectorIcon
