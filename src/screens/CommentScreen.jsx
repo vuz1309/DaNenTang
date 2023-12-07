@@ -9,171 +9,21 @@ import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
 import {APP_ROUTE, ONBOARDING_ROUTE} from '../navigation/config/routes';
 import PostBody from '../components/posts/PostBody';
-import {ScrollView, TextInput, TouchableHighlight} from 'react-native-gesture-handler';
+import {
+  ScrollView,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import {Image} from 'react-native';
-import { getMarkComments, setMarkComments } from '../api/modules/comment.request';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
-
-const LIST_COMMENTS = [
-  {
-    id: '4',
-    mark_content: 'hey',
-    type_of_mark: '0',
-    created: '2023-12-06T07:57:37.219Z',
-    poster: {
-      id: '163',
-      name: 'Nguyễn Tuấn',
-      avatar:
-        'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-    },
-    comments: [],
-  },
-  {
-    id: '1',
-    mark_content: 'so god',
-    type_of_mark: '1',
-    created: '2023-11-25T18:27:10.344Z',
-    poster: {
-      id: '18',
-      name: 'Abcd1234',
-      avatar:
-        'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-    },
-    comments: [
-      {
-        content: 'so god',
-        created: '2023-11-25T18:28:41.104Z',
-        poster: {
-          id: '18',
-          name: 'Abcd1234',
-          avatar:
-            'https://st.nettruyenus.com/data/comics/34/dieu-dieu-yeu-dau-cuoi-cung-sung-duoc-em-532.jpg',
-        },
-      },
-      {
-        content: 'dâfdgdfg',
-        created: '2023-11-26T10:23:22.900Z',
-        poster: {
-          id: '18',
-          name: 'Abcd1234',
-          avatar:
-            'https://st.nettruyenus.com/data/comics/34/dieu-dieu-yeu-dau-cuoi-cung-sung-duoc-em-532.jpg',
-        },
-      },
-      {
-        content: 'so good',
-        created: '2023-12-01T10:18:37.432Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://st.nettruyenus.com/data/comics/34/dieu-dieu-yeu-dau-cuoi-cung-sung-duoc-em-532.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T10:22:39.360Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T10:34:30.437Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T10:35:12.494Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T10:37:10.928Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T16:46:21.446Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T16:46:52.812Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T16:48:28.940Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T16:48:35.037Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T16:49:25.889Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-      {
-        content: 'so sôso good',
-        created: '2023-12-01T16:51:54.246Z',
-        poster: {
-          id: '102',
-          name: 'Minh12345',
-          avatar:
-            'https://it4788.catan.io.vn/files/avatar-1701153643437-841715809.jpg',
-        },
-      },
-    ],
-  },
-];
+import {getMarkComments, setMarkComments} from '../api/modules/comment.request';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEnvelope} from '@fortawesome/free-solid-svg-icons';
+import PostHeader from '../components/posts/PostHeader';
+import PostHeaderComment from '../components/posts/PostHeaderComment';
+import PostBodyComment from '../components/posts/PostBodyComment';
+import { useNavigation } from '@react-navigation/native';
+import PostDescription from '../components/posts/PostDescription';
 
 const Comment = ({
   id,
@@ -184,7 +34,9 @@ const Comment = ({
   content,
   createTime,
   replies,
+  onClickReply,
 }) => {
+  const inputRef = useRef(null);
   const targetDate = new Date(createTime);
   const currentTime = new Date();
   const timeDiff = Math.abs(targetDate - currentTime);
@@ -200,11 +52,28 @@ const Comment = ({
     createdValue = `${Math.floor(minutesDiff / 60 / 24 / 7)} tuần `;
   } else {
     createdValue = `${Math.floor(minutesDiff)} phút `;
-  }
+  };
+  const {navigate} = useNavigation();
+
   return (
     <View style={styles.column}>
       <View style={styles.row}>
-        <TouchableHighlight style={styles.row}>
+        <TouchableHighlight
+          onPress={() => {
+            navigate('UserScreen', {userId: authorId});
+          }}
+          style={{
+            borderWidth: 1,
+            borderColor: Colors.borderGrey,
+            borderStyle: 'solid',
+            borderRadius: 50,
+            height: 40,
+            width: 40,
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+          // style={styles.row}
+          >
           <Image
             source={{
               uri: authorAvatar,
@@ -224,14 +93,21 @@ const Comment = ({
         </View>
       </View>
       <View style={styles.reactCommentWrapper}>
-        <Text>{createdValue} </Text>
-        <Text style={styles.reactCommentText} onPress={() => {}}>
-          {' '}
-          Thích{' '}
+        <Text style={{color: 'black'}}>{createdValue} </Text>
+        <Text 
+        style={styles.reactCommentText} 
+        onPress={() => {}}>
+          Thích
         </Text>
-        <Text style={styles.reactCommentText}> Phản hồi </Text>
+        <TouchableOpacity
+          onPress={() => {
+            onClickReply(id);
+          }}>
+          <Text style={styles.reactCommentText}> Phản hồi </Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.replies}>
+      {/* <View > */}
+      <ScrollView style={styles.replies}>
         {Array.isArray(replies) &&
           replies.map(reply => (
             <Comment
@@ -240,108 +116,125 @@ const Comment = ({
               authorName={reply.poster.name}
               authorAvatar={reply.poster.avatar}
               createTime={reply.created}
+              onClickReply={() => {
+                onClickReply(id);
+              }}
             />
           ))}
-      </View>
+      </ScrollView>
+      {/* </View> */}
     </View>
   );
 };
-
+// markType : 1 - comment, 2 - reply
 const CommentScreen = ({route, navigation}) => {
+  const [markType, setMarkType] = useState(1);
   const [currentComment, setCurrentComment] = useState('');
-  const [comments, setComments] = useState(LIST_COMMENTS);
+  const [currentMarkId, setCurrentMarkId] = useState(null);
+  const [comments, setComments] = useState([]);
   const [textComment, setTextComment] = useState('');
   const {item} = route.params;
- const onPressSendComment = async () => {
-    const response = await setMarkComments({
-      id: item.id,
-      content: textComment,
-      index: "0",
-      count: "10",
-      type : "1",
-    });
-    setTextComment('');
-   const fetchMarkComments = async () => {
-    try{
-      const response = await getMarkComments({
+  const inputRef = useRef(null);
+  const onPressReply = markId => {
+    logger('repling...', false, markId);
+    inputRef?.current?.focus();
+    setMarkType(2);
+    setCurrentMarkId(markId);
+  };
+  logger('markType: ', false, markType);
+  const onPressSendComment = async () => {
+    if (markType == 1) {
+      const response = await setMarkComments({
         id: item.id,
-        index : 0,
-        count : 10,
+        content: textComment,
+        index: '0',
+        count: '10',
+        type: '1',
       });
-      setComments(response?.data?.data);
-      setCurrentComment(response?.data?.data?.created)
-    }catch(err){
-      logger('excpetion in Comment Screen!');
+    } else if (markType == 2) {
+      const response = await setMarkComments({
+        id: item.id,
+        content: textComment,
+        index: '0',
+        count: '10',
+        type: '1',
+        mark_id: currentMarkId,
+      });
     }
-   };
-   await fetchMarkComments();
-    logger('response set mark comment: ', false, response.data.data);
- }
-  React.useEffect(() => {
+
+    setTextComment('');
     const fetchMarkComments = async () => {
-      try{
+      try {
         const response = await getMarkComments({
           id: item.id,
-          index : 0,
-          count : 10,
+          index: 0,
+          count: 10,
         });
         setComments(response?.data?.data);
-        setCurrentComment(response?.data?.data?.created)
-      }catch(err){
+        setCurrentComment(response?.data?.data?.created);
+      } catch (err) {
         logger('excpetion in Comment Screen!');
       }
-    }
-    
+    };
+    await fetchMarkComments();
+    logger('response set mark comment: ', false, response.data.data);
+  };
+  React.useEffect(() => {
+    const fetchMarkComments = async () => {
+      try {
+        const response = await getMarkComments({
+          id: item.id,
+          index: 0,
+          count: 10,
+        });
+        setComments(response?.data?.data);
+        setCurrentComment(response?.data?.data?.created);
+      } catch (err) {
+        logger('excpetion in Comment Screen!');
+      }
+    };
     fetchMarkComments();
-  },[currentComment])
-
+  }, [currentComment]);
 
   return (
     <View style={styles.wrapper}>
-      <ScrollView style={styles.wrapper}>
-      <View style={styles.header}>
+      <PostHeaderComment data={item} />
+      <ScrollView style={styles.subWrapper}>
+        <PostBodyComment key={item.id} item={item} />
+        {Array.isArray(comments) &&
+          comments.map(comment => (
+            <Comment
+              id={comment.id}
+              type={comment.type_of_mark}
+              authorId={comment.poster.id}
+              authorName={comment.poster.name}
+              authorAvatar={comment.poster.avatar}
+              content={comment.mark_content}
+              createTime={comment.created}
+              replies={comment.comments}
+              onClickReply={onPressReply}
+            />
+          ))}
+      </ScrollView>
+      <View style={styles.addComment}>
+        <TextInput
+          onPressOut={() => setMarkType(1)}
+          ref={inputRef}
+          value={textComment}
+          style={styles.inputComment}
+          placeholder="Bình luận dưới tên bạn"
+          onChangeText={value => setTextComment(value)}
+        />
         <VectorIcon
-          name="arrow-back"
-          type="Ionicons"
+          name="paper-plane"
+          type="FontAwesome"
           color={Colors.black}
           size={20}
-          onPress={() => navigation.navigate(APP_ROUTE.HOME_TAB)}
+          style={styles.sendButton}
+          onPress={onPressSendComment}
         />
-        <PostBody key={item.id} item={item} />
-        {Array.isArray(comments) && comments.map(comment => (
-          <Comment
-            id={comment.id}
-            type={comment.type_of_mark}
-            authorId={comment.poster.id}
-            authorName={comment.poster.name}
-            authorAvatar={comment.poster.avatar}
-            content={comment.mark_content}
-            createTime={comment.created}
-            replies={comment.comments}
-          />
-        ))}
-         
       </View>
-      </ScrollView>
-      <View style = {styles.addComment}>
-            <TextInput
-            value={textComment}
-            style = {styles.inputComment}
-            placeholder='Bình luận dưới tên bạn'
-            onChangeText={(value) => setTextComment(value)}
-            />
-              <VectorIcon
-              name = "paper-plane"
-              type="FontAwesome"
-              color={Colors.black}
-              size={20}
-              style ={styles.sendButton}
-              onPress = {onPressSendComment}
-              />
-        </View>
-
     </View>
-    
   );
 };
 // }
@@ -351,9 +244,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'relative',
   },
+  subWrapper: {
+    backgroundColor: 'white',
+    position: 'relative',
+    marginBottom: '15%',
+  },
   header: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
   },
   userAvatar: {
     height: 40,
@@ -366,7 +264,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingRight: 10,
     flexDirection: 'column',
-    backgroundColor: 'lightgray',
+    backgroundColor: '#f0f1f4',
     borderRadius: 10,
     width: 'auto',
     marginLeft: 10,
@@ -391,8 +289,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: '15%',
     paddingTop: 5,
+    justifyContent: 'space-between',
+    width: '60%',
   },
   reactCommentText: {
+    color: 'black',
     fontWeight: 500,
   },
   replies: {
@@ -401,25 +302,23 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  addComment : {
+  addComment: {
     backgroundColor: 'white',
     width: '100%',
     position: 'absolute',
     alignItems: 'center',
     bottom: 0,
     display: 'flex',
-    flexDirection : 'row',
+    flexDirection: 'row',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 1,
-    shadowRadius: 2,
-    elevation: 2,
-
+    borderTopWidth: 1,
+    borderTopColor: 'lightgray',
+    padding: 5,
+    paddingTop: 10,
   },
-  inputComment : {
+  inputComment: {
     width: '70%',
-    backgroundColor: 'lightgray',
+    backgroundColor: '#f0f1f4',
     borderRadius: 20,
     padding: 5,
     paddingLeft: 10,
@@ -432,6 +331,5 @@ const styles = StyleSheet.create({
     // padding: 8,
     // borderRadius: 5,
   },
-
 });
 export default CommentScreen;

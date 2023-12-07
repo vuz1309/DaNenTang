@@ -13,9 +13,12 @@ import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import {StyledTouchable} from '../components/base';
 import {Themes} from '../assets/themes';
+import BuyCoins from "./coins/BuyCoins";
+import ChangePassword from "./auths/ChangePassword";
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
   // const {requestLogout} = useLogout(auth(), fireStore());
+  const [isChangePass, setIsChangePass] = React.useState(false);
   const onLogout = async () => {
     try {
       store.dispatch(userInfoActions.logOut());
@@ -39,15 +42,32 @@ const ProfileScreen = () => {
       console.log(error);
     }
   };
-
+  const toggleModalChangePass = ()=> {
+    setIsChangePass(!isChangePass)
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile Screen</Text>
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isChangePass}
+          onRequestClose={toggleModalChangePass}
+          style={{flex:1}}
+      >
+        <ChangePassword closeModal={toggleModalChangePass}/>
+      </Modal>
+      <TouchableOpacity
+          onPress={toggleModalChangePass}
+          style={styles.changePassBtn}>
+        <Text style={{...styles.logout, color:Colors.primaryColor}}>Đổi mật khẩu</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => setIsShowModalLogout(true)}
         style={styles.logoutButton}>
         <Text style={styles.logout}>Đăng xuất</Text>
       </TouchableOpacity>
+
       <Modal
         animationIn={'slideInDown'}
         animationOut={'slideOutDown'}
@@ -120,6 +140,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  changePassBtn:{
+    backgroundColor: Colors.white,
+    borderWidth:1,
+    borderColor:Colors.primaryColor,
+    padding: 12,
+    borderRadius: 20,
+    width: '90%',
+    alignItems: 'center',
+    marginBottom: 30,
+  }
 });
 
 export default ProfileScreen;

@@ -13,7 +13,7 @@ export interface IUser {
   id?: string;
   username?: string;
   avatar?: string;
-  coins?: string;
+  coins: string;
   active?: string;
 }
 
@@ -51,7 +51,6 @@ const loginSuccess: Reducer<
 const updateUserInfo: Reducer<PayloadAction<IUser>> = (state, {payload}) => {
   state.user = {...state.user, ...payload};
 };
-
 const getUserInfoRequest: Reducer<
   PayloadAction<Pick<IUserInfoState, 'token' | 'user'>>
 > = state => {
@@ -86,7 +85,13 @@ const logOut: Reducer = state => {
   delete state.token;
   delete state.user;
 };
-
+const updateCoin: Reducer<PayloadAction<string>> = (state, { payload }) => {
+  // Kiểm tra xem người dùng đã đăng nhập hay chưa
+  if (state.user) {
+    // Cập nhật số coin trong state
+    state.user.coins = payload;
+  }
+};
 const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState,
@@ -99,6 +104,7 @@ const userInfoSlice = createSlice({
     logOut,
     loginSuccess,
     updateUserInfo,
+    updateCoin
   },
 });
 
