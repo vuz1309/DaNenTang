@@ -1,4 +1,4 @@
-import {View, Text, TouchableHighlight, Image, Pressable} from 'react-native';
+import {View, Text, TouchableHighlight, Image, Pressable, StyleSheet} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
 import Modal from 'react-native-modal';
@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
 import {FriendActions} from '../userScreens/FriendActions';
 import {Themes} from '../../assets/themes';
-const FriendCard = ({fr}) => {
+const BlockCard = ({fr}) => {
   const [isShowModal, setIsShowModal] = React.useState();
   const {navigate} = useNavigation();
   return (
@@ -72,9 +72,6 @@ const FriendCard = ({fr}) => {
                 }}>
                 {fr.name}
               </Text>
-              <Text style={{color: Colors.grey}}>
-                {fr.same_friends} bạn chung
-              </Text>
             </View>
           </View>
           <Pressable style={{padding: 8}} onPress={() => setIsShowModal(true)}>
@@ -97,34 +94,35 @@ const FriendCard = ({fr}) => {
           swipeDirection={'down'}
           onSwipeComplete={() => setIsShowModal(0)}
           onBackdropPress={() => setIsShowModal(0)}>
-          <View
+          <Pressable
             style={{
               backgroundColor: Colors.white,
               borderRadius: 4,
               overflow: 'hidden',
+              flexDirection:'row',
+              padding:5
             }}>
-            <FriendActions text={`Nhắn tin`} icon={'facebook-messenger'} />
-            <FriendActions
-              action={() => {
-                setIsShowModal(0);
-                blockUser();
-              }}
-              text={`Chặn ${fr.username}`}
-              icon="user-alt-slash"
-            />
-            <FriendActions
-              action={() => {
-                setIsShowModal(0);
-              }}
-              text={`Hủy kết bạn`}
-              color={Themes.COLORS.red}
-              icon="user-times"
-            />
-          </View>
+             <VectorIcon
+              type='Octicons'
+              name = 'blocked'
+              size={30}
+              color={Colors.black}
+              />
+            <Text
+            style={
+              {
+                fontSize:18,
+                fontWeight:500,
+                color:Colors.black,
+                marginLeft:10
+              }
+            }>Bỏ chặn</Text>
+          </Pressable>
         </Modal>
       )}
     </View>
   );
+
 };
 
-export default FriendCard;
+export default BlockCard;

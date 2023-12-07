@@ -49,6 +49,7 @@ const AppChild = () => {
             <Stack.Screen name={APP_ROUTE.UPLOAD} component={UploadScreen} />
             <Stack.Screen name={APP_ROUTE.USER_SCREEN} component={UserScreen} />
             <Stack.Screen name={APP_ROUTE.WEBVIEW} component={WebViewScreen} />
+            <Stack.Screen name={APP_ROUTE.BLOCK} component={BlockScreen} />
           </>
         ) : (
           <>
@@ -97,6 +98,7 @@ import ReportScreen from './src/screens/reports/ReportScreen';
 import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
 import SplashScreen from './src/screens/SplashScreen';
+import BlockScreen from './src/screens/blocks/BlockScreen';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

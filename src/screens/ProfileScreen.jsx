@@ -1,11 +1,15 @@
 import {StyleSheet, Text, TouchableOpacity, View,Image, Pressable,Animated, ScrollView} from 'react-native';
 import React, {useContext,useState,useRef,useEffect} from 'react';
 import {Colors} from '../utils/Colors';
+import {useSelector} from 'react-redux';
+
 import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
 import {store} from '../state-management/redux/store';
+import {APP_ROUTE} from '../navigation/config/routes'
+
 import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
@@ -15,8 +19,12 @@ import {Themes} from '../assets/themes';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
 import { getFreeDiskStorageOldSync } from 'react-native-device-info';
+import {useNavigation} from '@react-navigation/native';
+
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
   const {requestLogout} = useLogout(auth(), fireStore());
   const onLogout = async () => {
@@ -45,6 +53,15 @@ const ProfileScreen = () => {
 
   const [help,setHelp]=useState(false);
   const [setting,setSetting]=useState(false);
+
+  const userLogged = useSelector(
+    /**
+     *
+     * @param {FacebookRootState} state
+     * @returns
+     */
+    state => state.userInfo.user,
+  );
 
   const animatedHeightHelp = useRef(new Animated.Value(0)).current;
   const animatedHeightSetting = useRef(new Animated.Value(0)).current;
@@ -236,7 +253,11 @@ const ProfileScreen = () => {
           </View>
           </View>
 
-          <View style={styles.expandOption}>
+          <Pressable style={styles.expandOption} 
+            onPress={() =>
+              navigation.navigate(APP_ROUTE.BLOCK, {user: userLogged})
+            }
+          >
               <View style={styles.expandOptionShadow}></View>
             <View style={styles.expandOptionMain}>
             <VectorIcon
@@ -248,7 +269,7 @@ const ProfileScreen = () => {
               />
             <Text style={styles.expandText}>Lối tắt quyền riêng tư</Text>
           </View>
-          </View>
+          </Pressable>
 
           <View style={styles.expandOption}>
               <View style={styles.expandOptionShadow}></View>
