@@ -15,7 +15,7 @@ import {Colors} from '../../utils/Colors';
 import nullImage from '../../assets/images/avatar_null.jpg';
 import {setUserInfo} from '../../api/modules/userProfile.request';
 import {launchImageLibrary} from 'react-native-image-picker';
-import RNFetchBlob from 'rn-fetch-blob';
+
 import {createImageFormData} from '../../helpers/helpers';
 import {SUCCESS_CODE} from '../../utils/constants';
 const HeaderOption = ({name}) => {
@@ -25,6 +25,7 @@ const HeaderOption = ({name}) => {
         style={{
           fontSize: 20,
           fontWeight: 'bold',
+          color: Colors.black,
         }}>
         {name}
       </Text>
@@ -274,6 +275,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: Colors.black,
   },
   editOption: {
     paddingBottom: 10,
@@ -315,5 +317,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     flex: 0.4,
+    color: Colors.black,
   },
 });

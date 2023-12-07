@@ -21,7 +21,8 @@ import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 import {deletePostRequest} from '../../api/modules/post.request';
 import Loading from '../base/Loading';
-import UploadScreen from "../../screens/UploadScreen";
+import UploadScreen from '../../screens/UploadScreen';
+import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data, isShowRemove = true}) => {
   const {navigate} = useNavigation();
@@ -39,7 +40,7 @@ const PostHeader = ({data, isShowRemove = true}) => {
   const [isEditPost, setEditPost] = React.useState(false);
   const toggleEditModal = () => {
     setEditPost(!isEditPost);
-  }
+  };
   const [isModalVisible, setModalVisible] = React.useState(false);
   const handleCopyToClipboard = () => {
     Clipboard.setString(data.described);
@@ -230,58 +231,33 @@ const PostHeader = ({data, isShowRemove = true}) => {
             padding: 0,
           }}>
           <View style={styles.modalContent}>
-            <TouchableHighlight
+            {Number(data.can_edit) > 0 && (
+              <StyledTouchableHighlight
+                onPress={() => console.log('edit post')}
+                text={'Chỉnh sửa bài viết'}
+                emojiConfig={{
+                  name: 'edit',
+                  type: 'AntDesign',
+                  size: 24,
+                  color: Colors.headerIconGrey,
+                }}
+              />
+            )}
+            <StyledTouchableHighlight
               onPress={() =>
                 navigate(APP_ROUTE.REPORT, {
                   postId: data.id,
                   author: data.author,
                 })
               }
-              underlayColor={Colors.lightgrey}
-              style={{
-                alignItems: 'center',
-                padding: 16,
-                flexDirection: 'row',
-                gap: 12,
-              }}>
-              <>
-                <View>
-                  <VectorIcon
-                    name="report"
-                    type="Octicons"
-                    size={24}
-                    color={Colors.headerIconGrey}
-                  />
-                </View>
-                <Text style={{color: Colors.textColor, fontSize: 20}}>
-                  Báo cáo bài viết
-                </Text>
-              </>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => console.log('edit post')}
-              underlayColor={Colors.lightgrey}
-              style={{
-                alignItems: 'center',
-                padding: 16,
-                flexDirection: 'row',
-                gap: 12,
-                display: Number(data.can_edit) > 0 ? 'flex' : 'none',
-              }}>
-              <>
-                <View>
-                  <VectorIcon
-                    name="edit"
-                    type="AntDesign"
-                    size={24}
-                    color={Colors.headerIconGrey}
-                  />
-                </View>
-                <Text style={{color: Colors.textColor, fontSize: 20}}>
-                  Chỉnh sửa bài viết
-                </Text>
-              </>
-            </TouchableHighlight>
+              text={'Báo cáo bài viết'}
+              emojiConfig={{
+                name: 'report',
+                type: 'Octicons',
+                size: 24,
+                color: Colors.headerIconGrey,
+              }}
+            />
           </View>
         </Modal>
       )}

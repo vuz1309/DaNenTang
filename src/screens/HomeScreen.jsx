@@ -19,14 +19,21 @@ import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
 import UploadScreen from './UploadScreen';
-
+import AlertMessage from '../components/base/AlertMessage';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
 const HomeScreen = () => {
-  //const userLogged = useSelector(state => state.userInfo.user);
+  const userLogged = useSelector(state => state.userInfo.user);
   const [isModalVisible, setModalVisible] = useState(false);
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  const openPostModal = () => {
+    if (Number(userLogged.coins) < 50) {
+      AlertMessage('Coins không đủ, vui lòng nạp thêm.');
+      return;
+    }
+    setModalVisible(true);
+  };
+  const closePostModal = () => {
+    setModalVisible(false);
   };
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
@@ -109,9 +116,9 @@ const HomeScreen = () => {
         />
       }>
       <Modal animationType="slide" transparent={false} visible={isModalVisible}>
-        <UploadScreen onClose={toggleModal} title={'upload'} />
+        <UploadScreen onClose={closePostModal} title={'upload'} />
       </Modal>
-      <SubHeader onClick={toggleModal} />
+      <SubHeader onClick={openPostModal} />
       <Stories />
       <Post listPost={listPosts} />
       {isLoadMore && <Loading />}
