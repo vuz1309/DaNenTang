@@ -17,7 +17,7 @@ export const authAndFileRequest = createApiInstance({
     'Content-Type': 'multipart/form-data',
   },
 });
-import {store} from '../state-management/redux/store';
+
 const authRequestJSON = createApiInstance(
   {
     baseURL: BE_URL,
@@ -41,6 +41,7 @@ export const serverRequest = axios.create({
   },
 });
 
+import {store} from '../state-management/redux/store';
 export const requestJSONWithAuth = (url: string, params: object) => {
   console.log('token request', store.getState().userInfo.token);
   return authRequestJSON.post(url, params);

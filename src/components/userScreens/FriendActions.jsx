@@ -32,18 +32,21 @@ export const FriendActions = ({
           }}>
           <View
             style={{
-              padding: 8,
+              height: 40,
+              width: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
               borderRadius: 20,
               backgroundColor: Colors.lightgrey,
             }}>
-            <VectorIcon name={icon} type={iconType} size={24} color={color} />
+            <VectorIcon name={icon} type={iconType} size={20} color={color} />
           </View>
         </View>
         <Text
           style={{
             color,
             fontWeight,
-            fontSize: 20,
+            fontSize: 18,
           }}>
           {text}
         </Text>
