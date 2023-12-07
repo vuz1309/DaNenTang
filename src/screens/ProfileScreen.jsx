@@ -22,6 +22,8 @@ import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import {StyledTouchable} from '../components/base';
 import {Themes} from '../assets/themes';
+import BuyCoins from './coins/BuyCoins';
+import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
 import {getFreeDiskStorageOldSync} from 'react-native-device-info';
@@ -29,6 +31,7 @@ import {getFreeDiskStorageOldSync} from 'react-native-device-info';
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
   // const {requestLogout} = useLogout(auth(), fireStore());
+  const [isChangePass, setIsChangePass] = React.useState(false);
   const onLogout = async () => {
     try {
       store.dispatch(userInfoActions.logOut());
@@ -51,6 +54,9 @@ const ProfileScreen = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+  const toggleModalChangePass = () => {
+    setIsChangePass(!isChangePass);
   };
 
   const [help, setHelp] = useState(false);
@@ -231,6 +237,21 @@ const ProfileScreen = () => {
             color={Colors.black}
           />
         </Pressable>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isChangePass}
+          onRequestClose={toggleModalChangePass}
+          style={{flex: 1}}>
+          <ChangePassword closeModal={toggleModalChangePass} />
+        </Modal>
+        <TouchableOpacity
+          onPress={toggleModalChangePass}
+          style={styles.changePassBtn}>
+          <Text style={{...styles.logout, color: Colors.primaryColor}}>
+            Đổi mật khẩu
+          </Text>
+        </TouchableOpacity>
         <Animated.View
           style={[styles.expandContainer, {height: animatedHeightSetting}]}>
           {true ? (
@@ -513,6 +534,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  changePassBtn: {
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.primaryColor,
+    padding: 12,
+    borderRadius: 20,
+    width: '90%',
+    alignItems: 'center',
+    marginBottom: 30,
   },
 });
 
