@@ -5,18 +5,15 @@ import AlertMessage from '../components/base/AlertMessage';
 import ModalizeManager from '../components/modal/ModalizeManager';
 import {logger} from '../utils/helper';
 import React, {ReactElement} from 'react';
-import {Modalize} from 'react-native-modalize';
-import {useCombinedRefs} from '../utils/use-combined-refs';
-import {getStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
 import {APP_ROUTE, ONBOARDING_ROUTE} from '../navigation/config/routes';
-import PostHeader from '../components/posts/PostHeader';
 import PostBody from '../components/posts/PostBody';
-import {ScrollView, TouchableHighlight} from 'react-native-gesture-handler';
-import TouchableOpacity from 'react-native-gesture-handler';
+import {ScrollView, TextInput, TouchableHighlight} from 'react-native-gesture-handler';
 import {Image} from 'react-native';
-import { getMarkComments } from '../api/modules/comment.request';
+import { getMarkComments, setMarkComments } from '../api/modules/comment.request';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
 const LIST_COMMENTS = [
   {
@@ -188,7 +185,6 @@ const Comment = ({
   createTime,
   replies,
 }) => {
-  logger('replies: ', false, replies);
   const targetDate = new Date(createTime);
   const currentTime = new Date();
   const timeDiff = Math.abs(targetDate - currentTime);
@@ -252,30 +248,57 @@ const Comment = ({
 };
 
 const CommentScreen = ({route, navigation}) => {
+  const [currentComment, setCurrentComment] = useState('');
   const [comments, setComments] = useState(LIST_COMMENTS);
+  const [textComment, setTextComment] = useState('');
   const {item} = route.params;
-
+ const onPressSendComment = async () => {
+    const response = await setMarkComments({
+      id: item.id,
+      content: textComment,
+      index: "0",
+      count: "10",
+      type : "1",
+    });
+    setTextComment('');
+   const fetchMarkComments = async () => {
+    try{
+      const response = await getMarkComments({
+        id: item.id,
+        index : 0,
+        count : 10,
+      });
+      setComments(response?.data?.data);
+      setCurrentComment(response?.data?.data?.created)
+    }catch(err){
+      logger('excpetion in Comment Screen!');
+    }
+   };
+   await fetchMarkComments();
+    logger('response set mark comment: ', false, response.data.data);
+ }
   React.useEffect(() => {
     const fetchMarkComments = async () => {
       try{
-        logger('itemId:')
         const response = await getMarkComments({
           id: item.id,
           index : 0,
           count : 10,
         });
-        logger('response: ',false, response);
         setComments(response?.data?.data);
+        setCurrentComment(response?.data?.data?.created)
       }catch(err){
         logger('excpetion in Comment Screen!');
       }
     }
+    
     fetchMarkComments();
-  },[])
+  },[currentComment])
 
 
   return (
-    <ScrollView style={styles.wrapper}>
+    <View style={styles.wrapper}>
+      <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <VectorIcon
           name="arrow-back"
@@ -297,8 +320,28 @@ const CommentScreen = ({route, navigation}) => {
             replies={comment.comments}
           />
         ))}
+         
       </View>
-    </ScrollView>
+      </ScrollView>
+      <View style = {styles.addComment}>
+            <TextInput
+            value={textComment}
+            style = {styles.inputComment}
+            placeholder='Bình luận dưới tên bạn'
+            onChangeText={(value) => setTextComment(value)}
+            />
+              <VectorIcon
+              name = "paper-plane"
+              type="FontAwesome"
+              color={Colors.black}
+              size={20}
+              style ={styles.sendButton}
+              onPress = {onPressSendComment}
+              />
+        </View>
+
+    </View>
+    
   );
 };
 // }
@@ -306,6 +349,7 @@ const styles = StyleSheet.create({
   wrapper: {
     height: '100%',
     backgroundColor: 'white',
+    position: 'relative',
   },
   header: {
     display: 'flex',
@@ -357,5 +401,37 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
+  addComment : {
+    backgroundColor: 'white',
+    width: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    bottom: 0,
+    display: 'flex',
+    flexDirection : 'row',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 2,
+
+  },
+  inputComment : {
+    width: '70%',
+    backgroundColor: 'lightgray',
+    borderRadius: 20,
+    padding: 5,
+    paddingLeft: 10,
+    marginBottom: 10,
+  },
+  sendButton: {
+    marginBottom: 10,
+    paddingLeft: 10,
+    // backgroundColor: 'pink',
+    // padding: 8,
+    // borderRadius: 5,
+  },
+
 });
 export default CommentScreen;
