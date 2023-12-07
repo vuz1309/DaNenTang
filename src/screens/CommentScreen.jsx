@@ -9,7 +9,7 @@ import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
 import {APP_ROUTE, ONBOARDING_ROUTE} from '../navigation/config/routes';
 import PostBody from '../components/posts/PostBody';
-import {ScrollView, TextInput, TouchableHighlight} from 'react-native-gesture-handler';
+import {ScrollView, TextInput, TouchableHighlight, TouchableOpacity} from 'react-native-gesture-handler';
 import {Image} from 'react-native';
 import { getMarkComments, setMarkComments } from '../api/modules/comment.request';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -184,7 +184,9 @@ const Comment = ({
   content,
   createTime,
   replies,
+  onClickReply,
 }) => {
+   const inputRef = useRef(null);
   const targetDate = new Date(createTime);
   const currentTime = new Date();
   const timeDiff = Math.abs(targetDate - currentTime);
@@ -226,12 +228,16 @@ const Comment = ({
       <View style={styles.reactCommentWrapper}>
         <Text>{createdValue} </Text>
         <Text style={styles.reactCommentText} onPress={() => {}}>
-          {' '}
-          Thích{' '}
+          Thích
         </Text>
-        <Text style={styles.reactCommentText}> Phản hồi </Text>
+        <TouchableOpacity
+        onPress={() => {onClickReply(id)}}
+        >
+          <Text style={styles.reactCommentText}> Phản hồi </Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.replies}>
+      {/* <View > */}
+        <ScrollView style={styles.replies}>
         {Array.isArray(replies) &&
           replies.map(reply => (
             <Comment
@@ -240,19 +246,32 @@ const Comment = ({
               authorName={reply.poster.name}
               authorAvatar={reply.poster.avatar}
               createTime={reply.created}
+              onClickReply={() => {onClickReply(id)}}
             />
           ))}
-      </View>
+        </ScrollView>
+      {/* </View> */}
     </View>
   );
 };
-
+// markType : 1 - comment, 2 - reply
 const CommentScreen = ({route, navigation}) => {
+  const [markType, setMarkType] = useState(1);
   const [currentComment, setCurrentComment] = useState('');
+  const [currentMarkId, setCurrentMarkId] = useState(null);
   const [comments, setComments] = useState(LIST_COMMENTS);
   const [textComment, setTextComment] = useState('');
   const {item} = route.params;
+  const inputRef = useRef(null);
+  const onPressReply = (markId) => {
+    logger('repling...', false, markId);
+    inputRef?.current?.focus();
+    setMarkType(2);
+    setCurrentMarkId(markId);
+  }
+  logger('markType: ', false, markType);
  const onPressSendComment = async () => {
+  if(markType == 1){
     const response = await setMarkComments({
       id: item.id,
       content: textComment,
@@ -260,6 +279,17 @@ const CommentScreen = ({route, navigation}) => {
       count: "10",
       type : "1",
     });
+  }else if(markType == 2){
+    const response = await setMarkComments({
+      id: item.id,
+      content: textComment,
+      index: "0",
+      count: "10",
+      type : "1",
+      mark_id: currentMarkId,
+    });
+  }
+
     setTextComment('');
    const fetchMarkComments = async () => {
     try{
@@ -291,63 +321,68 @@ const CommentScreen = ({route, navigation}) => {
         logger('excpetion in Comment Screen!');
       }
     }
-    
     fetchMarkComments();
   },[currentComment])
 
 
   return (
     <View style={styles.wrapper}>
-      <ScrollView style={styles.wrapper}>
-      <View style={styles.header}>
+      <ScrollView style={styles.subWrapper}>
+        <View style={styles.header}>
+          <VectorIcon
+            name="arrow-back"
+            type="Ionicons"
+            color={Colors.black}
+            size={20}
+            onPress={() => navigation.navigate(APP_ROUTE.HOME_TAB)}
+          />
+          <PostBody key={item.id} item={item} />
+          {Array.isArray(comments) &&
+            comments.map(comment => (
+              <Comment
+                id={comment.id}
+                type={comment.type_of_mark}
+                authorId={comment.poster.id}
+                authorName={comment.poster.name}
+                authorAvatar={comment.poster.avatar}
+                content={comment.mark_content}
+                createTime={comment.created}
+                replies={comment.comments}
+                onClickReply={onPressReply}
+              />
+            ))}
+        </View>
+      </ScrollView>
+      <View style={styles.addComment}>
+        <TextInput
+          onPressOut={() => setMarkType(1)}
+          ref={inputRef}
+          value={textComment}
+          style={styles.inputComment}
+          placeholder="Bình luận dưới tên bạn"
+          onChangeText={value => setTextComment(value)}
+        />
         <VectorIcon
-          name="arrow-back"
-          type="Ionicons"
+          name="paper-plane"
+          type="FontAwesome"
           color={Colors.black}
           size={20}
-          onPress={() => navigation.navigate(APP_ROUTE.HOME_TAB)}
+          style={styles.sendButton}
+          onPress={onPressSendComment}
         />
-        <PostBody key={item.id} item={item} />
-        {Array.isArray(comments) && comments.map(comment => (
-          <Comment
-            id={comment.id}
-            type={comment.type_of_mark}
-            authorId={comment.poster.id}
-            authorName={comment.poster.name}
-            authorAvatar={comment.poster.avatar}
-            content={comment.mark_content}
-            createTime={comment.created}
-            replies={comment.comments}
-          />
-        ))}
-         
       </View>
-      </ScrollView>
-      <View style = {styles.addComment}>
-            <TextInput
-            value={textComment}
-            style = {styles.inputComment}
-            placeholder='Bình luận dưới tên bạn'
-            onChangeText={(value) => setTextComment(value)}
-            />
-              <VectorIcon
-              name = "paper-plane"
-              type="FontAwesome"
-              color={Colors.black}
-              size={20}
-              style ={styles.sendButton}
-              onPress = {onPressSendComment}
-              />
-        </View>
-
     </View>
-    
   );
 };
 // }
 const styles = StyleSheet.create({
   wrapper: {
     height: '100%',
+    backgroundColor: 'white',
+    position: 'relative',
+  },
+  subWrapper : {
+    height: '50%',
     backgroundColor: 'white',
     position: 'relative',
   },
@@ -410,11 +445,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection : 'row',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderTopWidth: 1,
+    borderTopColor: 'lightgray',
+    padding: 5,
+    paddingTop: 10,
 
   },
   inputComment : {

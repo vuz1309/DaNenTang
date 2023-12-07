@@ -247,8 +247,8 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
             </View>
           </TouchableOpacity>
 
-            <TouchableHighlight
-            onPress={() => {logger('opening comment page..'); navigate(APP_ROUTE.COMMENT_PAGE, {item : data})}}
+            <TouchableOpacity
+            onPress={() => {navigate(APP_ROUTE.COMMENT_PAGE, {item : data})}}
             >
           <View style={styles.row} >
 
@@ -263,7 +263,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               </Text>
           </View>
 
-            </TouchableHighlight>
+            </TouchableOpacity>
 
 
           <View style={styles.row}>
