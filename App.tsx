@@ -46,9 +46,12 @@ const AppChild = () => {
             />
             <Stack.Screen name={APP_ROUTE.REPORT} component={ReportScreen} />
 
-            <Stack.Screen name={APP_ROUTE.UPLOAD} component={UploadScreen} />
             <Stack.Screen name={APP_ROUTE.USER_SCREEN} component={UserScreen} />
             <Stack.Screen name={APP_ROUTE.WEBVIEW} component={WebViewScreen} />
+            <Stack.Screen
+              name={APP_ROUTE.COMMENT_PAGE}
+              component={CommentScreen}
+            />
           </>
         ) : (
           <>
@@ -83,6 +86,12 @@ const AppChild = () => {
               name={ONBOARDING_ROUTE.CREATE_PASSWORD}
               component={CreatePassword}
             />
+            <Stack.Screen
+              name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
+              component={CheckVerifyCode}
+            />
+           
+
           </>
         )}
       </Stack.Navigator>
@@ -97,6 +106,9 @@ import ReportScreen from './src/screens/reports/ReportScreen';
 import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
 import SplashScreen from './src/screens/SplashScreen';
+import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
+import { Layout } from './src/components/base/Layout';
+import CommentScreen from './src/screens/CommentScreen';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

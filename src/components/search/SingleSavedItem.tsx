@@ -10,7 +10,7 @@ import {
 import {logger} from '../../utils/helper';
 import {Colors} from '../../utils/Colors';
 
-export const SingleSavedItem = ({id, keyword}) => {
+export const SingleSavedItem = ({id, keyword} : any) => {
   return (
     <TouchableHighlight
       underlayColor={Colors.lightgrey}

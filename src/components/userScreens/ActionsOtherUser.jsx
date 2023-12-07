@@ -1,4 +1,4 @@
-import {View, TouchableHighlight, Text} from 'react-native';
+import {View, TouchableHighlight, Text, ToastAndroid} from 'react-native';
 import React from 'react';
 import {StyledButton} from '../base';
 import {Colors} from '../../utils/Colors';
@@ -16,6 +16,7 @@ import {setBlockRequest} from '../../api/modules/block.request';
 
 import {APP_ROUTE} from '../../navigation/config/routes';
 import {useNavigation} from '@react-navigation/native';
+import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
 
 const mainBtnConfig = [
   {
@@ -37,7 +38,7 @@ const mainBtnConfig = [
   {
     text: 'Phản hồi',
     icon: 'user-check',
-    nextMode: 4,
+    nextMode: 3,
   },
 ];
 const ActionsOtherUser = ({firstMode, user}) => {
@@ -46,17 +47,13 @@ const ActionsOtherUser = ({firstMode, user}) => {
   const [modalMode, setModalMode] = React.useState(0);
   const handleClickMainBtn = async () => {
     try {
+      setMode(mainBtnConfig[mode].nextMode);
       if (mode === 0) {
-        setMode(mainBtnConfig[mode].nextMode);
-        await setRequestFriend({user_id: user.id});
+        setRequestFriend({user_id: user.id});
       } else if (mode === 2) {
-        setMode(mainBtnConfig[mode].nextMode);
-        // CALL API cancel
-        const {data} = await deleteFriendRequest({user_id: user.id});
-        console.log(data);
-        // handle cancel
+        deleteFriendRequest({user_id: user.id});
       } else {
-        setModalMode(mode);
+        setModalMode(mainBtnConfig[mode].nextMode);
       }
     } catch (error) {
       console.log(error);
@@ -65,10 +62,9 @@ const ActionsOtherUser = ({firstMode, user}) => {
 
   const handleAcceptFriend = async (is_accept = '1') => {
     setMode(Number(is_accept));
-
+    setModalMode(0);
     try {
-      const {data} = await setAcceptFriend({user_id: user.id, is_accept});
-      console.log(data);
+      setAcceptFriend({user_id: user.id, is_accept});
     } catch (error) {
       console.log(error);
     }
@@ -76,22 +72,21 @@ const ActionsOtherUser = ({firstMode, user}) => {
 
   const blockUser = async () => {
     try {
-      const {data} = await setBlockRequest({
+      await setBlockRequest({
         user_id: user.id,
       });
-      console.log(data);
       navigate(APP_ROUTE.HOME_TAB);
+      ToastAndroid.show(`Bạn đã chặn ${user.username}.`, ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
     }
   };
   const onUnFriend = async () => {
+    setMode(0);
     try {
-      const {data} = await unFriend({
+      unFriend({
         user_id: user.id,
       });
-      console.log(data);
-      setMode(0);
     } catch (error) {
       console.log(error);
     }
@@ -170,62 +165,28 @@ const ActionsOtherUser = ({firstMode, user}) => {
           swipeDirection={'down'}
           onSwipeComplete={() => setModalMode(0)}
           onBackdropPress={() => setModalMode(0)}>
-          {modalMode == 4 && (
+          {modalMode == 3 && (
             <View style={{backgroundColor: Colors.white, borderRadius: 4}}>
-              <TouchableHighlight
-                underlayColor={Colors.lightgrey}
+              <StyledTouchableHighlight
+                text={'Chấp nhận'}
                 onPress={() => handleAcceptFriend('1')}
-                style={{
-                  flexDirection: 'row',
-                  gap: 12,
-                  alignItems: 'center',
-
-                  padding: 16,
-                }}>
-                <>
-                  <VectorIcon
-                    name="user-check"
-                    type="Feather"
-                    size={32}
-                    color={Colors.black}
-                  />
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontWeight: '400',
-                      fontSize: 18,
-                    }}>
-                    Chấp nhận
-                  </Text>
-                </>
-              </TouchableHighlight>
-              <TouchableHighlight
-                underlayColor={Colors.lightgrey}
+                emojiConfig={{
+                  name: 'user-check',
+                  type: 'Feather',
+                  size: 32,
+                  color: Colors.black,
+                }}
+              />
+              <StyledTouchableHighlight
+                text={'Xóa lời mời'}
                 onPress={() => handleAcceptFriend('0')}
-                style={{
-                  flexDirection: 'row',
-                  gap: 12,
-                  alignItems: 'center',
-
-                  padding: 16,
-                }}>
-                <>
-                  <VectorIcon
-                    name="close"
-                    type="AntDesign"
-                    size={30}
-                    color={Colors.black}
-                  />
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontWeight: '400',
-                      fontSize: 18,
-                    }}>
-                    Xóa lời mời
-                  </Text>
-                </>
-              </TouchableHighlight>
+                emojiConfig={{
+                  name: 'close',
+                  type: 'AntDesign',
+                  size: 30,
+                  color: Colors.black,
+                }}
+              />
             </View>
           )}
           {modalMode == 1 && (

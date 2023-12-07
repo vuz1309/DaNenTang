@@ -1,5 +1,11 @@
-import {StyleSheet, View, RefreshControl, ScrollView} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  View,
+  RefreshControl,
+  ScrollView,
+  Modal,
+} from 'react-native';
+import React, {useState} from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
@@ -7,15 +13,28 @@ import Post from '../components/posts/Post';
 
 import {getListPost} from '../api/modules/post.request';
 import {useSelector} from 'react-redux';
+
 import {useScrollHanler} from '../hooks/useScrollHandler';
 import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
+import UploadScreen from './UploadScreen';
+import AlertMessage from '../components/base/AlertMessage';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
 const HomeScreen = () => {
-  // const userLogged = useSelector(state => state.userInfo.user);
-
+  const userLogged = useSelector(state => state.userInfo.user);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const openPostModal = () => {
+    if (Number(userLogged.coins) < 50) {
+      AlertMessage('Coins không đủ, vui lòng nạp thêm.');
+      return;
+    }
+    setModalVisible(true);
+  };
+  const closePostModal = () => {
+    setModalVisible(false);
+  };
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
 
@@ -56,6 +75,7 @@ const HomeScreen = () => {
         campaign_id: '1',
         latitude: '1.0',
         longitude: '1.0',
+
         index: '0',
         count: '20',
         last_id: '99999',
@@ -78,7 +98,6 @@ const HomeScreen = () => {
   };
   const {handleScroll, isLoadMore, setIsLoadMore, refreshing, setRefreshing} =
     useScrollHanler(reload, loadMore);
-
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);
@@ -96,7 +115,10 @@ const HomeScreen = () => {
           onRefresh={reload}
         />
       }>
-      <SubHeader />
+      <Modal animationType="slide" transparent={false} visible={isModalVisible}>
+        <UploadScreen onClose={closePostModal} title={'upload'} />
+      </Modal>
+      <SubHeader onClick={openPostModal} />
       <Stories />
       <Post listPost={listPosts} />
       {isLoadMore && <Loading />}

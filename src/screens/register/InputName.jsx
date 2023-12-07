@@ -1,23 +1,29 @@
 import {StyledButton, StyledText} from "../../components/base";
 import {Colors} from "../../utils/Colors"
-import {StyleSheet, TextInput, View,} from 'react-native';
+import {StyleSheet, TextInput, View, Text, } from 'react-native';
 import React, {useState} from 'react';
 import VectorIcon from "../../utils/VectorIcon";
-import {AUTHENTICATE_ROUTE, ONBOARDING_ROUTE} from "../../navigation/config/routes";
+import {APP_ROUTE, AUTHENTICATE_ROUTE, ONBOARDING_ROUTE} from "../../navigation/config/routes";
 import {logger} from "../../utils/helper";
 import {getStringAsyncData, storeStringAsyncData} from "../../utils/authenticate/LocalStorage";
-
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const InputName = ({navigation}) => {
     const [familyName, setFamilyName] = useState('')
     const [name, setName] = useState('')
 
     const onPress = async () => {
-        const fullname = familyName + ' ' + name;
-        await storeStringAsyncData('fullname', fullname);
-        const fullnameStr = await getStringAsyncData('fullname');
-        logger(fullnameStr);
-        navigation.navigate(ONBOARDING_ROUTE.INPUT_BIRTH_DATE);
+         const item = '';
+        navigation.navigate(APP_ROUTE.COMMENT_PAGE, {
+            item : item
+        }
+        );
+
+        // const fullname = familyName + ' ' + name;
+        // await storeStringAsyncData('fullname', fullname);
+        // const fullnameStr = await getStringAsyncData('fullname');
+        // logger(fullnameStr);
+        // navigation.navigate(ONBOARDING_ROUTE.INPUT_BIRTH_DATE);
     }
     return (
         <View style={styles.container}>
@@ -69,7 +75,7 @@ const styles = StyleSheet.create(
             padding: 16
         },
         wrapperTextInput: {
-            marginTop: '10%',
+            marginTop: '20%',
             flexDirection: 'row',
             justifyContent: 'space-between',
         },
@@ -83,14 +89,14 @@ const styles = StyleSheet.create(
             margin: 10,
             width: '45%',
             height: 40,
-            borderWidth: 0.5,
+            borderBottomWidth: 0.5,
             borderColor: 'gray',
             paddingHorizontal: 8,
         },
         nextButton: {
             backgroundColor: Colors.primaryColor,
             width: '95%',
-            height: '17%',
+            height: '15%',
             marginTop: '10%',
         },
         biggerText: {
@@ -99,7 +105,6 @@ const styles = StyleSheet.create(
             fontFamily: "Arial",
             textAlign: "center",
             fontWeight: "bold",
-            width: '60%',
             marginTop: '10%'
         },
     }
