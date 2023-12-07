@@ -27,8 +27,13 @@ const AuthenticateService = {
     TokenProvider.clearToken();
     store.dispatch(userInfoActions.logOut());
   },
-  handlerLogin: (token: string, id: string) => {
-    store.dispatch(userInfoActions.updateToken({token, user: {id}}));
+  handlerLogin: (data: any) => {
+    store.dispatch(
+      userInfoActions.loginSuccess({
+        token: data?.data?.token,
+        user: data?.data,
+      }),
+    );
   },
 };
 
@@ -39,7 +44,7 @@ export const useLogin = (): LoginRequest => {
   const requestLogin = async (options: any) => {
     const loginParams = await {
       ...options,
-      uuid: await getDeviceId(),
+      uuid: getDeviceId(),
     };
     try {
       setLoading(true);
@@ -66,14 +71,7 @@ export const useLogin = (): LoginRequest => {
     logger('Login Success!');
     logger(data?.data);
 
-    store.dispatch(
-      userInfoActions.loginSuccess({
-        token: data?.data?.token,
-        user: data?.data,
-      }),
-    );
-
-    AuthenticateService.handlerLogin(data?.data?.token, data?.data?.id);
+    AuthenticateService.handlerLogin(data);
   };
   return {
     loading,
