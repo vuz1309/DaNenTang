@@ -30,8 +30,8 @@ export const getPostRequest = (params: {id: string}) => {
   return requestJSONWithAuth('/get_post', params);
 };
 
-export const editPostRequest = async (post: {
-  image?: Array<string>;
+export const editPost = async (post: {
+  image?: Array<any>;
   video?: any;
   described?: string;
   status?: string;
@@ -66,4 +66,11 @@ export const getListVideos = (body: {
   count: string;
 }) => {
   return requestJSONWithAuth('/get_list_videos', body);
+};
+
+export const getNewPosts = (body: {count: string}) => {
+  return requestJSONWithAuth('/get_new_posts', body);
+};
+export const setViewdPost = (body: {id: string}) => {
+  return requestJSONWithAuth('/set_viewed_post', body);
 };

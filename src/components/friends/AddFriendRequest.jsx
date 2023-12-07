@@ -62,7 +62,7 @@ const AddFriendRequest = ({
             />
           )}
         </View>
-        <View>
+        <View style={{flex: 1}}>
           <Text style={styles.userName}>
             {data.username || '(Chưa có tên)'}
           </Text>
@@ -98,7 +98,9 @@ const AddFriendRequest = ({
                     ...styles.buttonCtl,
                     backgroundColor: Colors.primaryColor,
                   }}>
-                  <Text style={styles.acceptText}>{mainText}</Text>
+                  <Text style={[styles.acceptText, styles.text]}>
+                    {mainText}
+                  </Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                   underlayColor={Colors.lightgrey}
@@ -110,7 +112,9 @@ const AddFriendRequest = ({
                     ...styles.buttonCtl,
                     backgroundColor: Colors.lightgrey,
                   }}>
-                  <Text style={styles.removeText}>{subText}</Text>
+                  <Text style={[styles.removeText, styles.text]}>
+                    {subText}
+                  </Text>
                 </TouchableHighlight>
               </>
             )}
@@ -177,10 +181,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    width: '100%',
   },
   avatar: {
-    height: 80,
-    width: 80,
+    height: 70,
+    width: 70,
   },
   avatarImg: {
     width: '100%',
@@ -207,19 +212,18 @@ const styles = StyleSheet.create({
   buttonCtl: {
     padding: 8,
     borderRadius: 8,
-    width: '41%',
+    flex: 1,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   acceptText: {
     color: Colors.white,
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
   },
   removeText: {
     color: Colors.black,
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
   },
   time: {
     position: 'absolute',

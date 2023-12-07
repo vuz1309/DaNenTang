@@ -7,7 +7,7 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
@@ -18,7 +18,7 @@ import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 const MAX_CAPTION_LENGTH = 50;
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 
-const PostListImage = ({data, onClose}) => {
+const PostListImage = ({data, onClose, index = 0}) => {
   const [isShowDetails, setDetailsPost] = React.useState(0);
   const [isExpanded, setIsExpanded] = React.useState(false);
 
@@ -55,7 +55,18 @@ const PostListImage = ({data, onClose}) => {
     () => convertTimeToFacebookStyle(data.created),
     [data.created],
   );
+  const scrollViewRef = useRef(null);
 
+  const scrollToIndex = index => {
+    scrollViewRef.current?.scrollTo({
+      x: 0,
+      y: index * 300,
+      animated: true,
+    });
+  };
+  React.useEffect(() => {
+    scrollToIndex(index);
+  }, []);
   if (!data) return <Text>Loading...</Text>;
   return (
     <>
@@ -74,7 +85,7 @@ const PostListImage = ({data, onClose}) => {
             backgroundColor={'rgba(0,0,0,0.2)'}
             barStyle="dark-content"
           />
-          <ScrollView>
+          <ScrollView ref={scrollViewRef}>
             <View>
               <View style={styles.postTopSec}>
                 <View style={styles.row}>

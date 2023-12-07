@@ -7,16 +7,15 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+
 import React, {useState} from 'react';
 import {Colors} from '../../utils/Colors';
 
 import PostFooter from './PostFooter';
-import Carousel from 'react-native-snap-carousel';
 import VectorIcon from '../../utils/VectorIcon';
 import PostDescription from './PostDescription';
 import ZoomableImage from '../base/ZoomableImage';
-
-const {width} = Dimensions.get('window');
 
 const DetailsPost = ({item, onClose, firstItem = 0}) => {
   const [opacity, setOpacity] = useState(1);
@@ -45,23 +44,11 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
             />
           </TouchableOpacity>
         </View>
-        <Carousel
-          data={item.image}
-          renderItem={({item}) => {
-            return (
-              <ZoomableImage imageUrl={item.url}>
-                {/* <Image
-                  style={{height: '100%', width: '100%'}}
-                  resizeMode="contain"
-                  source={{uri: item.url}}
-                  defaultSource={require('../../assets/images/avatar_null.jpg')}
-                /> */}
-              </ZoomableImage>
-            );
-          }}
-          sliderWidth={width}
-          itemWidth={width}
-          firstItem={firstItem}
+
+        <ZoomableImage
+          urls={item.image.map(i => ({url: i.url}))}
+          onClose={onClose}
+          index={firstItem}
         />
         {opacity == 1 && (
           <View style={styles.postInfo}>

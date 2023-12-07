@@ -3,9 +3,11 @@ import React from 'react';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
+import Loading from './base/Loading';
 const nullImg = require('../assets/images/avatar_null.jpg');
 const CreateStory = () => {
   const userLogged = useSelector(state => state.userInfo.user);
+  if (!userLogged) return <Loading />;
   return (
     <View style={styles.createStoryContainer}>
       {

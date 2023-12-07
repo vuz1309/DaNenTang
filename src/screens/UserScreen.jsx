@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   RefreshControl,
+  Modal,
 } from 'react-native';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
@@ -16,12 +17,15 @@ import {useScrollHanler} from '../hooks/useScrollHandler';
 import ActionsOwner from '../components/userScreens/ActionsOwner';
 import ActionsOtherUser from '../components/userScreens/ActionsOtherUser';
 import Loading from '../components/base/Loading';
+import EditUserInfo from '../components/userScreens/EditUserInfo';
+import {Themes} from '../assets/themes';
 const nullImage = require('../assets/images/avatar_null.jpg');
 
 const UserScreen = ({navigation, route}) => {
   const {userId} = route.params;
   const userLogged = useSelector(state => state.userInfo.user);
   const [userInfo, setUserInfo] = React.useState({});
+  const [isEdit, setIsEdit] = React.useState(false);
   const reload = () => {
     getUserInfoApi();
   };
@@ -33,8 +37,10 @@ const UserScreen = ({navigation, route}) => {
   const getUserInfoApi = async () => {
     try {
       console.log(userId);
-      const {data} = await getUserInfo({user_id: userId});
-      console.log(data);
+      const res = await getUserInfo({user_id: userId});
+      console.log(res);
+      const {data} = res;
+      console.log('user:', data);
       setUserInfo(data.data);
     } catch (error) {
       console.log(error);
@@ -49,6 +55,12 @@ const UserScreen = ({navigation, route}) => {
         <Loading color={Colors.primaryColor} />
       </View>
     );
+
+  const toggleEditModal = async () => {
+    if (isEdit) await getUserInfoApi();
+    setIsEdit(!isEdit);
+  };
+
   return (
     <ScrollView
       onScroll={handleScroll}
@@ -60,6 +72,12 @@ const UserScreen = ({navigation, route}) => {
         />
       }
       style={styles.container}>
+      <Modal animationType="slide" transparent={false} visible={isEdit}>
+        <EditUserInfo
+          userInfo={userInfo}
+          closeModal={() => toggleEditModal()}
+        />
+      </Modal>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <VectorIcon
@@ -92,16 +110,24 @@ const UserScreen = ({navigation, route}) => {
         ) : (
           <Image style={styles.background} source={nullImage} />
         )}
-        {userInfo.avatar ? (
-          <Image
-            style={styles.ava}
-            source={{
-              uri: userInfo.avatar,
-            }}
-          />
-        ) : (
-          <Image style={styles.ava} source={nullImage} />
-        )}
+
+        <TouchableOpacity
+          style={styles.ava}
+          onPress={() => console.log('open modal view')}>
+          {userInfo.avatar ? (
+            <Image
+              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              source={{
+                uri: userInfo.avatar,
+              }}
+            />
+          ) : (
+            <Image
+              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              source={nullImage}
+            />
+          )}
+        </TouchableOpacity>
         {Number(userInfo.online) && <View style={styles.isOnline} />}
       </View>
 
@@ -115,6 +141,23 @@ const UserScreen = ({navigation, route}) => {
           </Text>
           bạn bè
         </Text>
+        <View
+          style={{
+            paddingTop: 12,
+            color: Colors.textGrey,
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+          <Text style={{fontWeight: '700', color: Colors.black, fontSize: 18}}>
+            {userInfo.coins}{' '}
+          </Text>
+          <VectorIcon
+            name="coins"
+            type="FontAwesome5"
+            color={Themes.COLORS.yellow}
+            size={20}
+          />
+        </View>
         {userInfo?.description?.trim() && (
           <Text
             style={{color: Colors.textColor, fontSize: 18, paddingVertical: 4}}>
@@ -122,7 +165,7 @@ const UserScreen = ({navigation, route}) => {
           </Text>
         )}
         {isOwner ? (
-          <ActionsOwner userId={userId} />
+          <ActionsOwner userId={userId} action={() => toggleEditModal()} />
         ) : (
           <ActionsOtherUser
             firstMode={Number(userInfo.is_friend)}
@@ -183,6 +226,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 4,
     backgroundColor: Colors.white,
+    overflow: 'hidden',
   },
   background: {
     width: '100%',

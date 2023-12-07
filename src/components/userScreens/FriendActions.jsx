@@ -3,7 +3,15 @@ import {Themes} from '../../assets/themes';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
 
-export const FriendActions = ({text, icon, action, color = Colors.black}) => {
+export const FriendActions = ({
+  text,
+  icon,
+  action,
+  color = Colors.black,
+  backgroundColor = Colors.white,
+  fontWeight = '500',
+  iconType = 'FontAwesome5',
+}) => {
   return (
     <TouchableHighlight
       underlayColor={Themes.COLORS.lightGreyBg}
@@ -13,6 +21,7 @@ export const FriendActions = ({text, icon, action, color = Colors.black}) => {
         gap: 12,
         alignItems: 'center',
         paddingVertical: 16,
+        backgroundColor,
       }}>
       <>
         <View
@@ -27,18 +36,13 @@ export const FriendActions = ({text, icon, action, color = Colors.black}) => {
               borderRadius: 20,
               backgroundColor: Colors.lightgrey,
             }}>
-            <VectorIcon
-              name={icon}
-              type="FontAwesome5"
-              size={24}
-              color={color}
-            />
+            <VectorIcon name={icon} type={iconType} size={24} color={color} />
           </View>
         </View>
         <Text
           style={{
-            color: color,
-            fontWeight: '700',
+            color,
+            fontWeight,
             fontSize: 20,
           }}>
           {text}
