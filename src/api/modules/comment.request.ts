@@ -22,7 +22,7 @@ export const setMarkComments = (body: {
   content: string;
   index: string;
   count: string;
-  mark_id: string;
+  mark_id?: string;
   type: string;
 }) => {
   return requestJSONWithAuth('/set_mark_comment', body);
