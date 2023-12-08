@@ -9,7 +9,6 @@ import React, {useState} from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
-import Post from '../components/posts/Post';
 
 import {getListPost} from '../api/modules/post.request';
 import {useSelector} from 'react-redux';
@@ -28,7 +27,7 @@ import PostBody from '../components/posts/PostBody';
 
 const HomeScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [detailsPostMode, setDetailsPostMode] = useState(0);
   const [isBuyCoin, setIsBuyCoin] = useState(false);
 
   const [postEdited, setPostEdited] = useState({});
@@ -40,11 +39,9 @@ const HomeScreen = () => {
     postMode = Enum.PostMode.Create,
     post = {image: [], status: 'OK', described: '', id: '0'},
   ) => {
-    if (Number(userLogged.coins) < 50) {
-      AlertMessage('Coins không đủ, vui lòng nạp thêm.');
-      return;
-    }
-    setModalVisible(postMode);
+    console.log('post mode:', postMode);
+
+    setDetailsPostMode(postMode);
 
     const postTmp = {
       image: post.image.map(item => ({id: item.id, uri: item.url})),
@@ -56,7 +53,7 @@ const HomeScreen = () => {
     setPostEdited(postTmp);
   };
   const closePostModal = () => {
-    setModalVisible(0);
+    setDetailsPostMode(0);
   };
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
@@ -105,7 +102,7 @@ const HomeScreen = () => {
       }),
     );
 
-    store.dispatch(postInfoActions.setLastId('1'));
+    store.dispatch(postInfoActions.setLastId('99999'));
   };
 
   const loadMore = async () => {
@@ -142,11 +139,11 @@ const HomeScreen = () => {
         animationType="slide"
         transparent={false}
         onRequestClose={closePostModal}
-        visible={!!isModalVisible}>
+        visible={!!detailsPostMode}>
         <UploadScreen
           onClose={closePostModal}
           postData={postEdited}
-          mode={isModalVisible}
+          mode={detailsPostMode}
         />
       </Modal>
       <Modal

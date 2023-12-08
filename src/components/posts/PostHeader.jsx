@@ -1,11 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TouchableHighlight,
-} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
 import React, {useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
@@ -21,9 +14,9 @@ import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 import {deletePostRequest} from '../../api/modules/post.request';
 import Loading from '../base/Loading';
-import UploadScreen from '../../screens/UploadScreen';
 import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
 import Enum from '../../utils/Enum';
+import DialogConfirm from '../base/dialog/DialogConfirm';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
   const {navigate} = useNavigation();
@@ -166,7 +159,7 @@ const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
         onLongPress={handleCopyToClipboard}>
         <PostDescription described={data.described} />
       </TouchableHighlight>
-      <Modal
+      {/* <Modal
         isVisible={isModalVisible}
         backdropOpacity={0.7}
         animationIn="zoomIn"
@@ -224,7 +217,24 @@ const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
             </StyledTouchable>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
+      <DialogConfirm
+        mainBtn={{text: 'Xóa', onPress: removePost}}
+        subBtn={{
+          text: 'Chỉnh sửa',
+          onPress: () => {
+            onClickEdit(Enum.PostMode.Edit, data);
+            toggleModalDelPost();
+          },
+        }}
+        closeBtn={{
+          text: 'Hủy',
+          onPress: toggleModalDelPost,
+        }}
+        isVisible={isModalVisible}
+        title={'Xóa bài viết?'}
+        content={'Bạn có thể chỉnh sửa bài viết này nếu cần thay đổi.'}
+      />
       {isShowModalReport && (
         <Modal
           isVisible={true}

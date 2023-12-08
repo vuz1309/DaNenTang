@@ -10,6 +10,7 @@ import PostFooter from '../components/posts/PostFooter';
 import {store} from '../state-management/redux/store';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
+import HeaderTitle from '../components/layouts/HeaderTitle';
 
 const WatchScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
@@ -96,6 +97,7 @@ const WatchScreen = () => {
           onRefresh={reload}
         />
       }>
+      <HeaderTitle title={'Video'} />
       {posts.map(po => (
         <View
           style={{backgroundColor: Colors.white, marginBottom: 12}}

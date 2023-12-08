@@ -58,23 +58,26 @@ const PostBody = ({item, editPost}) => {
                   </TouchableOpacity>
                 ))}
                 {item.image.length >= 5 && (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(5)}
                     style={{flex: 1, ...styles.border, position: 'relative'}}>
-                    <Image
-                      style={styles.image}
-                      source={{uri: item.image[4].url}}
-                    />
+                    <>
+                      <Image
+                        style={styles.image}
+                        source={{uri: item.image[4].url}}
+                      />
 
-                    {item.image.length > 5 && (
-                      <TouchableOpacity
-                        onPress={() => setModalVisible(5)}
-                        style={styles.overlayEndImg}>
-                        <Text style={{color: Colors.white}}>
-                          {item.image.length - 5}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                  </View>
+                      {item.image.length > 5 && (
+                        <TouchableOpacity
+                          onPress={() => setModalVisible(6)}
+                          style={styles.overlayEndImg}>
+                          <Text style={{color: Colors.white}}>
+                            {item.image.length - 5}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </>
+                  </TouchableOpacity>
                 )}
               </View>
             )}

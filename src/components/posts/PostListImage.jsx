@@ -15,6 +15,7 @@ import Modal from 'react-native-modal';
 import PostFooter from './PostFooter';
 import DetailsPost from './DetailsPost';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
+import LoadingOverlay from '../base/LoadingOverlay';
 const MAX_CAPTION_LENGTH = 50;
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 
@@ -67,7 +68,7 @@ const PostListImage = ({data, onClose, index = 0}) => {
   React.useEffect(() => {
     scrollToIndex(index);
   }, []);
-  if (!data) return <Text>Loading...</Text>;
+  if (!data) return <LoadingOverlay isLoading={true} />;
   return (
     <>
       <Modal
@@ -83,7 +84,7 @@ const PostListImage = ({data, onClose, index = 0}) => {
         <View style={styles.postHeaderContainer}>
           <StatusBar
             backgroundColor={'rgba(0,0,0,0.2)'}
-            barStyle="dark-content"
+            barStyle="light-content"
           />
           <ScrollView ref={scrollViewRef}>
             <View>
@@ -111,9 +112,16 @@ const PostListImage = ({data, onClose, index = 0}) => {
               <PostFooter data={data} />
             </View>
 
-            <View>
+            <View style={{backgroundColor: Colors.white}}>
               {data.image.map(({url}, index) => (
-                <Pressable key={url} onPress={() => setDetailsPost(index + 1)}>
+                <Pressable
+                  style={{
+                    borderBottomWidth: 8,
+                    borderBottomColor: Colors.background,
+                    borderStyle: 'solid',
+                  }}
+                  key={url}
+                  onPress={() => setDetailsPost(index + 1)}>
                   <Image
                     style={styles.img}
                     source={{uri: url}}
