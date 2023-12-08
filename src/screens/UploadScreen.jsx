@@ -26,54 +26,65 @@ import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import {useSelector} from 'react-redux';
 import {createImageFormData} from '../helpers/helpers';
 import LoadingOverlay from '../components/base/LoadingOverlay';
+import Enum from '../utils/Enum';
+import {BE_URL} from '../api/config';
+import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 
-const UploadScreen = ({onClose, title}) => {
+const UploadScreen = ({
+  onClose,
+  mode = Enum.PostMode.Create,
+  postData = {image: [], status: 'OK', described: '', id: '0'},
+}) => {
   const user = useSelector(state => state.userInfo.user);
-  const [text, setText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [images, setImages] = useState([]);
-  const [status, setStatus] = useState('OK');
+  const [text, setText] = useState(postData.described);
+
+  const [images, setImages] = useState(postData.image);
+  const [status, setStatus] = useState(postData.status);
   const [isExit, setIsExit] = useState(false);
-  const defaultImg = 'https://static.thenounproject.com/png/3752804-200.png';
-  const posted = useSelector(state => state.postInfo.posts[0]);
+  const [imageDel, setImageDel] = useState([]);
+
+  const title = useMemo(
+    () =>
+      mode === Enum.PostMode.Create ? 'Tạo mới bài viết' : 'Cập nhật bài viết',
+    [mode],
+  );
+  const btnText = useMemo(
+    () => (mode === Enum.PostMode.Create ? 'Đăng' : 'Cập nhật'),
+    [mode],
+  );
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setIsModalOpen(false);
-    console.log('heeloo');
-    console.log('post', posted);
-    if (title === 'edit') {
-      setText(posted.described);
-      setImages(posted.image);
-    }
-  }, []);
-  const [post, setPost] = useState({
-    images: [],
-    described: '',
-    status: '',
-    video: '',
-  });
 
   const openLibrary = () => {
-    launchImageLibrary({noData: true}, r => {
-      if (r.didCancel) {
-        return;
-      }
-      if (r.errorCode) {
-        console.log('error');
-      }
-      const tmp = r.assets[0];
+    launchImageLibrary(
+      {noData: true, selectionLimit: 20 - images.length},
+      r => {
+        if (r.didCancel) {
+          return;
+        }
+        if (r.errorCode) {
+          console.log('error');
+        }
 
-      if (images.length < 20) {
-        const newImgList = [...images, tmp];
-        setImages(newImgList);
-        return;
-      }
-      AlertMessage('Tối đa 20 ảnh');
-    });
+        const tmp = r.assets;
+
+        if (images.length < 20) {
+          const newImgList = [...images, ...tmp];
+          setImages(newImgList);
+          console.log('list img:', newImgList);
+          return;
+        }
+        AlertMessage('Tối đa 20 ảnh');
+      },
+    );
   };
   const removeImg = index => {
     const newImgList = [...images];
+    if (newImgList[index].uri.includes(BE_URL)) {
+      console.log('remove link img', newImgList[index]);
 
+      setImageDel(prev => [...prev, newImgList[index]]);
+    }
     newImgList.splice(index, 1);
 
     setImages(newImgList);
@@ -112,7 +123,66 @@ const UploadScreen = ({onClose, title}) => {
       setIsExit(true);
     }
   };
-  const onCreateNewPost = async () => {
+  const buildFormData = data => {
+    const formData = new FormData();
+    for (const key in data) {
+      if (key === 'image') {
+        data.image.forEach(item => {
+          if (item.uri) {
+            formData.append('image', createImageFormData(item));
+          }
+        });
+      } else if (data[key]) {
+        if (key === 'video') {
+        } else formData.append(key, data[key]);
+      }
+    }
+    return formData;
+  };
+  const createPostRequest = async item => {
+    try {
+      setLoading(true);
+      const formData = buildFormData(item);
+      const {data} = await addPost(formData);
+
+      ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
+
+      const res = await getPostRequest({id: data.data.id});
+
+      store.dispatch(postInfoActions.shiftPost(res.data.data));
+      store.dispatch(userInfoActions.updateCoin(data.data.coins));
+      onClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const editPostRequest = async item => {
+    try {
+      setLoading(true);
+
+      const imgs = item.image.filter(img => !img.uri.includes(BE_URL));
+      const formData = buildFormData({...item, image: imgs, id: postData.id});
+
+      const {data} = await editPost(formData);
+
+      const res = await getPostRequest({id: data.data.id});
+
+      console.log('res', res);
+
+      store.dispatch(postInfoActions.updatePost(res.data.data));
+      store.dispatch(userInfoActions.updateCoin(data.data.coins));
+      ToastAndroid.show('Cập nhật thành công: ', ToastAndroid.SHORT);
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onCreateNewPost = () => {
     setLoading(true);
     const newPost = {
       image: images.filter(img => img.uri),
@@ -122,54 +192,26 @@ const UploadScreen = ({onClose, title}) => {
       auto_accept: '1',
     };
 
-    const formData = new FormData();
-    newPost.image.forEach(item => {
-      if (item.uri) {
-        formData.append('image', createImageFormData(item));
-      }
-    });
-
-    formData.append('described', newPost.described);
-    formData.append('status', newPost.status);
-    newPost.video && formData.append('video', newPost.video);
-    formData.append('auto_accept', newPost.auto_accept);
-
-    try {
-      if (title === 'upload') {
-        const {data} = await addPost(formData);
-
-        ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
-
-        const res = await getPostRequest({id: data.data.id});
-
-        store.dispatch(postInfoActions.shiftPost(res.data.data));
-
-        onClose();
-      } else {
-        const {data} = await editPost({
-          ...newPost,
-          id: posted.id,
-          image_del: '',
-          image_sort: '',
-        }).then();
-        ToastAndroid.show('Cập nhật bài thành công: ', ToastAndroid.SHORT);
-        onClose();
-      }
-    } catch (err) {
-      console.log(JSON.stringify(err));
-    } finally {
-      setLoading(false);
+    if (mode === Enum.PostMode.Create) {
+      createPostRequest(newPost);
+      return;
     }
+    console.log('edit post', imageDel);
+    const imgDelStr = imageDel.map(item => item.id).join(',');
+
+    const editPost = {
+      ...newPost,
+      id: postData.id,
+      image_del: imgDelStr,
+      image_sort: null,
+    };
+    editPostRequest(editPost);
   };
 
   const isDisabledPost = useMemo(
     () => text.trim() === '' && images.length === 0,
     [text, images],
   );
-
-  useEffect(() => {
-    console.log(post);
-  }, [post]);
 
   return (
     <View style={styles.container}>
@@ -185,30 +227,17 @@ const UploadScreen = ({onClose, title}) => {
               color={Colors.grey}
             />
           </TouchableOpacity>
-          {title === 'upload' ? (
-            <Text style={styles.headerText}>Tạo bài viết mới</Text>
-          ) : (
-            <Text style={styles.headerText}>Chỉnh sửa bài viết</Text>
-          )}
+
+          <Text style={styles.headerText}>{title}</Text>
         </View>
         <TouchableOpacity disabled={isDisabledPost} onPress={onCreateNewPost}>
-          {title === 'upload' ? (
-            <Text
-              style={[
-                styles.headerText,
-                isDisabledPost ? {color: 'lightgrey'} : {color: Colors.grey},
-              ]}>
-              Đăng
-            </Text>
-          ) : (
-            <Text
-              style={[
-                styles.headerText,
-                isDisabledPost ? {color: 'lightgrey'} : {color: Colors.grey},
-              ]}>
-              Cập nhật
-            </Text>
-          )}
+          <Text
+            style={[
+              styles.headerText,
+              isDisabledPost ? {color: 'lightgrey'} : {color: Colors.grey},
+            ]}>
+            {btnText}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -216,14 +245,15 @@ const UploadScreen = ({onClose, title}) => {
       <View style={styles.avaContainer}>
         <Image style={styles.ava} source={{uri: user.avatar}} />
         <View>
-          <Text style={{fontWeight: 'bold', fontSize: 18}}>
+          <Text
+            style={{fontWeight: 'bold', fontSize: 20, color: Colors.textColor}}>
             {user.username}
           </Text>
           <View style={styles.infoStt}>
             <VectorIcon
               name="globe"
               type="FontAwesome"
-              size={22}
+              size={20}
               color={'lightgrey'}
             />
             <Text style={styles.stt}>Công khai</Text>
@@ -239,23 +269,27 @@ const UploadScreen = ({onClose, title}) => {
           onChangeText={e => setText(e)}
           value={text}
           placeholder={'Bạn đang nghĩ gì?'}
-          placeholderTextColor={'lightgrey'}
+          placeholderTextColor={Colors.textGrey}
           fontSize={20}
+          style={{color: Colors.black, fontSize: 18}}
           textAlignVertical="top"
         />
       </View>
 
-      <View style={{flex: 1}}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={{flex: 1}}>
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            flexWrap: 'wrap',
             gap: 4,
           }}>
           {images.length > 0 &&
-            images.slice(0, 2).map((e, index) => {
+            images.map((e, index) => {
               return (
-                <View style={styles.image}>
+                <View key={index} style={styles.image}>
                   <ImageBackground
                     key={index}
                     style={{width: '100%', aspectRatio: 1}}
@@ -275,34 +309,7 @@ const UploadScreen = ({onClose, title}) => {
               );
             })}
         </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap: 4,
-            marginTop: 4,
-          }}>
-          {images.length > 2 &&
-            images.slice(2, 4).map((e, index) => {
-              return (
-                <View style={styles.image}>
-                  <ImageBackground
-                    style={{width: '100%', aspectRatio: 1}}
-                    resizeMode="cover"
-                    source={e}
-                    index={index}
-                  />
-                  <TouchableOpacity
-                    onPress={() => removeImg(index + 2)}
-                    style={styles.removeImgIcon}>
-                    <VectorIcon type="AntDesign" name="close" size={20} />
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-        </View>
-      </View>
+      </ScrollView>
       {/*footer*/}
       {isModalOpen ? (
         <View style={styles.modal}>
@@ -374,7 +381,7 @@ const UploadScreen = ({onClose, title}) => {
             }}>
             <View style={{paddingBottom: 10}}>
               <Text style={styles.headerText}>
-                Bạn muốn hoàn thành bài viết của mình sau?
+                Bạn muốn hoàn thành bài viết sau?
               </Text>
             </View>
             <View style={styles.option}>
@@ -454,6 +461,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: Colors.textGrey,
   },
   avaContainer: {
     padding: 8,
@@ -475,7 +483,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   stt: {
-    fontSize: 15,
+    fontSize: 14,
+    color: Colors.textGrey,
   },
   input: {
     padding: 10,
@@ -522,7 +531,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   image: {
-    width: '50%',
+    width: '49%',
     aspectRatio: 1,
     resizeMode: 'cover',
 

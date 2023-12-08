@@ -36,14 +36,14 @@ const UserScreen = ({navigation, route}) => {
   const isOwner = React.useMemo(() => userLogged.id == userId, [userId]);
   const getUserInfoApi = async () => {
     try {
-      console.log(userId);
       const res = await getUserInfo({user_id: userId});
-      console.log(res);
+
       const {data} = res;
       console.log('user:', data);
       setUserInfo(data.data);
     } catch (error) {
       console.log(error);
+      navigation.goBack();
     }
   };
   React.useEffect(() => {

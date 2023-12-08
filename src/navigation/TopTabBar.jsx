@@ -22,6 +22,7 @@ const TopTabBar = () => {
           tabBarShowLabel: false,
           tabBarActiveTintColor: Colors.primaryColor,
           tabBarInactiveTintColor: Colors.grey,
+          tabBarStyle: {borderRadius: 0},
         })}
         screenListeners={{
           state: e => {

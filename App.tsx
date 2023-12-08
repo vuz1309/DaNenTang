@@ -1,5 +1,5 @@
 import {StatusBar} from 'react-native';
-import React, {useEffect, createContext} from 'react';
+import React, {useEffect} from 'react';
 import LoginScreen from './src/screens/LoginScreen';
 import {Colors} from './src/utils/Colors';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -17,14 +17,12 @@ import {
   ONBOARDING_ROUTE,
 } from './src/navigation/config/routes';
 import InputName from './src/screens/register/InputName';
-import UploadScreen from './src/screens/UploadScreen';
 
 import InputBirthDate from './src/screens/register/InputBirthDate';
 import InputEmail from './src/screens/register/InputEmail';
 import CreatePassword from './src/screens/register/CreatePassword';
 import UserScreen from './src/screens/UserScreen';
 const Stack = createStackNavigator();
-export const UserContext = createContext({});
 const AppChild = () => {
   const userLogged = useSelector(
     (state: FacebookRootState) => state.userInfo.user,
@@ -90,8 +88,6 @@ const AppChild = () => {
               name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
               component={CheckVerifyCode}
             />
-           
-
           </>
         )}
       </Stack.Navigator>
@@ -107,7 +103,7 @@ import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
 import SplashScreen from './src/screens/SplashScreen';
 import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
-import { Layout } from './src/components/base/Layout';
+import {Layout} from './src/components/base/Layout';
 import CommentScreen from './src/screens/CommentScreen';
 const App = () => {
   useEffect(() => {

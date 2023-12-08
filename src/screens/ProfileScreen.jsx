@@ -27,6 +27,8 @@ import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
 import {getFreeDiskStorageOldSync} from 'react-native-device-info';
+import HeaderTitle from '../components/layouts/HeaderTitle';
+import DialogConfirm from '../components/base/dialog/DialogConfirm';
 
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
@@ -89,7 +91,7 @@ const ProfileScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text style={styles.menu}>Menu</Text>
           <View style={styles.menuIcon}>
             <VectorIcon
@@ -107,7 +109,8 @@ const ProfileScreen = () => {
               style={styles.headerIcons}
             />
           </View>
-        </View>
+        </View> */}
+        <HeaderTitle title={'Menu'} />
         <View style={styles.profile}>
           <Image
             style={[styles.profileImage, {marginLeft: 10}]}
@@ -345,38 +348,19 @@ const ProfileScreen = () => {
           ) : null}
         </Animated.View>
 
-        <TouchableOpacity onPress={onLogout} style={styles.logoutButton}>
+        <TouchableOpacity
+          onPress={() => setIsShowModalLogout(true)}
+          style={styles.logoutButton}>
           <Text style={styles.logout}>Đăng xuất</Text>
         </TouchableOpacity>
-        <Modal
-          animationIn={'slideInDown'}
-          animationOut={'slideOutDown'}
+
+        <DialogConfirm
           isVisible={!!isShowModalLogout}
-          backdropColor="transparent"
-          onBackdropPress={() => setIsShowModalLogout(false)}>
-          <View style={styles.modalWrapper}>
-            <Text
-              style={{fontWeight: 'bold', color: Colors.black, fontSize: 20}}>
-              Bạn có chắc chắn muốn đăng xuất?
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                gap: 16,
-                marginTop: 24,
-              }}>
-              <StyledTouchable onPress={onLogout}>
-                <Text style={{color: Themes.COLORS.red, fontSize: 20}}>
-                  Đăng xuất
-                </Text>
-              </StyledTouchable>
-              <StyledTouchable onPress={() => setIsShowModalLogout(false)}>
-                <Text style={{color: Colors.black, fontSize: 20}}>Không</Text>
-              </StyledTouchable>
-            </View>
-          </View>
-        </Modal>
+          closeBtn={{text: 'Không', onPress: () => setIsShowModalLogout(false)}}
+          mainBtn={{text: 'Đăng xuất', onPress: onLogout}}
+          content={'Bạn có chắc chắn muốn đăng xuất?'}
+          title={'Đăng xuất?'}
+        />
       </View>
     </ScrollView>
   );
@@ -392,6 +376,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profile: {
+    marginVertical: 10,
     paddingTop: 10,
     height: 70,
     justifyContent: 'center',
@@ -400,8 +385,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowColor: Colors.black,
+    shadowOffset: {width: 1, height: 2},
     shadowOpacity: 0.25,
     // elevation: 5, // Android only
   },
@@ -453,7 +438,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 10,
     borderTopWidth: 1,
-    borderColor: '#aaa',
+    borderColor: Colors.borderGrey,
   },
   optionIcon: {
     flex: 2,
