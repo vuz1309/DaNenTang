@@ -19,13 +19,13 @@ import PostVideo from './PostVideo';
  * @param {object} props
  * @returns
  */
-const PostBody = ({item}) => {
+const PostBody = ({item, editPost}) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   return (
     <>
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-        <PostHeader data={item} />
+        <PostHeader onClickEdit={editPost} data={item} />
 
         {!item.video && item.image.length > 0 && (
           <View style={styles.postImg}>

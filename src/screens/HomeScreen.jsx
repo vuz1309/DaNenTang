@@ -23,24 +23,40 @@ import AlertMessage from '../components/base/AlertMessage';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
 import BuyCoins from './coins/BuyCoins';
+import Enum from '../utils/Enum';
+import PostBody from '../components/posts/PostBody';
 
 const HomeScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isBuyCoin, setIsBuyCoin] = useState(false);
+
+  const [postEdited, setPostEdited] = useState({});
   const toggleBuyCoinModal = () => {
     console.log('buy coins');
     setIsBuyCoin(!isBuyCoin);
   };
-  const openPostModal = () => {
+  const openPostModal = (
+    postMode = Enum.PostMode.Create,
+    post = {image: [], status: 'OK', described: '', id: '0'},
+  ) => {
     if (Number(userLogged.coins) < 50) {
       AlertMessage('Coins không đủ, vui lòng nạp thêm.');
       return;
     }
-    setModalVisible(true);
+    setModalVisible(postMode);
+
+    const postTmp = {
+      image: post.image.map(item => ({id: item.id, uri: item.url})),
+      status: post.status,
+      described: post.described,
+      id: post.id,
+    };
+
+    setPostEdited(postTmp);
   };
   const closePostModal = () => {
-    setModalVisible(false);
+    setModalVisible(0);
   };
   const listPosts = useSelector(state => state.postInfo.posts);
   const params = useSelector(state => state.postInfo.paramsConfig);
@@ -122,8 +138,16 @@ const HomeScreen = () => {
           onRefresh={reload}
         />
       }>
-      <Modal animationType="slide" transparent={false} visible={isModalVisible}>
-        <UploadScreen onClose={closePostModal} title={'upload'} />
+      <Modal
+        animationType="slide"
+        transparent={false}
+        onRequestClose={closePostModal}
+        visible={!!isModalVisible}>
+        <UploadScreen
+          onClose={closePostModal}
+          postData={postEdited}
+          mode={isModalVisible}
+        />
       </Modal>
       <Modal
         animationType="slide"
@@ -134,7 +158,12 @@ const HomeScreen = () => {
       </Modal>
       <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
       <Stories />
-      <Post listPost={listPosts} />
+
+      <View style={styles.postContainer}>
+        {listPosts.map(item => (
+          <PostBody editPost={openPostModal} key={item.id} item={item} />
+        ))}
+      </View>
       {isLoadMore && <Loading />}
       <View
         style={{
@@ -151,6 +180,10 @@ const styles = StyleSheet.create({
   homeContainer: {
     backgroundColor: Colors.background,
     flex: 1,
+  },
+  postContainer: {
+    backgroundColor: Colors.background,
+    marginTop: 8,
   },
 });
 

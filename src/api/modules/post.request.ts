@@ -30,16 +30,7 @@ export const getPostRequest = (params: {id: string}) => {
   return requestJSONWithAuth('/get_post', params);
 };
 
-export const editPost = async (post: {
-  image?: Array<any>;
-  video?: any;
-  described?: string;
-  status?: string;
-  auto_accept?: string;
-  id: string;
-  image_del: string;
-  image_sort: string;
-}) => {
+export const editPost = async (post: FormData) => {
   return authAndFileRequest.post('/edit_post', post);
 };
 

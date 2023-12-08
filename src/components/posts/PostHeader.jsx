@@ -23,8 +23,9 @@ import {deletePostRequest} from '../../api/modules/post.request';
 import Loading from '../base/Loading';
 import UploadScreen from '../../screens/UploadScreen';
 import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
+import Enum from '../../utils/Enum';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
-const PostHeader = ({data, isShowRemove = true}) => {
+const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
   const {navigate} = useNavigation();
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
@@ -208,6 +209,10 @@ const PostHeader = ({data, isShowRemove = true}) => {
               Xóa
             </Text>
             <Text
+              onPress={() => {
+                onClickEdit(Enum.PostMode.Edit, data);
+                toggleModalDelPost();
+              }}
               style={{fontSize: 18, color: Colors.black, fontWeight: '500'}}>
               Chỉnh sửa
             </Text>
@@ -233,7 +238,10 @@ const PostHeader = ({data, isShowRemove = true}) => {
           <View style={styles.modalContent}>
             {Number(data.can_edit) > 0 && (
               <StyledTouchableHighlight
-                onPress={() => console.log('edit post')}
+                onPress={() => {
+                  onClickEdit(Enum.PostMode.Edit, data);
+                  toggleModalReport();
+                }}
                 text={'Chỉnh sửa bài viết'}
                 emojiConfig={{
                   name: 'edit',
