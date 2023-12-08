@@ -24,9 +24,9 @@ import {SUCCESS_CODE} from '../../utils/constants';
 import {Themes} from '../../assets/themes';
 
 import ListReactions from '../comments/ListReactions';
-import { APP_ROUTE } from '../../navigation/config/routes';
-import { logger } from '../../utils/helper';
-import { useNavigation } from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {logger} from '../../utils/helper';
+import {useNavigation} from '@react-navigation/native';
 import {formatNumberSplitBy} from '../../helpers/helpers';
 
 const ScreenHeight = Dimensions.get('window').height;
@@ -247,24 +247,22 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
             </View>
           </TouchableOpacity>
 
-            <TouchableOpacity
-            onPress={() => {navigate(APP_ROUTE.COMMENT_PAGE, {item : data})}}
-            >
-          <View style={styles.row} >
-
+          <TouchableOpacity
+            onPress={() => {
+              navigate(APP_ROUTE.COMMENT_PAGE, {item: data});
+            }}>
+            <View style={styles.row}>
               <VectorIcon
                 name="chatbox-outline"
                 type="Ionicons"
                 size={25}
                 color={textStyles.color}
               />
-              <Text  style={{...styles.reactionCount, ...textStyles}}>
+              <Text style={{...styles.reactionCount, ...textStyles}}>
                 Bình luận
               </Text>
-          </View>
-
-            </TouchableOpacity>
-
+            </View>
+          </TouchableOpacity>
 
           <View style={styles.row}>
             <VectorIcon

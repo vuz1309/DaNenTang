@@ -15,6 +15,7 @@ export interface IUserSaved {
   username: string;
   avatar: string;
   id: string;
+  active?: string;
 }
 
 export interface IUserSavedState {

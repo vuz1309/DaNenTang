@@ -17,13 +17,10 @@ import {
 } from 'react-native-gesture-handler';
 import {Image} from 'react-native';
 import {getMarkComments, setMarkComments} from '../api/modules/comment.request';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faEnvelope} from '@fortawesome/free-solid-svg-icons';
-import PostHeader from '../components/posts/PostHeader';
+
 import PostHeaderComment from '../components/posts/PostHeaderComment';
 import PostBodyComment from '../components/posts/PostBodyComment';
-import { useNavigation } from '@react-navigation/native';
-import PostDescription from '../components/posts/PostDescription';
+import {useNavigation} from '@react-navigation/native';
 
 const Comment = ({
   id,
@@ -52,7 +49,7 @@ const Comment = ({
     createdValue = `${Math.floor(minutesDiff / 60 / 24 / 7)} tuần `;
   } else {
     createdValue = `${Math.floor(minutesDiff)} phút `;
-  };
+  }
   const {navigate} = useNavigation();
 
   return (
@@ -73,7 +70,7 @@ const Comment = ({
             flexDirection: 'row',
           }}
           // style={styles.row}
-          >
+        >
           <Image
             source={{
               uri: authorAvatar,
@@ -94,9 +91,7 @@ const Comment = ({
       </View>
       <View style={styles.reactCommentWrapper}>
         <Text style={{color: 'black'}}>{createdValue} </Text>
-        <Text 
-        style={styles.reactCommentText} 
-        onPress={() => {}}>
+        <Text style={styles.reactCommentText} onPress={() => {}}>
           Thích
         </Text>
         <TouchableOpacity

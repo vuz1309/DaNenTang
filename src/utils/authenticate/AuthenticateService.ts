@@ -39,7 +39,7 @@ const AuthenticateService = {
 
 export const useLogin = (): LoginRequest => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<any>();
 
   const requestLogin = async (options: any) => {
     const loginParams = await {
@@ -56,13 +56,15 @@ export const useLogin = (): LoginRequest => {
         userSavedInfoActions.addUserSaved({
           email: loginParams.email,
           password: loginParams.password,
-          username: response.data?.data?.username,
-          avatar: response.data?.data?.avatar,
-          id: response.data?.data?.id,
+          // username: response.data?.data?.username,
+          // avatar: response.data?.data?.avatar,
+          // id: response.data?.data?.id,
+          ...response.data?.data,
         }),
       );
-    } catch (e) {
-      console.log(String(e));
+    } catch (e: any) {
+      setError(e);
+      AlertMessage(e?.message || 'Đăng nhập thất bại', 'Thất bại!');
     } finally {
       setLoading(false);
     }
