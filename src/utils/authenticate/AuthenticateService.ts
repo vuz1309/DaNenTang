@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {TypeLoginRequest, TypeRegisterRequest} from '../../api/interfaces/auth';
-import {loginRequest, registerRequest} from '../../api/modules/authenticate';
+import {loginRequest, registerRequest, setDevToken} from '../../api/modules/authenticate';
 import {getDeviceId} from 'react-native-device-info';
 import AlertMessage from '../../components/base/AlertMessage';
 import {store} from '../../state-management/redux/store';
@@ -9,6 +9,8 @@ import {userSavedInfoActions} from '../../state-management/redux/slices/UserSave
 import TokenProvider from './TokenProvider';
 import {logger} from '../helper';
 import {storeStringAsyncData} from './LocalStorage';
+import { GetFCMToken } from '../notification/notificationHelper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LoginRequest {
   loading: boolean;
@@ -51,7 +53,7 @@ export const useLogin = (): LoginRequest => {
 
       const response: any = await loginRequest(loginParams);
 
-      handleLoginSuccess(response);
+      await handleLoginSuccess(response);
       store.dispatch(
         userSavedInfoActions.addUserSaved({
           email: loginParams.email,
@@ -69,11 +71,14 @@ export const useLogin = (): LoginRequest => {
       setLoading(false);
     }
   };
-  const handleLoginSuccess = ({data}: {data: any}) => {
-    logger('Login Success!');
-    logger(data?.data);
-
+  const  handleLoginSuccess = async ({data}: {data: any}) => {
     AuthenticateService.handlerLogin(data);
+    try{
+      const devToken = await AsyncStorage.getItem('fcmtoken') || "";
+      await setDevToken({devtype: "1", devtoken : devToken})
+    }catch(err){
+      
+    }
   };
   return {
     loading,
