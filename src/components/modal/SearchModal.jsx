@@ -1,0 +1,225 @@
+import React, { useState } from 'react'
+import { Modal, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import AlertMessage from '../base/AlertMessage';
+import VectorIcon from '../../utils/VectorIcon';
+import { SingleSavedItem } from '../search/SingleSavedItem';
+import { Colors } from '../../utils/Colors';
+import useSearch from '../../hooks/useSearch';
+import { getSavedSearchRequest } from '../../api/modules/search';
+import { logger } from '../../utils/helper';
+import PostBody from '../posts/PostBody';
+import HistorySearchModal from './HistorySearchModal';
+
+export default function SearchModal({onCloseModal , initialKeyword = ''}) {
+  const [keyword, setKeyword] = useState(initialKeyword);
+  const [savedData, setSavedData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+
+  const [openHistory, setOpenHistory] = useState(false);
+  const onCloseHistory = newSavedSearch => {
+    setOpenHistory(false);
+    setSavedData(newSavedSearch);
+
+  }
+ 
+  React.useEffect(() => {
+    const fetchSavedSearch = async () => {
+      try {
+        const response = await getSavedSearchRequest({index: 0, count: 20});
+        setSavedData(response.data.data);
+      } catch (err) {
+        setSavedData([]);
+      }
+    };
+    fetchSavedSearch();
+  }, [searchData]);
+  
+  const onPressSavedItem = async (text) => {
+    setKeyword(text);
+    useSearch({onComplete: onCompleteSearch, keyword: text});
+  };
+
+  const onCompleteSearch = data => {
+    setSearchData(data);
+  };
+  const fetchSearchData = () => {
+    if(keyword === '' || keyword === undefined || keyword === null){return;}
+    useSearch({onComplete: onCompleteSearch, keyword: keyword});
+  };
+    return (
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={true}
+        presentationStyle="fullScreen"
+        onRequestClose={() => {
+          onCloseModal();
+          AlertMessage('Modal has been closed.');
+        }}>
+        <View>
+          <View style={styles.searchHeader}>
+            <View style={styles.marginTopHalf}>
+              <VectorIcon
+                name="chevron-back"
+                type="Ionicons"
+                color={Colors.black}
+                size={20}
+                onPress={() => {
+                  setKeyword('');
+                  onCloseModal();
+                }}
+              />
+            </View>
+            <TextInput
+              value={keyword}
+              style={styles.searchInput}
+              placeholder={'Tìm kiếm trên Facebook'}
+              onFocus={() => setSearchData([])}
+              onChangeText={text => setKeyword(text)}
+              onSubmitEditing={fetchSearchData}></TextInput>
+          </View>
+
+          <View
+            style={{
+              marginTop: '5%',
+              borderBottomColor: 'black',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          />
+          {openHistory && (
+            <HistorySearchModal historySearch={savedData} onCloseModal={onCloseHistory}/>
+          )}
+          {keyword === '' ? (
+            <View>
+              <View style={[styles.rowBetween, {alignItems: 'center'}]}>
+                <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
+                <TouchableOpacity>
+                  <Text 
+                  style={styles.biggerText}
+                  onPress={() => setOpenHistory(true)}
+                  >CHỈNH SỬA</Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  marginTop: '5%',
+                  borderBottomColor: 'black',
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                }}
+              />
+              <ScrollView>
+                <View style={{paddingBottom: 12}}>
+                  {savedData.map(item => (
+                    <SingleSavedItem
+                      id={item.id}
+                      key={item.id}
+                      keyword={item.keyword}
+                      onPressItem={onPressSavedItem}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+          ) : (
+            <View>
+              <ScrollView>
+                <View style={{marginBottom: 12}}>
+                  {searchData.map(item => (
+                    <PostBody key ={item.id} item={item}/>
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+          )}
+        </View>
+      </Modal>
+    );
+}
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    headerIcons: {
+      flexDirection: 'row',
+    },
+    subContainer: {
+      backgroundColor: Colors.black,
+      flex: 1,
+      marginTop: StatusBar.currentHeight || 0,
+    },
+    title: {
+      fontSize: 20,
+      color: 'black',
+    },
+    item: {
+      padding: 20,
+      marginVertical: 8,
+      marginHorizontal: 16,
+    },
+    userProfile: {
+      height: 40,
+      width: 40,
+      borderRadius: 50,
+    },
+    row: {
+      flexDirection: 'row',
+    },
+    rowBetween: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    userSection: {
+      marginLeft: 26,
+    },
+    postTopSec: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    postHeaderContainer: {
+      padding: 16,
+    },
+    searchHeader: {
+      flexDirection: 'row',
+      marginLeft: 10,
+      paddingRight: 10,
+    },
+    searchInput: {
+      backgroundColor: '#f0f1f4',
+      borderRadius: 20,
+      marginLeft: '3%',
+      width: '88%',
+      height: 35,
+      padding: 10,
+      paddingLeft: 15,
+      alignItems: 'center'
+    },
+    marginTopHalf: {
+      marginTop: '3%',
+    },
+    biggerText: {
+      marginTop: '3%',
+      marginLeft: '3%',
+      fontSize: 18,
+      color: 'black',
+      fontWeight: '600',
+    },
+});

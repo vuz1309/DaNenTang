@@ -17,7 +17,7 @@ const useSearch = async (props: IUseSearch) => {
       keyword: keyword,
       user_id: 182,
       index: 0,
-      count: 10,
+      count: 20,
     });
     logger('@Response data: ', true, response.data.data);
     onComplete(response.data.data);
