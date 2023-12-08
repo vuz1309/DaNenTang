@@ -11,7 +11,7 @@ import {
   ImageBackground,
   ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Colors} from '../utils/Colors';
 
 import VectorIcon from '../utils/VectorIcon';
@@ -143,15 +143,14 @@ const UploadScreen = ({
     try {
       setLoading(true);
       const formData = buildFormData(item);
+      onClose();
       const {data} = await addPost(formData);
-
+      store.dispatch(userInfoActions.updateCoin(data.data.coins));
       ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
 
       const res = await getPostRequest({id: data.data.id});
 
       store.dispatch(postInfoActions.shiftPost(res.data.data));
-      store.dispatch(userInfoActions.updateCoin(data.data.coins));
-      onClose();
     } catch (error) {
       console.log(error);
     } finally {

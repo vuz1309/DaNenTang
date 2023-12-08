@@ -55,7 +55,12 @@ export const createApiInstance = (
       }
 
       const {response} = error;
-
+      if (response.status == 403) {
+        return Promise.reject({
+          code: 403,
+          message: 'Tài khoản hoặc mật khẩu không chính xác.',
+        });
+      }
       if (response.data.code == INVALID_TOKEN.toString()) {
         store.dispatch(userInfoActions.logOut());
       } else
