@@ -2,30 +2,30 @@ import React from 'react';
 import {
   TouchableHighlight,
   View,
-  Image,
   Text,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import {logger} from '../../utils/helper';
 import {Colors} from '../../utils/Colors';
+import VectorIcon from '../../utils/VectorIcon';
 
-export const SingleSavedItem = ({id, keyword} : any) => {
+export const SingleSavedItem = ({id, keyword, onPressItem}) => {
   return (
     <TouchableHighlight
       underlayColor={Colors.lightgrey}
       onPress={() => {
-        logger('Pressed!');
+        onPressItem(keyword);
       }}>
       <View style={{flexDirection: 'row', padding: 16}}>
         <TouchableOpacity
           style={styles.row}
-          onPress={() => logger('pressed on: ', keyword)}>
-          <Image
-            source={{
-              uri: 'https://it4788.catan.io.vn/files/image-1700951038448-634881859.png',
-            }}
-            style={styles.userProfile}
+          onPress={() =>{}}>
+             <VectorIcon
+            name="time-outline"
+            type="Ionicons"
+            size={25}
+            color={Colors.grey}
           />
           <View style={styles.userSection}>
             <Text style={[styles.title]}>{keyword}</Text>
