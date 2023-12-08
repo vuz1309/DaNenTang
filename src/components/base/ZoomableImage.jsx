@@ -83,7 +83,7 @@ const MenuImage = ({cancel, saveToLocal}) => {
   );
 };
 
-const ZoomableImage = ({urls, onClose, index}) => {
+const ZoomableImage = ({urls, onClose, index = 0}) => {
   // Hàm để lấy đuôi mở rộng của ảnh từ URL
   const getImageExtension = url => {
     return url.split('.').pop();

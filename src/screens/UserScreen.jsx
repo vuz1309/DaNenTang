@@ -19,6 +19,7 @@ import ActionsOtherUser from '../components/userScreens/ActionsOtherUser';
 import Loading from '../components/base/Loading';
 import EditUserInfo from '../components/userScreens/EditUserInfo';
 import {Themes} from '../assets/themes';
+import ZoomableImage from '../components/base/ZoomableImage';
 const nullImage = require('../assets/images/avatar_null.jpg');
 
 const UserScreen = ({navigation, route}) => {
@@ -26,6 +27,8 @@ const UserScreen = ({navigation, route}) => {
   const userLogged = useSelector(state => state.userInfo.user);
   const [userInfo, setUserInfo] = React.useState({});
   const [isEdit, setIsEdit] = React.useState(false);
+
+  const [imageViewed, setImageViewed] = React.useState('');
   const reload = () => {
     getUserInfoApi();
   };
@@ -98,38 +101,48 @@ const UserScreen = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.avaContainer}>
-        {userInfo.cover_image ? (
-          <Image
-            style={styles.background}
-            source={{
-              uri: userInfo.cover_image,
-            }}
-            defaultSource={nullImage}
-          />
-        ) : (
-          <Image style={styles.background} source={nullImage} />
-        )}
-
-        <TouchableOpacity
-          style={styles.ava}
-          onPress={() => console.log('open modal view')}>
-          {userInfo.avatar ? (
+      <TouchableOpacity
+        onPress={() => setImageViewed(userInfo.cover_image)}
+        style={styles.avaContainer}>
+        <>
+          {userInfo.cover_image ? (
             <Image
-              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              style={styles.background}
               source={{
-                uri: userInfo.avatar,
+                uri: userInfo.cover_image,
               }}
+              defaultSource={nullImage}
             />
           ) : (
-            <Image
-              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-              source={nullImage}
-            />
+            <Image style={styles.background} source={nullImage} />
           )}
-        </TouchableOpacity>
-        {Number(userInfo.online) && <View style={styles.isOnline} />}
-      </View>
+
+          <TouchableOpacity
+            style={styles.ava}
+            onPress={() => setImageViewed(userInfo.avatar)}>
+            {userInfo.avatar ? (
+              <Image
+                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+                source={{
+                  uri: userInfo.avatar,
+                }}
+              />
+            ) : (
+              <Image
+                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+                source={nullImage}
+              />
+            )}
+          </TouchableOpacity>
+          <Modal visible={!!imageViewed}>
+            <ZoomableImage
+              onClose={() => setImageViewed('')}
+              urls={[{url: imageViewed}]}
+            />
+          </Modal>
+          {Number(userInfo.online) && <View style={styles.isOnline} />}
+        </>
+      </TouchableOpacity>
 
       <View style={styles.info}>
         <Text style={{fontWeight: 'bold', color: Colors.black, fontSize: 25}}>

@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import {persistReducer} from 'redux-persist';
 import {CommonStatus} from './types';
-import {generatePersistConfig, logger} from '../../../utils/helper';
+import {generatePersistConfig} from '../../../utils/helper';
 
 export interface IUserSaved {
   email: string;
@@ -39,6 +39,18 @@ const addUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
     state.userSaved = [...state.userSaved, payload];
   }
 };
+const updateUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  console.log('update userSaved: ', payload);
+  const index = state.userSaved.findIndex(
+    (user: any) => user.id === payload.id,
+  );
+  if (index > -1) {
+    state.userSaved[index] = {
+      ...state.userSaved[index],
+      ...payload,
+    };
+  }
+};
 const removeUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
   console.log('paylaod remove:', payload);
   const index = state.userSaved.findIndex(user => user.id === payload);
@@ -50,7 +62,7 @@ const removeUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
 const userSavedInfo = createSlice({
   name: 'userSavedInfo',
   initialState,
-  reducers: {addUserSaved, removeUserSaved},
+  reducers: {addUserSaved, removeUserSaved, updateUserSaved},
 });
 
 const persistConfig = generatePersistConfig('userSavedInfo', ['userSaved']);

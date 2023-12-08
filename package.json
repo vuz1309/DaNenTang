@@ -10,10 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@expo/vector-icons": "^13.0.0",
-    "@fortawesome/fontawesome-svg-core": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-camera-roll/camera-roll": "^7.2.0",
     "@react-native-clipboard/clipboard": "^1.12.1",
@@ -47,7 +43,6 @@
     "react-native-image-picker": "^7.0.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-image-zoom-viewer": "^3.0.1",
-    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-loading-spinner-overlay": "^3.0.1",
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^17.1.0",
