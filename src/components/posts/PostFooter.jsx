@@ -68,12 +68,14 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [feelPost, setFeelPost] = useState(data.is_felt);
 
   const [showModalReactions, setShowModalReactions] = useState(false);
+
   const feelText = useMemo(() => {
     if (feelPost === FEEL_ENUM.UN_FEEL) return data.feel;
     else if (Number(data.feel) > 1)
       return `Bạn và ${formatNumberSplitBy(Number(data.feel) - 1)} người khác`;
     return 'Bạn';
-  }, [data.is_felt, data.feel]);
+  }, [data.feel, feelPost]);
+
   const handleDelFeel = async id => {
     try {
       const {data} = await delFeelPost({id});
@@ -103,11 +105,6 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
       type == FEEL_ENUM.UN_FEEL
         ? await handleDelFeel(id)
         : await handleFeel(id, type);
-    console.log('res', res);
-    // data.feel = (
-    //   Number(res.data.kudos) + Number(res.data.disappointed)
-    // ).toString();
-    // data.is_felt = type;
 
     store.dispatch(
       postInfoActions.updatePost({
@@ -120,9 +117,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
     );
   };
   const handleReactionClick = () => {
-    if (Number(data.comment_mark) > 0) {
-      // open modal comment (TODO)
-    } else if (Number(data.feel) > 0) setShowModalReactions(true);
+    if (Number(data.feel) > 0) setShowModalReactions(true);
   };
 
   return (

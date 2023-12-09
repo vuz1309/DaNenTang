@@ -7,7 +7,7 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
@@ -18,6 +18,45 @@ import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import LoadingOverlay from '../base/LoadingOverlay';
 const MAX_CAPTION_LENGTH = 50;
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
+
+const Img = ({url, isBanned = false, onPress}) => {
+  const [isViewed, setIsViewed] = useState(!isBanned);
+  const handlePress = () => {
+    if (isViewed) {
+      onPress();
+    } else setIsViewed(true);
+  };
+  const source = React.useMemo(
+    () => (isViewed ? {uri: url} : require('../../assets/images/banned.jpg')),
+    [isViewed],
+  );
+  return (
+    <Pressable
+      style={{
+        borderBottomWidth: 8,
+        borderBottomColor: Colors.background,
+        borderStyle: 'solid',
+        position: 'relative',
+      }}
+      key={url}
+      onPress={handlePress}>
+      <>
+        <Image
+          style={styles.img}
+          source={source}
+          defaultSource={avatarNullImage}
+        />
+        {!isViewed && (
+          <StyledTouchable
+            onPress={handlePress}
+            style={{position: 'absolute', left: '48%', top: '48%'}}>
+            <Text style={{color: Colors.white, fontSize: 20}}>Xem</Text>
+          </StyledTouchable>
+        )}
+      </>
+    </Pressable>
+  );
+};
 
 const PostListImage = ({data, onClose, index = 0}) => {
   const [isShowDetails, setDetailsPost] = React.useState(0);
@@ -68,6 +107,8 @@ const PostListImage = ({data, onClose, index = 0}) => {
   React.useEffect(() => {
     scrollToIndex(index);
   }, []);
+  const isBanned = React.useMemo(() => !!Number(data.banned));
+
   if (!data) return <LoadingOverlay isLoading={true} />;
   return (
     <>
@@ -114,20 +155,12 @@ const PostListImage = ({data, onClose, index = 0}) => {
 
             <View style={{backgroundColor: Colors.white}}>
               {data.image.map(({url}, index) => (
-                <Pressable
-                  style={{
-                    borderBottomWidth: 8,
-                    borderBottomColor: Colors.background,
-                    borderStyle: 'solid',
-                  }}
+                <Img
                   key={url}
-                  onPress={() => setDetailsPost(index + 1)}>
-                  <Image
-                    style={styles.img}
-                    source={{uri: url}}
-                    defaultSource={avatarNullImage}
-                  />
-                </Pressable>
+                  url={url}
+                  onPress={() => setDetailsPost(index + 1)}
+                  isBanned={isBanned}
+                />
               ))}
             </View>
           </ScrollView>
@@ -199,7 +232,7 @@ const styles = StyleSheet.create({
   },
   img: {
     width: '100%',
-    minHeight: 300,
+    height: 300,
     resizeMode: 'contain',
     marginBottom: 8,
   },
