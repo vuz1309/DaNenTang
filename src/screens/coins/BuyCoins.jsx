@@ -79,11 +79,12 @@ const BuyCoins = ({closeModal}) => {
           <TextInput
             placeholderTextColor={Colors.grey}
             value={crrCoins}
+            style={{color: Colors.black, fontSize: 20, fontWeight: 'bold'}}
             readonly
           />
         </View>
         <View style={styles.input}>
-          <Text style={{flex: 0.4, color: Colors.textGrey}}>Số coin: </Text>
+          <Text style={{flex: 0.4, color: Colors.textColor}}>Số coin: </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
             value={coin}
@@ -95,7 +96,7 @@ const BuyCoins = ({closeModal}) => {
           />
         </View>
         <View style={styles.input}>
-          <Text style={{flex: 0.4, color: Colors.textGrey}}>Mã Code: </Text>
+          <Text style={{flex: 0.4, color: Colors.textColor}}>Mã Code: </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
             value={code}
@@ -108,6 +109,7 @@ const BuyCoins = ({closeModal}) => {
           title={'Gửi yêu cầu '}
           customStyle={{
             backgroundColor: Colors.primaryColor,
+            marginTop: 8,
           }}
           isLoading={loading}
         />

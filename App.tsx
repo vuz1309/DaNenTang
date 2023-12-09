@@ -50,6 +50,10 @@ const AppChild = () => {
               name={APP_ROUTE.COMMENT_PAGE}
               component={CommentScreen}
             />
+            <Stack.Screen
+              component={FullScreenVideo}
+              name={APP_ROUTE.FULL_VIDEO}
+            />
           </>
         ) : (
           <>
@@ -105,6 +109,7 @@ import SplashScreen from './src/screens/SplashScreen';
 import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
 import {Layout} from './src/components/base/Layout';
 import CommentScreen from './src/screens/CommentScreen';
+import FullScreenVideo from './src/components/posts/FullScreenVideo';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(
