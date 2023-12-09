@@ -24,12 +24,12 @@ export const RequestUserPermission = async () => {
 export const GetFCMToken = async () => {
   logger("start get fcm token");
   let fcmToken = await AsyncStorage.getItem('fcmtoken');
-  logger('old fcmtoken: ', false, fcmToken);
+  logger('old fcmtoken: ', true, fcmToken);
   if(!fcmToken){
     try{
-      let fcmToken = messaging().getToken();
+      let fcmToken = await messaging().getToken();
       if(fcmToken){
-        logger("new fcmtoken: ", false, fcmToken)
+        logger("new fcmtoken: ", true, fcmToken)
         await AsyncStorage.setItem('fcmtoken', await fcmToken);
       }else{
         logger("fcm token not exist!");
@@ -59,7 +59,10 @@ export const NotificationListener =  () => {
     logger('Message handled in the background!',false, remoteMessage);
     const title = remoteMessage.notification?.title;
     const body = remoteMessage.notification?.body;
+    const data = remoteMessage.notification;
     logger("title: ", false, title);
     logger("body: ", false, body);
+    logger("data: ", false, data);
+
   })
 }

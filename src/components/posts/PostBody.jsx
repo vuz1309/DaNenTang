@@ -14,67 +14,86 @@ import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
 import PostVideo from './PostVideo';
 
+const PostImg = ({img, onPress, isBanned}) => {
+  const source = React.useMemo(
+    () =>
+      isBanned ? require('../../assets/images/banned.jpg') : {uri: img.url},
+    [isBanned],
+  );
+
+  return (
+    <TouchableOpacity onPress={onPress} style={{flex: 1, ...styles.border}}>
+      <Image
+        style={styles.image}
+        defaultSource={require('../../assets/images/avatar_null.jpg')}
+        source={source}
+      />
+    </TouchableOpacity>
+  );
+};
+
 /**
  *
  * @param {object} props
  * @returns
  */
-const PostBody = ({item}) => {
+const PostBody = ({item, editPost}) => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const isBanned = React.useMemo(() => !!Number(item.banned));
+  const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
 
   return (
     <>
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-        <PostHeader data={item} />
+        <PostHeader onClickEdit={editPost} data={item} />
 
         {!item.video && item.image.length > 0 && (
           <View style={styles.postImg}>
             <View style={{flex: 3, flexDirection: 'row'}}>
               {item.image.slice(0, 2).map((img, index) => (
-                <TouchableOpacity
+                <PostImg
                   key={img.url}
+                  img={img}
                   onPress={() => setModalVisible(index + 1)}
-                  style={{flex: 1, ...styles.border}}>
-                  <Image
-                    style={styles.image}
-                    defaultSource={require('../../assets/images/avatar_null.jpg')}
-                    source={{uri: img.url}}
-                  />
-                </TouchableOpacity>
+                  isBanned={isBanned}
+                />
               ))}
             </View>
             {item.image.length > 2 && (
               <View style={styles.spliter}>
                 {item.image.slice(2, 4).map((img, index) => (
-                  <TouchableOpacity
+                  <PostImg
                     key={img.url}
+                    img={img}
                     onPress={() => setModalVisible(index + 3)}
-                    style={{flex: 1, ...styles.border}}>
-                    <Image
-                      style={styles.image}
-                      defaultSource={require('../../assets/images/avatar_null.jpg')}
-                      source={{uri: img.url}}
-                    />
-                  </TouchableOpacity>
+                    isBanned={isBanned}
+                  />
                 ))}
                 {item.image.length >= 5 && (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(5)}
                     style={{flex: 1, ...styles.border, position: 'relative'}}>
-                    <Image
-                      style={styles.image}
-                      source={{uri: item.image[4].url}}
-                    />
+                    <>
+                      <Image
+                        style={styles.image}
+                        source={
+                          isBanned
+                            ? require('../../assets/images/banned.jpg')
+                            : {uri: item.image[4].url}
+                        }
+                      />
 
-                    {item.image.length > 5 && (
-                      <TouchableOpacity
-                        onPress={() => setModalVisible(5)}
-                        style={styles.overlayEndImg}>
-                        <Text style={{color: Colors.white}}>
-                          {item.image.length - 5}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                  </View>
+                      {item.image.length > 5 && (
+                        <TouchableOpacity
+                          onPress={() => setModalVisible(6)}
+                          style={styles.overlayEndImg}>
+                          <Text style={{color: Colors.white}}>
+                            {item.image.length - 5}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </>
+                  </TouchableOpacity>
                 )}
               </View>
             )}

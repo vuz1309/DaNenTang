@@ -1,11 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TouchableHighlight,
-} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
 import React, {useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
@@ -21,10 +14,12 @@ import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 import {deletePostRequest} from '../../api/modules/post.request';
 import Loading from '../base/Loading';
-import UploadScreen from '../../screens/UploadScreen';
 import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
+import Enum from '../../utils/Enum';
+import DialogConfirm from '../base/dialog/DialogConfirm';
+import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
-const PostHeader = ({data, isShowRemove = true}) => {
+const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
   const {navigate} = useNavigation();
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
@@ -62,13 +57,13 @@ const PostHeader = ({data, isShowRemove = true}) => {
     // toggleModalDelPost();
     setModalVisible(false);
     try {
-      const data = await deletePostRequest({id: postId});
-      console.log('remove post:', data);
       store.dispatch(
         postInfoActions.removePost({
           postId,
         }),
       );
+      const {data} = await deletePostRequest({id: postId});
+      store.dispatch(userInfoActions.updateCoin(data.data.coins));
     } catch (error) {
       console.log(error);
     }
@@ -165,61 +160,23 @@ const PostHeader = ({data, isShowRemove = true}) => {
         onLongPress={handleCopyToClipboard}>
         <PostDescription described={data.described} />
       </TouchableHighlight>
-      <Modal
+      <DialogConfirm
+        mainBtn={{text: 'Xóa', onPress: removePost}}
+        subBtn={{
+          text: 'Chỉnh sửa',
+          onPress: () => {
+            onClickEdit(Enum.PostMode.Edit, data);
+            toggleModalDelPost();
+          },
+        }}
+        closeBtn={{
+          text: 'Hủy',
+          onPress: toggleModalDelPost,
+        }}
         isVisible={isModalVisible}
-        backdropOpacity={0.7}
-        animationIn="zoomIn"
-        animationOut="zoomOut"
-        animationInTiming={100}
-        animationOutTiming={100}
-        backdropTransitionInTiming={100}
-        backdropTransitionOutTiming={100}
-        onBackdropPress={toggleModalDelPost}
-        style={styles.modal}>
-        <View
-          style={[
-            styles.modalContent,
-            {
-              padding: 24,
-              borderRadius: 4,
-            },
-          ]}>
-          <Text
-            style={{fontSize: 20, fontWeight: '700', color: Colors.textColor}}>
-            Xóa bài viết?
-          </Text>
-          <Text
-            style={{
-              fontSize: 16,
-              paddingVertical: 12,
-              color: Colors.textColor,
-            }}>
-            Bạn có thể chỉnh sửa bài viết này nếu cần thay đổi.
-          </Text>
-          <View
-            style={{justifyContent: 'flex-end', flexDirection: 'row', gap: 12}}>
-            <Text
-              onPress={removePost}
-              style={{
-                fontSize: 18,
-                color: Colors.primaryColor,
-                fontWeight: '500',
-              }}>
-              Xóa
-            </Text>
-            <Text
-              style={{fontSize: 18, color: Colors.black, fontWeight: '500'}}>
-              Chỉnh sửa
-            </Text>
-            <StyledTouchable onPress={toggleModalDelPost}>
-              <Text
-                style={{fontSize: 18, color: Colors.black, fontWeight: '500'}}>
-                Hủy
-              </Text>
-            </StyledTouchable>
-          </View>
-        </View>
-      </Modal>
+        title={'Xóa bài viết?'}
+        content={'Bạn có thể chỉnh sửa bài viết này nếu cần thay đổi.'}
+      />
       {isShowModalReport && (
         <Modal
           isVisible={true}
@@ -233,7 +190,10 @@ const PostHeader = ({data, isShowRemove = true}) => {
           <View style={styles.modalContent}>
             {Number(data.can_edit) > 0 && (
               <StyledTouchableHighlight
-                onPress={() => console.log('edit post')}
+                onPress={() => {
+                  onClickEdit(Enum.PostMode.Edit, data);
+                  toggleModalReport();
+                }}
                 text={'Chỉnh sửa bài viết'}
                 emojiConfig={{
                   name: 'edit',

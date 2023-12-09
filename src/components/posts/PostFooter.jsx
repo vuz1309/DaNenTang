@@ -24,9 +24,9 @@ import {SUCCESS_CODE} from '../../utils/constants';
 import {Themes} from '../../assets/themes';
 
 import ListReactions from '../comments/ListReactions';
-import { APP_ROUTE } from '../../navigation/config/routes';
-import { logger } from '../../utils/helper';
-import { useNavigation } from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {logger} from '../../utils/helper';
+import {useNavigation} from '@react-navigation/native';
 import {formatNumberSplitBy} from '../../helpers/helpers';
 
 const ScreenHeight = Dimensions.get('window').height;
@@ -68,12 +68,14 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [feelPost, setFeelPost] = useState(data.is_felt);
 
   const [showModalReactions, setShowModalReactions] = useState(false);
+
   const feelText = useMemo(() => {
     if (feelPost === FEEL_ENUM.UN_FEEL) return data.feel;
     else if (Number(data.feel) > 1)
       return `Bạn và ${formatNumberSplitBy(Number(data.feel) - 1)} người khác`;
     return 'Bạn';
-  }, [data.is_felt, data.feel]);
+  }, [data.feel, feelPost]);
+
   const handleDelFeel = async id => {
     try {
       const {data} = await delFeelPost({id});
@@ -103,11 +105,6 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
       type == FEEL_ENUM.UN_FEEL
         ? await handleDelFeel(id)
         : await handleFeel(id, type);
-    console.log('res', res);
-    // data.feel = (
-    //   Number(res.data.kudos) + Number(res.data.disappointed)
-    // ).toString();
-    // data.is_felt = type;
 
     store.dispatch(
       postInfoActions.updatePost({
@@ -120,9 +117,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
     );
   };
   const handleReactionClick = () => {
-    if (Number(data.comment_mark) > 0) {
-      // open modal comment (TODO)
-    } else if (Number(data.feel) > 0) setShowModalReactions(true);
+    if (Number(data.feel) > 0) setShowModalReactions(true);
   };
 
   return (
@@ -247,24 +242,22 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
             </View>
           </TouchableOpacity>
 
-            <TouchableOpacity
-            onPress={() => {navigate(APP_ROUTE.COMMENT_PAGE, {item : data})}}
-            >
-          <View style={styles.row} >
-
+          <TouchableOpacity
+            onPress={() => {
+              navigate(APP_ROUTE.COMMENT_PAGE, {item: data});
+            }}>
+            <View style={styles.row}>
               <VectorIcon
                 name="chatbox-outline"
                 type="Ionicons"
                 size={25}
                 color={textStyles.color}
               />
-              <Text  style={{...styles.reactionCount, ...textStyles}}>
+              <Text style={{...styles.reactionCount, ...textStyles}}>
                 Bình luận
               </Text>
-          </View>
-
-            </TouchableOpacity>
-
+            </View>
+          </TouchableOpacity>
 
           <View style={styles.row}>
             <VectorIcon

@@ -76,16 +76,13 @@ const updateToken: Reducer<
 
   logger('reducer: ' + payload.token);
   logger('state: ' + state.token);
-  if (payload.user?.id) {
-    state.user = {...state.user, id: payload.user.id};
-  }
 };
 
 const logOut: Reducer = state => {
   delete state.token;
   delete state.user;
 };
-const updateCoin: Reducer<PayloadAction<string>> = (state, { payload }) => {
+const updateCoin: Reducer<PayloadAction<string>> = (state, {payload}) => {
   // Kiểm tra xem người dùng đã đăng nhập hay chưa
   if (state.user) {
     // Cập nhật số coin trong state
@@ -104,7 +101,7 @@ const userInfoSlice = createSlice({
     logOut,
     loginSuccess,
     updateUserInfo,
-    updateCoin
+    updateCoin,
   },
 });
 

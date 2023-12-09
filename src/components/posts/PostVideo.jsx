@@ -12,14 +12,17 @@ import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
 import {StyledTouchable} from '../base';
 import Slider from '@react-native-community/slider';
-
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 const ScreenWidth = Dimensions.get('window').width;
 const formatTime = seconds => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
-const PostVideo = ({videoUrl}) => {
+
+const PostVideo = ({videoUrl, onExpand}) => {
+  const {navigate, goBack} = useNavigation();
   const videoRef = useRef(null);
   const hideControlRef = useRef(null);
   const [thumbnail, setThumbnail] = useState(null);
@@ -31,6 +34,10 @@ const PostVideo = ({videoUrl}) => {
     currentTime: 1,
     totalTime: 1,
   });
+  const expandIcon = React.useMemo(
+    () => (onExpand ? 'expand-arrows-alt' : 'expand-alt'),
+    [onExpand],
+  );
   const isShowPauseIcon = React.useMemo(() => {
     return isShowControl || config.paused;
   }, [isShowControl, config.paused]);
@@ -140,25 +147,47 @@ const PostVideo = ({videoUrl}) => {
             <Text style={{...styles.timer}}>
               {formatTime(config.currentTime)} / {totalTime}
             </Text>
-            <StyledTouchable
-              onPress={() => setConfig(prev => ({...prev, muted: !prev.muted}))}
-              style={{
-                elevation: 4,
-              }}>
-              <VectorIcon
-                name={iconMute}
-                type="Octicons"
-                color={Colors.white}
-                size={24}
-              />
-            </StyledTouchable>
+            <View style={{flexDirection: 'row', gap: 8}}>
+              <StyledTouchable
+                onPress={() =>
+                  setConfig(prev => ({...prev, muted: !prev.muted}))
+                }
+                style={{
+                  elevation: 4,
+                }}>
+                <VectorIcon
+                  name={iconMute}
+                  type="Octicons"
+                  color={Colors.white}
+                  size={24}
+                />
+              </StyledTouchable>
+              <StyledTouchable
+                onPress={() => {
+                  if (onExpand) {
+                    goBack();
+                  } else {
+                    navigate(APP_ROUTE.FULL_VIDEO, {url: videoUrl});
+                  }
+                }}
+                style={{
+                  elevation: 4,
+                }}>
+                <VectorIcon
+                  name={expandIcon}
+                  type="FontAwesome5"
+                  color={Colors.white}
+                  size={24}
+                />
+              </StyledTouchable>
+            </View>
           </View>
           <Slider
             style={{
               height: 4,
               backgroundColor: Colors.white,
               zIndex: 1000,
-              width: ScreenWidth,
+              width: '100%',
               borderRadius: 12,
             }}
             thumbTintColor={Colors.primaryColor}
