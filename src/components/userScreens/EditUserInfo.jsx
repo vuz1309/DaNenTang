@@ -47,6 +47,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
 
   const keyboardVerticalOffset = Platform.OS === 'android' ? 100 : 0;
   const openLibrary = async title => {
+    const options = {mediaType: 'photo'};
     try {
       await launchImageLibrary({noData: true}, response => {
         if (response.didCancel) {
@@ -91,9 +92,9 @@ const EditUserInfo = ({userInfo, closeModal}) => {
 
       const {data} = await setUserInfo(formData);
       console.log('update user info: ', data);
-      if (data.code == SUCCESS_CODE) {
+      if (data.code == SUCCESS_CODE)
         ToastAndroid.show('Cập nhật thành công!', ToastAndroid.SHORT);
-      } else {
+      else {
         ToastAndroid.show(
           'Cập nhật thất bại, vui lòng thử lại sau!',
           ToastAndroid.SHORT,

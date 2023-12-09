@@ -9,8 +9,3 @@ export const getSavedSearchRequest = (
 ) => {
   return requestJSONWithAuth('/get_saved_search', body);
 };
-export const deleteSearchHistory = (
-  body: {search_id?: any; all: any}
-) => {
-  return requestJSONWithAuth('/del_saved_search', body);
-};

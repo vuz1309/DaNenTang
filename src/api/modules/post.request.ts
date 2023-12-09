@@ -30,7 +30,16 @@ export const getPostRequest = (params: {id: string}) => {
   return requestJSONWithAuth('/get_post', params);
 };
 
-export const editPost = async (post: FormData) => {
+export const editPost = async (post: {
+  image?: Array<any>;
+  video?: any;
+  described?: string;
+  status?: string;
+  auto_accept?: string;
+  id: string;
+  image_del: string;
+  image_sort: string;
+}) => {
   return authAndFileRequest.post('/edit_post', post);
 };
 
@@ -47,12 +56,12 @@ export const reportPostRequest = (body: {
 };
 
 export const getListVideos = (body: {
-  user_id?: string;
-  in_campaign?: string;
-  campaign_id?: string;
-  latitude?: string;
-  longitude?: string;
-  last_id?: string;
+  user_id: string;
+  in_campaign: string;
+  campaign_id: string;
+  latitude: string;
+  longitude: string;
+  last_id: string;
   index: string;
   count: string;
 }) => {

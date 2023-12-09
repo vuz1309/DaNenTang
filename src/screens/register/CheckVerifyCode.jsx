@@ -3,16 +3,13 @@ import {StyledText, StyledButton} from '../../components/base';
 import {ONBOARDING_ROUTE} from '../../navigation/config/routes';
 import VectorIcon from '../../utils/VectorIcon';
 import React, {useState} from 'react';
-import {getStringAsyncData} from '../../utils/authenticate/LocalStorage';
-import {logger} from '../../utils/helper';
+import { getStringAsyncData } from '../../utils/authenticate/LocalStorage';
+import { logger } from '../../utils/helper';
 import AlertMessage from '../../components/base/AlertMessage';
-import {Colors} from '../../utils/Colors';
-import {request} from '../../api/request';
-import {
-  checkVerifyCodeRequest,
-  getVerifyCodeRequest,
-} from '../../api/modules/onboarding';
-import {useLogin} from '../../utils/authenticate/AuthenticateService';
+import { Colors } from '../../utils/Colors';
+import { request } from '../../api/request';
+import { checkVerifyCodeRequest, getVerifyCodeRequest } from '../../api/modules/onboarding';
+import { useLogin } from '../../utils/authenticate/AuthenticateService';
 export const CheckVerifyCode = ({navigation}) => {
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
@@ -21,52 +18,48 @@ export const CheckVerifyCode = ({navigation}) => {
   const {requestLogin, loading, error} = useLogin();
 
   const onPress = async () => {
-    if (code.length < 6) {
-      AlertMessage('Bạn cần nhập đủ 6 chữ số!');
-      return;
-    }
-    const checkVerifyParams = {
-      email: email,
-      code_verify: code,
-    };
-    try {
-      const response = await checkVerifyCodeRequest(checkVerifyParams);
-      if (response.status === 200) {
-        requestLogin({email, password});
+      if(code.length < 6){
+        AlertMessage('Bạn cần nhập đủ 6 chữ số!');
+        return;
       }
-    } catch (ex) {
-      logger(ex);
-    }
+      const checkVerifyParams = {
+        email: email,
+        code_verify : code,
+      };
+      try{
+        const response = await checkVerifyCodeRequest(checkVerifyParams);
+        if(response.status === 200){
+            requestLogin({email, password});
+        }
+      }catch(ex){
+        logger(ex);
+      }
   };
   const onPressNotGetCode = async () => {
     const getVerifyCodeParams = {
       email,
-    };
-    try {
-      AlertMessage(
-        'Chúng tôi đã gửi một mã xác thực đến email của bạn. Hãy kiểm tra hòm thư',
-      );
-      await getVerifyCodeRequest(getVerifyCodeParams);
-    } catch (ex) {
+    }
+    try{
+        AlertMessage('Chúng tôi đã gửi một mã xác thực đến email của bạn. Hãy kiểm tra hòm thư');
+       await getVerifyCodeRequest(getVerifyCodeParams);
+    }catch(ex){
       logger(ex);
     }
-  };
-  const onInputCode = value => {
-    if (value.length <= 6) {
+  }
+  const onInputCode = (value) => {
+    if(value.length <= 6){
       setCode(value);
     }
-  };
-  React.useEffect(() => {
-    const getEmailAndPassword = async () => {
-      const email = await getStringAsyncData('email');
-      setEmail(email);
-      setMessage(
-        `Chúng tôi đã gửi một mã xác thực gồm 6 chữ số đến email: ${email}`,
-      );
-      const password = await getStringAsyncData('password');
-      setPassword(password);
-    };
-    getEmailAndPassword();
+  }
+  React.useEffect( () => {
+      const getEmailAndPassword = async () => {
+        const email =  await getStringAsyncData('email');
+        setEmail(email);
+        setMessage(`Chúng tôi đã gửi một mã xác thực gồm 6 chữ số đến email: ${email}`);
+        const password = await getStringAsyncData('password');
+        setPassword(password);
+      }
+      getEmailAndPassword();
   }, []);
   return (
     <View style={styles.container}>
@@ -85,9 +78,12 @@ export const CheckVerifyCode = ({navigation}) => {
         }}
       />
       <View style={[styles.subContainer]}>
-        <StyledText content={message} customStyle={[styles.mediumText]} />
         <StyledText
-          content="Nhập mã gồm 6 chữ số được gửi tới Email của bạn"
+          content={message}
+          customStyle={[styles.mediumText]}
+        />
+        <StyledText
+          content='Nhập mã gồm 6 chữ số được gửi tới Email của bạn'
           customStyle={[styles.mediumTextBold]}
         />
         <View
@@ -96,15 +92,18 @@ export const CheckVerifyCode = ({navigation}) => {
             justifyContent: 'space-between',
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'center'
           }}>
-          <StyledText content="FB-" customStyle={[styles.biggerTextCenter]} />
+          <StyledText
+            content="FB-"
+            customStyle={[styles.biggerTextCenter]}
+          />
           <View style={styles.wrapperTextInput}>
             <TextInput
               keyboardType="numeric"
               value={code}
               style={styles.textInput}
-              onChangeText={value => onInputCode(value)}></TextInput>
+              onChangeText={(value) => onInputCode(value)}></TextInput>
           </View>
         </View>
 
@@ -113,14 +112,14 @@ export const CheckVerifyCode = ({navigation}) => {
           customStyle={[styles.nextButton]}
           onPress={onPress}
         />
-        <View
-          style={{
-            marginTop: '5%',
-            borderBottomColor: 'black',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        />
-        <StyledButton
+         <View
+        style={{
+          marginTop: '5%',
+          borderBottomColor: 'black',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+        }}
+      />
+      <StyledButton
           title="Không nhận được mã?"
           customStyle={[styles.nextButtonGray]}
           onPress={onPressNotGetCode}
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 0.5,
     paddingHorizontal: 8,
-    borderRadius: 10,
+    borderRadius: 10
   },
   nextButton: {
     backgroundColor: Colors.primaryColor,
@@ -196,5 +195,6 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     fontWeight: 'bold',
   },
+
 });
 export default CheckVerifyCode;

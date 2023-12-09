@@ -15,7 +15,7 @@ import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 import {RequestUserPermission} from '../utils/notification/notificationHelper';
 import Loading from '../components/base/Loading';
 import {validateEmail, validatePassword} from '../utils/validater';
-import AlertMessage from '../components/base/AlertMessage';
+import LoadingOverlay from '../components/base/LoadingOverlay';
 import {StyledButton} from '../components/base';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');

@@ -1,11 +1,9 @@
-import {Image, StyleSheet, Text, View,Pressable} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import tempImage from '../../assets/images/img1.jpeg';
 import {Colors} from '../../utils/Colors';
 import more from '../../assets/images/more.png';
-import VectorIcon from '../../utils/VectorIcon';
-import NotificationAddition from './NotificationAddition';
-const Notification = ({noti,HandleOnPress,HandleAdditionalNotification}) => {
+const Notification = ({noti}) => {
   return (
     <View style={[styles.container, noti.read == 0 && styles.unread]}>
       <View style={styles.imageContainer}>
@@ -13,28 +11,17 @@ const Notification = ({noti,HandleOnPress,HandleAdditionalNotification}) => {
         <Image source={tempImage} style={styles.notiType}></Image>
       </View>
       <View style={styles.notificationContainer}>
-        <Pressable onPress={HandleOnPress}>
-
         <View style={styles.notification}>
           <Text style={styles.notificationText}>{noti.title}</Text>
           <Text>5 hours ago</Text>
         </View>
-        </Pressable>
       </View>
       <View style={styles.optionContainer}>
-      <VectorIcon onPress={HandleAdditionalNotification}
-                name="dots-three-horizontal"
-                type="Entypo"
-                size={25}
-                color={Colors.headerIconGrey}
-                style={styles.headerIcons}
-              />
+        <Image style={styles.more} source={more}></Image>
       </View>
-     
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   // ... (previous styles
   container: {

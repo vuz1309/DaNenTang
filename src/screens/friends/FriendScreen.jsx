@@ -25,7 +25,6 @@ import AlertMessage from '../../components/base/AlertMessage';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
 import {notificationInfoActions} from '../../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../../data/TabData';
-import HeaderTitle from '../../components/layouts/HeaderTitle';
 
 const FriendScreen = () => {
   const navigation = useNavigation();
@@ -104,10 +103,9 @@ const FriendScreen = () => {
           onRefresh={onRefresh}
         />
       }>
-      {/* <View style={styles.header}>
+      <View style={styles.header}>
         <Text style={styles.title}>Bạn bè</Text>
-      </View> */}
-      <HeaderTitle title={'Bạn bè'} />
+      </View>
       <View style={styles.buttons}>
         <TouchableOpacity
           onPress={() => navigation.navigate(APP_ROUTE.FRIEND_SUGGESTION)}
