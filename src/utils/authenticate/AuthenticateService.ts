@@ -7,10 +7,9 @@ import {store} from '../../state-management/redux/store';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
 import TokenProvider from './TokenProvider';
-import {logger} from '../helper';
-import {storeStringAsyncData} from './LocalStorage';
-import { GetFCMToken } from '../notification/notificationHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppTokens } from '../../hooks/useAppToken';
+import { logger } from '../helper';
 
 interface LoginRequest {
   loading: boolean;
@@ -72,10 +71,12 @@ export const useLogin = (): LoginRequest => {
     }
   };
   const  handleLoginSuccess = async ({data}: {data: any}) => {
+    const { saveFcmToken, getFcmToken } = useAppTokens(); // save local storage
     AuthenticateService.handlerLogin(data);
     try{
-      const devToken = await AsyncStorage.getItem('fcmtoken') || "";
-      await setDevToken({devtype: "1", devtoken : devToken})
+      const fcmToken = await getFcmToken() || '';
+      logger('fcmToken: ', true, fcmToken);
+      await setDevToken({devtype: "1", devtoken : fcmToken})
     }catch(err){
       
     }
