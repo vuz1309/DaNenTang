@@ -15,9 +15,10 @@ import {Colors} from '../../utils/Colors';
 import nullImage from '../../assets/images/avatar_null.jpg';
 import {setUserInfo} from '../../api/modules/userProfile.request';
 import {launchImageLibrary} from 'react-native-image-picker';
-
+import {store} from '../../state-management/redux/store';
 import {createImageFormData} from '../../helpers/helpers';
 import {SUCCESS_CODE} from '../../utils/constants';
+import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 const HeaderOption = ({name}) => {
   return (
     <View style={styles.headerOption}>
@@ -92,6 +93,8 @@ const EditUserInfo = ({userInfo, closeModal}) => {
       const {data} = await setUserInfo(formData);
       console.log('update user info: ', data);
       if (data.code == SUCCESS_CODE) {
+        store.dispatch(userInfoActions.updateUserInfo(data.data));
+
         ToastAndroid.show('Cập nhật thành công!', ToastAndroid.SHORT);
       } else {
         ToastAndroid.show(

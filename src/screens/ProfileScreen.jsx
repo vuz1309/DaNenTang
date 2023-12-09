@@ -29,34 +29,13 @@ import tempImage from '../assets/images/img1.jpeg';
 import {getFreeDiskStorageOldSync} from 'react-native-device-info';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
-
+import {useLogout} from '../hooks/useLogout';
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
   // const {requestLogout} = useLogout(auth(), fireStore());
   const [isChangePass, setIsChangePass] = React.useState(false);
-  const onLogout = async () => {
-    try {
-      store.dispatch(userInfoActions.logOut());
-      store.dispatch(postInfoActions.setPosts([]));
-      store.dispatch(postInfoActions.setLastId('99999'));
+  const {onLogout} = useLogout();
 
-      await logout();
-
-      store.dispatch(
-        postInfoActions.setParams({
-          in_campaign: '1',
-          campaign_id: '1',
-          latitude: '1.0',
-          longitude: '1.0',
-          last_id: '99999',
-          index: '0',
-          count: '20',
-        }),
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const toggleModalChangePass = () => {
     setIsChangePass(!isChangePass);
   };
@@ -91,25 +70,6 @@ const ProfileScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <View style={styles.header}>
-          <Text style={styles.menu}>Menu</Text>
-          <View style={styles.menuIcon}>
-            <VectorIcon
-              name="settings-sharp"
-              type="Ionicons"
-              size={25}
-              color={Colors.black}
-              style={styles.headerIcons}
-            />
-            <VectorIcon
-              name="search"
-              type="Ionicons"
-              size={25}
-              color={Colors.black}
-              style={styles.headerIcons}
-            />
-          </View>
-        </View> */}
         <HeaderTitle title={'Menu'} />
         <View style={styles.profile}>
           <Image

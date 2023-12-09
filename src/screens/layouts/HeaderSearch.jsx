@@ -2,7 +2,7 @@ import {View, TouchableHighlight, StyleSheet, Text} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 
-const HeaderSearch = ({title, onBack}) => {
+const HeaderSearch = ({title, onBack, haveSearch = true}) => {
   return (
     <View style={styles.header}>
       <View style={{gap: 12, flexDirection: 'row', alignItems: 'center'}}>
@@ -21,14 +21,16 @@ const HeaderSearch = ({title, onBack}) => {
           {title}
         </Text>
       </View>
-      <TouchableHighlight style={{borderRadius: 48, padding: 8}}>
-        <VectorIcon
-          name="search1"
-          type="AntDesign"
-          size={24}
-          color={Colors.black}
-        />
-      </TouchableHighlight>
+      {haveSearch && (
+        <TouchableHighlight style={{borderRadius: 48, padding: 8}}>
+          <VectorIcon
+            name="search1"
+            type="AntDesign"
+            size={24}
+            color={Colors.black}
+          />
+        </TouchableHighlight>
+      )}
     </View>
   );
 };

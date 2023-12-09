@@ -27,11 +27,33 @@ const AppChild = () => {
   const userLogged = useSelector(
     (state: FacebookRootState) => state.userInfo.user,
   );
-  return (
-    <NavigationContainer>
-      <StatusBar backgroundColor={Colors.white} barStyle="light-content" />
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        {userLogged ? (
+
+  React.useEffect(() => {
+    console.log('userlogged:', userLogged);
+  }, [userLogged]);
+  const appRoutes = React.useMemo(() => {
+    if (userLogged) {
+      if (
+        userLogged.active ==
+        Enum.AccountStatus.NOT_CHANGE_AFTER_SIGNUP.toString()
+      ) {
+        return (
+          <Stack.Screen
+            name={APP_ROUTE.CHANGE_AFTER_SIGNUP}
+            component={ChangeProfileAfterSignUp}
+          />
+        );
+      } else if (
+        userLogged.active == Enum.AccountStatus.NOT_VERIFY.toString()
+      ) {
+        return (
+          <Stack.Screen
+            name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
+            component={CheckVerifyCode}
+          />
+        );
+      } else {
+        return (
           <>
             <Stack.Screen name={APP_ROUTE.HOME_TAB} component={MainScreen} />
             <Stack.Screen
@@ -54,6 +76,107 @@ const AppChild = () => {
               component={FullScreenVideo}
               name={APP_ROUTE.FULL_VIDEO}
             />
+          </>
+        );
+      }
+    } else {
+      return (
+        <>
+          <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen
+            name={AUTHENTICATE_ROUTE.LOGINBYSAVED}
+            component={LoginBySaved}
+          />
+
+          <Stack.Screen
+            name={AUTHENTICATE_ROUTE.LOGIN}
+            component={LoginScreen}
+          />
+
+          <Stack.Screen
+            name={AUTHENTICATE_ROUTE.REGISTER}
+            component={RegisterScreen}
+          />
+          <Stack.Screen
+            name={ONBOARDING_ROUTE.INPUT_NAME}
+            component={InputName}
+          />
+          <Stack.Screen
+            name={ONBOARDING_ROUTE.INPUT_BIRTH_DATE}
+            component={InputBirthDate}
+          />
+          <Stack.Screen
+            name={ONBOARDING_ROUTE.INPUT_EMAIL}
+            component={InputEmail}
+          />
+          <Stack.Screen
+            name={ONBOARDING_ROUTE.CREATE_PASSWORD}
+            component={CreatePassword}
+          />
+          {/* <Stack.Screen
+        name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
+        component={CheckVerifyCode}
+      /> */}
+        </>
+      );
+    }
+  }, [userLogged]);
+  return (
+    <NavigationContainer>
+      <StatusBar backgroundColor={Colors.white} barStyle="light-content" />
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        {/* {!!userLogged ? (
+          <>
+            {userLogged.active ==
+              Enum.AccountStatus.NOT_CHANGE_AFTER_SIGNUP.toString() && (
+              <Stack.Screen
+                name={APP_ROUTE.CHANGE_AFTER_SIGNUP}
+                component={ChangeProfileAfterSignUp}
+              />
+            )}
+            {userLogged.active == Enum.AccountStatus.NOT_VERIFY.toString() && (
+              <Stack.Screen
+                name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
+                component={CheckVerifyCode}
+              />
+            )}
+            {userLogged.active == Enum.AccountStatus.VALID.toString() && (
+              <>
+                <Stack.Screen
+                  name={APP_ROUTE.HOME_TAB}
+                  component={MainScreen}
+                />
+                <Stack.Screen
+                  name={APP_ROUTE.FRIEND_ALL}
+                  component={AllFriendsScreen}
+                />
+                <Stack.Screen
+                  name={APP_ROUTE.FRIEND_SUGGESTION}
+                  component={SuggestionScreen}
+                />
+                <Stack.Screen
+                  name={APP_ROUTE.REPORT}
+                  component={ReportScreen}
+                />
+
+                <Stack.Screen
+                  name={APP_ROUTE.USER_SCREEN}
+                  component={UserScreen}
+                />
+                <Stack.Screen
+                  name={APP_ROUTE.WEBVIEW}
+                  component={WebViewScreen}
+                />
+                <Stack.Screen
+                  name={APP_ROUTE.COMMENT_PAGE}
+                  component={CommentScreen}
+                />
+                <Stack.Screen
+                  component={FullScreenVideo}
+                  name={APP_ROUTE.FULL_VIDEO}
+                />
+              </>
+            )}
           </>
         ) : (
           <>
@@ -93,7 +216,8 @@ const AppChild = () => {
               component={CheckVerifyCode}
             />
           </>
-        )}
+        )} */}
+        {appRoutes}
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -110,6 +234,8 @@ import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
 import {Layout} from './src/components/base/Layout';
 import CommentScreen from './src/screens/CommentScreen';
 import FullScreenVideo from './src/components/posts/FullScreenVideo';
+import ChangeProfileAfterSignUp from './src/screens/auths/ChangeProfileAfterSignUp';
+import Enum from './src/utils/Enum';
 const App = () => {
   useEffect(() => {
     PermissionsAndroid.request(

@@ -1,6 +1,10 @@
 import {useState} from 'react';
 import {TypeLoginRequest, TypeRegisterRequest} from '../../api/interfaces/auth';
-import {loginRequest, registerRequest, setDevToken} from '../../api/modules/authenticate';
+import {
+  loginRequest,
+  registerRequest,
+  setDevToken,
+} from '../../api/modules/authenticate';
 import {getDeviceId} from 'react-native-device-info';
 import AlertMessage from '../../components/base/AlertMessage';
 import {store} from '../../state-management/redux/store';
@@ -9,7 +13,7 @@ import {userSavedInfoActions} from '../../state-management/redux/slices/UserSave
 import TokenProvider from './TokenProvider';
 import {logger} from '../helper';
 import {storeStringAsyncData} from './LocalStorage';
-import { GetFCMToken } from '../notification/notificationHelper';
+import {GetFCMToken} from '../notification/notificationHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LoginRequest {
@@ -50,7 +54,8 @@ export const useLogin = (): LoginRequest => {
     };
     try {
       setLoading(true);
-
+      storeStringAsyncData('email', loginParams.email);
+      storeStringAsyncData('password', loginParams.password);
       const response: any = await loginRequest(loginParams);
 
       await handleLoginSuccess(response);
@@ -58,9 +63,6 @@ export const useLogin = (): LoginRequest => {
         userSavedInfoActions.addUserSaved({
           email: loginParams.email,
           password: loginParams.password,
-          // username: response.data?.data?.username,
-          // avatar: response.data?.data?.avatar,
-          // id: response.data?.data?.id,
           ...response.data?.data,
         }),
       );
@@ -71,14 +73,13 @@ export const useLogin = (): LoginRequest => {
       setLoading(false);
     }
   };
-  const  handleLoginSuccess = async ({data}: {data: any}) => {
+  const handleLoginSuccess = async ({data}: {data: any}) => {
     AuthenticateService.handlerLogin(data);
-    try{
-      const devToken = await AsyncStorage.getItem('fcmtoken') || "";
-      await setDevToken({devtype: "1", devtoken : devToken})
-    }catch(err){
-      
-    }
+
+    try {
+      const devToken = (await AsyncStorage.getItem('fcmtoken')) || '';
+      await setDevToken({devtype: '1', devtoken: devToken});
+    } catch (err) {}
   };
   return {
     loading,
