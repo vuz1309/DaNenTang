@@ -14,6 +14,24 @@ import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
 import PostVideo from './PostVideo';
 
+const PostImg = ({img, onPress, isBanned}) => {
+  const source = React.useMemo(
+    () =>
+      isBanned ? require('../../assets/images/banned.jpg') : {uri: img.url},
+    [isBanned],
+  );
+
+  return (
+    <TouchableOpacity onPress={onPress} style={{flex: 1, ...styles.border}}>
+      <Image
+        style={styles.image}
+        defaultSource={require('../../assets/images/avatar_null.jpg')}
+        source={source}
+      />
+    </TouchableOpacity>
+  );
+};
+
 /**
  *
  * @param {object} props
@@ -21,6 +39,8 @@ import PostVideo from './PostVideo';
  */
 const PostBody = ({item, editPost}) => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const isBanned = React.useMemo(() => !!Number(item.banned));
+  const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
 
   return (
     <>
@@ -31,31 +51,23 @@ const PostBody = ({item, editPost}) => {
           <View style={styles.postImg}>
             <View style={{flex: 3, flexDirection: 'row'}}>
               {item.image.slice(0, 2).map((img, index) => (
-                <TouchableOpacity
+                <PostImg
                   key={img.url}
+                  img={img}
                   onPress={() => setModalVisible(index + 1)}
-                  style={{flex: 1, ...styles.border}}>
-                  <Image
-                    style={styles.image}
-                    defaultSource={require('../../assets/images/avatar_null.jpg')}
-                    source={{uri: img.url}}
-                  />
-                </TouchableOpacity>
+                  isBanned={isBanned}
+                />
               ))}
             </View>
             {item.image.length > 2 && (
               <View style={styles.spliter}>
                 {item.image.slice(2, 4).map((img, index) => (
-                  <TouchableOpacity
+                  <PostImg
                     key={img.url}
+                    img={img}
                     onPress={() => setModalVisible(index + 3)}
-                    style={{flex: 1, ...styles.border}}>
-                    <Image
-                      style={styles.image}
-                      defaultSource={require('../../assets/images/avatar_null.jpg')}
-                      source={{uri: img.url}}
-                    />
-                  </TouchableOpacity>
+                    isBanned={isBanned}
+                  />
                 ))}
                 {item.image.length >= 5 && (
                   <TouchableOpacity
@@ -64,7 +76,11 @@ const PostBody = ({item, editPost}) => {
                     <>
                       <Image
                         style={styles.image}
-                        source={{uri: item.image[4].url}}
+                        source={
+                          isBanned
+                            ? require('../../assets/images/banned.jpg')
+                            : {uri: item.image[4].url}
+                        }
                       />
 
                       {item.image.length > 5 && (

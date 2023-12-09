@@ -47,12 +47,12 @@ export const reportPostRequest = (body: {
 };
 
 export const getListVideos = (body: {
-  user_id: string;
-  in_campaign: string;
-  campaign_id: string;
-  latitude: string;
-  longitude: string;
-  last_id: string;
+  user_id?: string;
+  in_campaign?: string;
+  campaign_id?: string;
+  latitude?: string;
+  longitude?: string;
+  last_id?: string;
   index: string;
   count: string;
 }) => {
