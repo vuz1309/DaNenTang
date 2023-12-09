@@ -7,12 +7,16 @@ import Loading from './base/Loading';
 const nullImg = require('../assets/images/avatar_null.jpg');
 const CreateStory = () => {
   const userLogged = useSelector(state => state.userInfo.user);
+  const avatar = React.useMemo(
+    () => (userLogged?.avatar ? {uri: userLogged?.avatar} : nullImg),
+    [userLogged?.avatar],
+  );
   if (!userLogged) return <Loading />;
   return (
     <View style={styles.createStoryContainer}>
       {
         <Image
-          source={{uri: userLogged?.avatar}}
+          source={avatar}
           defaultSource={nullImg}
           style={styles.profileImg}
         />

@@ -21,14 +21,13 @@ import Loading from '../../components/base/Loading';
 import {store} from '../../state-management/redux/store';
 import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
 import LoadingOverlay from '../../components/base/LoadingOverlay';
+import LoginByPassword from './LoginByPassword';
 
 export const LoginBySaved = ({}) => {
   const {navigate} = useNavigation();
   const userSaved = useSelector(state => state.userSavedInfo.userSaved);
-  React.useEffect(() => {
-    console.log('userSaved:', userSaved);
-    // if (userSaved.length == 0) navigate(AUTHENTICATE_ROUTE.LOGIN);
-  }, [userSaved]);
+
+  const [index, setIndex] = React.useState(0);
 
   const handleRemoveAccount = () => {
     if (!isShowModal) return;
@@ -37,14 +36,34 @@ export const LoginBySaved = ({}) => {
       userSavedInfoActions.removeUserSaved(isShowModal.id.toString()),
     );
   };
-  const {requestLogin, loading} = useLogin();
-  const loginRequest = (email, password) => {
-    requestLogin({email, password});
+  const {requestLogin, loading, error} = useLogin();
+  const loginRequest = async (email, password, index) => {
+    // await requestLogin({email, password});
+    // if (error) {
+    // console.log('error');
+    setIndex(index + 1);
+    // }
   };
 
   const [isShowModal, setIsShowModal] = React.useState({id: 0, username: ''});
   return (
     <View style={styles.container}>
+      {!!index && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          isVisible={true}
+          onBackButtonPress={() => setIndex(0)}
+          style={{flex: 1}}>
+          <LoginByPassword
+            user={userSaved[index - 1]}
+            onClose={() => {
+              setIndex(0);
+              console.log('close');
+            }}
+          />
+        </Modal>
+      )}
       <View style={styles.subContainer}>
         <Image source={Logo} style={styles.logoStyle} />
       </View>
@@ -60,10 +79,10 @@ export const LoginBySaved = ({}) => {
       <View style={{height: 400}}>
         {userSaved.length > 0 ? (
           <ScrollView style={{flex: 1}}>
-            {userSaved.map(user => (
+            {userSaved.map((user, index) => (
               <TouchableHighlight
                 underlayColor={Colors.lightgrey}
-                onPress={() => loginRequest(user.email, user.password)}
+                onPress={() => loginRequest(user.email, user.password, index)}
                 key={user.id}
                 style={styles.userContainer}>
                 <>

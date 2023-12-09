@@ -1,6 +1,9 @@
 import {View, StyleSheet, TextInput} from 'react-native';
 import {StyledText, StyledButton} from '../../components/base';
-import {ONBOARDING_ROUTE} from '../../navigation/config/routes';
+import {
+  ONBOARDING_ROUTE,
+  AUTHENTICATE_ROUTE,
+} from '../../navigation/config/routes';
 import VectorIcon from '../../utils/VectorIcon';
 import React, {useState} from 'react';
 import {getStringAsyncData} from '../../utils/authenticate/LocalStorage';
@@ -13,6 +16,8 @@ import {
   getVerifyCodeRequest,
 } from '../../api/modules/onboarding';
 import {useLogin} from '../../utils/authenticate/AuthenticateService';
+import HeaderSearch from '../layouts/HeaderSearch';
+import {useLogout} from '../../hooks/useLogout';
 export const CheckVerifyCode = ({navigation}) => {
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
@@ -31,6 +36,7 @@ export const CheckVerifyCode = ({navigation}) => {
     };
     try {
       const response = await checkVerifyCodeRequest(checkVerifyParams);
+
       if (response.status === 200) {
         requestLogin({email, password});
       }
@@ -68,20 +74,13 @@ export const CheckVerifyCode = ({navigation}) => {
     };
     getEmailAndPassword();
   }, []);
+  const {onLogout} = useLogout();
   return (
     <View style={styles.container}>
-      <VectorIcon
-        name="arrow-back"
-        type="Ionicons"
-        color={Colors.black}
-        size={20}
-        onPress={() => navigation.navigate(ONBOARDING_ROUTE.CREATE_PASSWORD)}
-      />
+      <HeaderSearch onBack={onLogout} title={''} haveSearch={false} />
       <View
         style={{
-          marginTop: '5%',
-          borderBottomColor: 'black',
-          borderBottomWidth: StyleSheet.hairlineWidth,
+          marginTop: 16,
         }}
       />
       <View style={[styles.subContainer]}>
@@ -109,6 +108,7 @@ export const CheckVerifyCode = ({navigation}) => {
         </View>
 
         <StyledButton
+          isLoading={loading}
           title="Xác nhận"
           customStyle={[styles.nextButton]}
           onPress={onPress}
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.white,
     padding: 16,
+    flex: 1,
   },
   wrapperTextInput: {
     marginTop: 5,

@@ -15,7 +15,6 @@ export interface IUserSaved {
   username: string;
   avatar: string;
   id: string;
-  active?: string;
 }
 
 export interface IUserSavedState {
@@ -41,7 +40,6 @@ const addUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
   }
 };
 const updateUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
-  console.log('update userSaved: ', payload);
   const index = state.userSaved.findIndex(
     (user: any) => user.id === payload.id,
   );
@@ -53,7 +51,6 @@ const updateUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
   }
 };
 const removeUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
-  console.log('paylaod remove:', payload);
   const index = state.userSaved.findIndex(user => user.id === payload);
   if (index >= 0) {
     state.userSaved.splice(index, 1);

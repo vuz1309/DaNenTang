@@ -1,15 +1,19 @@
 import {useState} from 'react';
 import {TypeLoginRequest, TypeRegisterRequest} from '../../api/interfaces/auth';
-import {loginRequest, registerRequest, setDevToken} from '../../api/modules/authenticate';
+import {
+  loginRequest,
+  registerRequest,
+  setDevToken,
+} from '../../api/modules/authenticate';
 import {getDeviceId} from 'react-native-device-info';
 import AlertMessage from '../../components/base/AlertMessage';
 import {store} from '../../state-management/redux/store';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
 import TokenProvider from './TokenProvider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppTokens } from '../../hooks/useAppToken';
-import { logger } from '../helper';
+import {storeStringAsyncData} from './LocalStorage';
+import {useAppTokens} from '../../hooks/useAppToken';
+import {logger} from '../helper';
 
 interface LoginRequest {
   loading: boolean;
@@ -49,7 +53,8 @@ export const useLogin = (): LoginRequest => {
     };
     try {
       setLoading(true);
-
+      storeStringAsyncData('email', loginParams.email);
+      storeStringAsyncData('password', loginParams.password);
       const response: any = await loginRequest(loginParams);
 
       await handleLoginSuccess(response);
@@ -57,9 +62,6 @@ export const useLogin = (): LoginRequest => {
         userSavedInfoActions.addUserSaved({
           email: loginParams.email,
           password: loginParams.password,
-          // username: response.data?.data?.username,
-          // avatar: response.data?.data?.avatar,
-          // id: response.data?.data?.id,
           ...response.data?.data,
         }),
       );
@@ -70,16 +72,14 @@ export const useLogin = (): LoginRequest => {
       setLoading(false);
     }
   };
-  const  handleLoginSuccess = async ({data}: {data: any}) => {
-    const { saveFcmToken, getFcmToken } = useAppTokens(); // save local storage
+  const handleLoginSuccess = async ({data}: {data: any}) => {
+    const {saveFcmToken, getFcmToken} = useAppTokens(); // save local storage
     AuthenticateService.handlerLogin(data);
-    try{
-      const fcmToken = await getFcmToken() || '';
+    try {
+      const fcmToken = (await getFcmToken()) || '';
       logger('fcmToken: ', true, fcmToken);
-      await setDevToken({devtype: "1", devtoken : fcmToken})
-    }catch(err){
-      
-    }
+      await setDevToken({devtype: '1', devtoken: fcmToken});
+    } catch (err) {}
   };
   return {
     loading,

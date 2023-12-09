@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import DeviceInfo from 'react-native-device-info';
+import {
+  launchImageLibrary,
+  ImageLibraryOptions,
+} from 'react-native-image-picker';
 
 export function generatePersistConfig(key: string, whitelist: string[]) {
   return {
@@ -37,4 +41,17 @@ export function logger(msg: any, isWarning?: boolean, params?: any): void {
 export const getDeviceId = async () => {
   const uniqueId: any = await DeviceInfo.getUniqueId();
   return uniqueId ?? '';
+};
+
+export const openLibraryDevice = (options: ImageLibraryOptions) => {
+  return launchImageLibrary(options, r => {
+    if (r.didCancel) {
+      return [];
+    }
+    if (r.errorCode) {
+      console.log('error');
+    }
+
+    return r.assets;
+  });
 };

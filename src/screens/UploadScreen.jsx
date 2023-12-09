@@ -29,6 +29,7 @@ import LoadingOverlay from '../components/base/LoadingOverlay';
 import Enum from '../utils/Enum';
 import {BE_URL} from '../api/config';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
+import {openLibraryDevice} from '../utils/helper';
 
 const UploadScreen = ({
   onClose,
@@ -55,34 +56,24 @@ const UploadScreen = ({
   );
   const [loading, setLoading] = useState(false);
 
-  const openLibrary = () => {
-    launchImageLibrary(
-      {noData: true, selectionLimit: 20 - images.length},
-      r => {
-        if (r.didCancel) {
-          return;
-        }
-        if (r.errorCode) {
-          console.log('error');
-        }
+  const openLibrary = async () => {
+    const imgs = (
+      await openLibraryDevice({
+        noData: true,
+        selectionLimit: 20 - images.length,
+      })
+    ).assets;
 
-        const tmp = r.assets;
-
-        if (images.length < 20) {
-          const newImgList = [...images, ...tmp];
-          setImages(newImgList);
-          console.log('list img:', newImgList);
-          return;
-        }
-        AlertMessage('Tối đa 20 ảnh');
-      },
-    );
+    if (images.length < 20) {
+      const newImgList = [...images, ...imgs];
+      setImages(newImgList);
+      return;
+    }
+    AlertMessage('Tối đa 20 ảnh');
   };
   const removeImg = index => {
     const newImgList = [...images];
     if (newImgList[index].uri.includes(BE_URL)) {
-      console.log('remove link img', newImgList[index]);
-
       setImageDel(prev => [...prev, newImgList[index]]);
     }
     newImgList.splice(index, 1);
