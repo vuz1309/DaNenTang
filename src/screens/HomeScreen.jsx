@@ -4,6 +4,7 @@ import {
   RefreshControl,
   ScrollView,
   Modal,
+  FlatList,
 } from 'react-native';
 import React, {useState} from 'react';
 import SubHeader from '../components/SubHeader';
@@ -26,20 +27,20 @@ import Enum from '../utils/Enum';
 import PostBody from '../components/posts/PostBody';
 
 const HomeScreen = () => {
-  const userLogged = useSelector(state => state.userInfo.user);
+  // const userLogged = useSelector(state => state.userInfo.user);
   const [detailsPostMode, setDetailsPostMode] = useState(0);
   const [isBuyCoin, setIsBuyCoin] = useState(false);
 
   const [postEdited, setPostEdited] = useState({});
   const toggleBuyCoinModal = () => {
-    console.log('buy coins');
+    console.log('buy coin');
     setIsBuyCoin(!isBuyCoin);
   };
   const openPostModal = (
     postMode = Enum.PostMode.Create,
     post = {image: [], status: 'OK', described: '', id: '0'},
   ) => {
-    console.log('post mode:', postMode);
+    // console.log('post mode:', postMode);
 
     setDetailsPostMode(postMode);
 
@@ -60,9 +61,9 @@ const HomeScreen = () => {
 
   const getListPostsApi = async () => {
     try {
-      console.log('home post param:', params);
+      // console.log('home post param:', params);
       const {data} = await getListPost({...params});
-      console.log(data);
+      // console.log(data);
       if (data.data.last_id != 'undefined') {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
       }
@@ -79,7 +80,7 @@ const HomeScreen = () => {
         store.dispatch(postInfoActions.addPosts(data.data.post));
       }
     } catch (error) {
-      console.log('load data error', error);
+      // console.log('load data error', error);
     } finally {
       setRefreshing(false);
       setIsLoadMore(false);
@@ -116,25 +117,42 @@ const HomeScreen = () => {
       }),
     );
   };
-  const {handleScroll, isLoadMore, setIsLoadMore, refreshing, setRefreshing} =
+  const {isLoadMore, setIsLoadMore, refreshing, setRefreshing} =
     useScrollHanler(reload, loadMore);
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);
 
   return (
-    <ScrollView
-      showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={false}
-      style={styles.homeContainer}
-      onScroll={handleScroll}
-      refreshControl={
-        <RefreshControl
-          colors={[Colors.primaryColor]}
-          refreshing={refreshing}
-          onRefresh={reload}
-        />
-      }>
+    <View style={{flex: 1}}>
+      <FlatList
+        data={listPosts}
+        ListHeaderComponent={
+          <>
+            <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
+            <Stories />
+          </>
+        }
+        ListFooterComponent={() => isLoadMore && <Loading />}
+        renderItem={({item}) => (
+          <PostBody editPost={openPostModal} item={item} />
+        )}
+        keyExtractor={item => item.id}
+        horizontal={false}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            colors={[Colors.primaryColor]}
+            refreshing={refreshing}
+            onRefresh={reload}
+          />
+        }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
+        viewabilityConfig={{
+          viewAreaCoveragePercentThreshold: 50,
+        }}
+      />
       <Modal
         animationType="slide"
         transparent={false}
@@ -153,35 +171,8 @@ const HomeScreen = () => {
         onRequestClose={toggleBuyCoinModal}>
         <BuyCoins closeModal={toggleBuyCoinModal} />
       </Modal>
-      <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
-      <Stories />
-
-      <View style={styles.postContainer}>
-        {listPosts.map(item => (
-          <PostBody editPost={openPostModal} key={item.id} item={item} />
-        ))}
-      </View>
-      {isLoadMore && <Loading />}
-      <View
-        style={{
-          height: 10,
-          backgroundColor: Colors.background,
-          width: '100%',
-        }}
-      />
-    </ScrollView>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  homeContainer: {
-    backgroundColor: Colors.background,
-    flex: 1,
-  },
-  postContainer: {
-    backgroundColor: Colors.background,
-    marginTop: 8,
-  },
-});
 
 export default HomeScreen;

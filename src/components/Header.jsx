@@ -1,13 +1,8 @@
-import {
-  Image,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import React, {useRef} from 'react';
 import FacebookLogo from '../assets/images/fblogo.png';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
-import {logger} from '../utils/helper';
 import {useState} from 'react';
 import SearchModal from './modal/SearchModal';
 
@@ -18,7 +13,7 @@ const Header = () => {
   };
   const onCloseSearchModal = () => {
     setModalVisible(false);
-  }
+  };
   return (
     <View style={styles.container}>
       <Image source={FacebookLogo} style={styles.fbLogoStyle} />
@@ -32,16 +27,16 @@ const Header = () => {
             onPress={onPressSearch}
           />
         </View>
-        <View style={styles.searchBg}>
+        {/* <View style={styles.searchBg}>
           <VectorIcon
             name="messenger"
             type="Fontisto"
             size={22}
             color={Colors.grey}
           />
-        </View>
+        </View> */}
       </View>
-      { modalVisible &&  <SearchModal onCloseModal={onCloseSearchModal}/>}
+      {modalVisible && <SearchModal onCloseModal={onCloseSearchModal} />}
     </View>
   );
 };

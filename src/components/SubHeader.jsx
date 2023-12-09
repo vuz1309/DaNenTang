@@ -52,17 +52,18 @@ const SubHeader = ({onClick, buyCoin}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <TouchableOpacity
+        onPress={buyCoin}
+        style={{justifyContent: 'center', alignItems: 'center'}}>
         <VectorIcon
           name="coins"
           type="FontAwesome5"
           color={Themes.COLORS.yellow}
           size={20}
         />
-        <TouchableOpacity onPress={buyCoin}>
-          <Text style={{fontWeight: '700', color: Colors.black}}>{coins}</Text>
-        </TouchableOpacity>
-      </View>
+
+        <Text style={{fontWeight: '700', color: Colors.black}}>{coins}</Text>
+      </TouchableOpacity>
       <DialogConfirm
         isVisible={isShowDialogCoins}
         closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}

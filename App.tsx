@@ -50,6 +50,10 @@ const AppChild = () => {
               name={APP_ROUTE.COMMENT_PAGE}
               component={CommentScreen}
             />
+            <Stack.Screen
+              component={FullScreenVideo}
+              name={APP_ROUTE.FULL_VIDEO}
+            />
           </>
         ) : (
           <>
@@ -106,6 +110,7 @@ import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
 import CommentScreen from './src/screens/CommentScreen';
 import {NotificationProvider} from './src/utils/notification/NotificationProvider';
 import {AppStateProvider} from './src/utils/notification/AppStateProvider';
+import FullScreenVideo from './src/components/posts/FullScreenVideo';
 const App = () => {
   return (
     <Provider store={store}>
