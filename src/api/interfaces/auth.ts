@@ -7,6 +7,10 @@ export interface TypeLoginRequest extends AxiosRequestConfig {
   uuid: string;
 }
 
+export interface TypeSetDevToken extends AxiosRequestConfig {
+  devtype: string;
+  devtoken: string;
+}
 export interface TypeRegisterRequest extends AxiosRequestConfig {
   email: string;
   password: string;
