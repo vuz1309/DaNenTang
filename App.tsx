@@ -1,4 +1,4 @@
-import {StatusBar} from 'react-native';
+import {Platform, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
 import LoginScreen from './src/screens/LoginScreen';
 import {Colors} from './src/utils/Colors';
@@ -231,54 +231,20 @@ import WebViewScreen from './src/screens/webView/WebViewScreen';
 import LoginBySaved from './src/screens/auths/LoginBySaved';
 import SplashScreen from './src/screens/SplashScreen';
 import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
-import {Layout} from './src/components/base/Layout';
 import CommentScreen from './src/screens/CommentScreen';
+import {NotificationProvider} from './src/utils/notification/NotificationProvider';
+import {AppStateProvider} from './src/utils/notification/AppStateProvider';
 import FullScreenVideo from './src/components/posts/FullScreenVideo';
 import ChangeProfileAfterSignUp from './src/screens/auths/ChangeProfileAfterSignUp';
 import Enum from './src/utils/Enum';
 const App = () => {
-  useEffect(() => {
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-    );
-  }, []);
-  React.useEffect(() => {
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      logger('Message handled in the background!', false, remoteMessage);
-      const title = remoteMessage.notification?.title;
-      const body = remoteMessage.notification?.body;
-      logger('title: ', false, title);
-      logger('body: ', false, body);
-    });
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      logger(
-        'Notification caused app to open from background state: ',
-        false,
-        remoteMessage.notification,
-      );
-    });
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          logger(
-            'Notification caused app to open from quit state: ',
-            false,
-            remoteMessage.notification,
-          );
-        }
-      });
-    messaging().onMessage(async remoteMessage => {
-      const title = remoteMessage.notification?.title;
-      const body = remoteMessage.notification?.body;
-      logger('title: ', false, title);
-      logger('body: ', false, body);
-      logger('notification on foreground state');
-    });
-  });
   return (
     <Provider store={store}>
-      <AppChild />
+      <AppStateProvider>
+        <NotificationProvider>
+          <AppChild />
+        </NotificationProvider>
+      </AppStateProvider>
     </Provider>
   );
 };

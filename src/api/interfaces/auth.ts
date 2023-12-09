@@ -9,7 +9,7 @@ export interface TypeLoginRequest extends AxiosRequestConfig {
 
 export interface TypeSetDevToken extends AxiosRequestConfig {
   devtype: string;
-  devtoken: string;
+  devtoken: any;
 }
 export interface TypeRegisterRequest extends AxiosRequestConfig {
   email: string;
