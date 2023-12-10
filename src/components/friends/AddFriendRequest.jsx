@@ -46,11 +46,11 @@ const AddFriendRequest = ({
         }}>
         {isShowTime && <Text style={styles.time}>{createTime}</Text>}
         <View style={styles.avatar}>
-          {data.avatar.trim() ? (
+          {data?.avatar ? (
             <Image
               style={styles.avatarImg}
               source={{
-                uri: data.avatar.trim(),
+                uri: data.avatar,
               }}
               defaultSource={nullAvatar}
             />

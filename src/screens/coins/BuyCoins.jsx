@@ -87,7 +87,7 @@ const BuyCoins = ({closeModal}) => {
           <Text style={{flex: 0.4, color: Colors.textColor}}>Số coin: </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
-            value={coin}
+            value={coin.toString()}
             keyboardType={'numeric'}
             style={styles.inputBox}
             onChangeText={value => {

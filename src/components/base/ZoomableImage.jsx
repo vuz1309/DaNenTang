@@ -118,7 +118,7 @@ const ZoomableImage = ({urls, onClose, index = 0}) => {
       })
         .fetch('GET', imgUrl)
         .then(res => {
-          console.log(res, 'end downloaded');
+          // console.log(res, 'end downloaded');
           ToastAndroid.show(
             'Hình ảnh đã được tải và lưu vào điện thoại',
             ToastAndroid.SHORT,

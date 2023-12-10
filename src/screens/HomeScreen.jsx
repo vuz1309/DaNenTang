@@ -28,11 +28,16 @@ import BuyCoins from './coins/BuyCoins';
 import Enum from '../utils/Enum';
 import PostBody from '../components/posts/PostBody';
 import LoadingPosting from '../components/posts/LoadingPosting';
+import {hasGms} from 'react-native-device-info';
+import DetailsPost from '../components/posts/DetailsPost';
+import PostListImage from '../components/posts/PostListImage';
+import DialogConfirm from '../components/base/dialog/DialogConfirm';
 
 const HomeScreen = () => {
-  // const userLogged = useSelector(state => state.userInfo.user);
+  const userLogged = useSelector(state => state.userInfo.user);
   const [detailsPostMode, setDetailsPostMode] = useState(0);
   const [isBuyCoin, setIsBuyCoin] = useState(false);
+  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
 
   const [postEdited, setPostEdited] = useState({});
   const toggleBuyCoinModal = () => {
@@ -42,6 +47,10 @@ const HomeScreen = () => {
     postMode = Enum.PostMode.Create,
     post = {image: [], status: 'OK', described: '', id: '0'},
   ) => {
+    if (Number(userLogged.coins) < 50) {
+      setIsShowDialogCoins(true);
+      return;
+    }
     setDetailsPostMode(postMode);
 
     const postTmp = {
@@ -118,16 +127,18 @@ const HomeScreen = () => {
       }),
     );
   };
-  const {isLoadMore, setIsLoadMore, refreshing, setRefreshing} =
+  const {isLoadMore, setIsLoadMore, handleScroll, refreshing, setRefreshing} =
     useScrollHanler(reload, loadMore);
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);
+  const [isModalVisible, setModalVisible] = useState({index: 0, item: {}});
 
   return (
     <View style={{flex: 1}}>
       <FlatList
         data={listPosts}
+        onScroll={handleScroll}
         ListHeaderComponent={
           <>
             <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
@@ -137,9 +148,14 @@ const HomeScreen = () => {
         }
         ListFooterComponent={() => isLoadMore && <Loading />}
         renderItem={({item}) => (
-          <PostBody editPost={openPostModal} item={item} />
+          <PostBody
+            setModalVisible={setModalVisible}
+            editPost={openPostModal}
+            item={item}
+            setIsShowDialogCoins={setIsShowDialogCoins}
+          />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => JSON.stringify(item)}
         horizontal={false}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -149,7 +165,7 @@ const HomeScreen = () => {
             onRefresh={reload}
           />
         }
-        onEndReached={loadMore}
+        // onEndReached={loadMore}
         onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
@@ -173,6 +189,36 @@ const HomeScreen = () => {
         onRequestClose={toggleBuyCoinModal}>
         <BuyCoins closeModal={toggleBuyCoinModal} />
       </Modal>
+      {!!isModalVisible.index && isModalVisible.item.image.length == 1 && (
+        <DetailsPost
+          isModalVisible={isModalVisible.index}
+          item={isModalVisible.item}
+          onClose={() => setModalVisible({})}
+        />
+      )}
+
+      {!!isModalVisible.index && isModalVisible.item.image.length > 1 && (
+        <PostListImage
+          data={isModalVisible.item}
+          onClose={() => setModalVisible({})}
+          index={isModalVisible.index - 1}
+        />
+      )}
+      <DialogConfirm
+        isVisible={isShowDialogCoins}
+        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
+        title={'Thiếu coins'}
+        content={
+          'Cần ít nhất 50 coins để tiếp tục, bạn có muốn mua thêm coins?'
+        }
+        mainBtn={{
+          text: 'Mua',
+          onPress: () => {
+            setIsShowDialogCoins(false);
+            toggleBuyCoinModal();
+          },
+        }}
+      />
     </View>
   );
 };

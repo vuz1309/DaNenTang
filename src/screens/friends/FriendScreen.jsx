@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   RefreshControl,
+  ToastAndroid,
 } from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
@@ -27,6 +28,7 @@ import {notificationInfoActions} from '../../state-management/redux/slices/Notif
 import {TabName} from '../../data/TabData';
 import HeaderTitle from '../../components/layouts/HeaderTitle';
 import Loading from '../../components/base/Loading';
+import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
 
 const FriendScreen = () => {
   const navigation = useNavigation();
@@ -42,71 +44,41 @@ const FriendScreen = () => {
 
   const [requestFriends, setRequestFriends] = React.useState([]);
   const [total, setTotal] = React.useState('0');
-  const [params, setParams] = React.useState({
-    index: '0',
-    count: '20',
-  });
-  const reload = async () => {
-    if (refreshing) return;
-    setParams({
-      index: '0',
-      count: '20',
-    });
-  };
-  const loadMore = async () => {
-    if (isLoadMore) return;
-    setIsLoadMore(true);
-    setParams({
-      index: (Number(params.index) + 1).toString(),
-      count: '20',
-    });
-  };
-  const {
-    handleScroll,
-    onRefresh,
-    refreshing,
-    isLoadMore,
-    setRefreshing,
-    setIsLoadMore,
-  } = useScrollHanler(reload, loadMore);
 
   const setAcceptFriendApi = async (user_id, is_accept = '1') => {
     try {
-      const {data} = await setAcceptFriend({user_id, is_accept});
-      console.log(data);
+      setAcceptFriend({user_id, is_accept});
     } catch (error) {
       console.log(error);
     }
   };
+  const {getNewItems, handleScroll, isLoadMore, refreshing, reload, params} =
+    useLoadOnScroll(getRequestedFriendsApi);
 
-  const getRequestedFriendsApi = async () => {
-    if (isLoadMore || refreshing) return;
+  async function getRequestedFriendsApi() {
     try {
       const {data} = await getRequestFriends(params);
+      // console.log('request:', data.data);
       if (params.index == '0') setRequestFriends(data.data.requests);
       else {
-        const newItems = data.data.requests.filter(
-          item => !requestFriends.find(re => re.id === item.id),
-        );
+        const newItems = getNewItems(data.data, requestFriends);
         setRequestFriends(prev => [...prev, ...newItems]);
       }
       setTotal(data.data.total);
-      store.dispatch(
-        notificationInfoActions.setNotification({
-          name: TabName.FRIENDS,
-          number: Number(data.data.total),
-        }),
-      );
+      // store.dispatch(
+      //   notificationInfoActions.setNotification({
+      //     name: TabName.FRIENDS,
+      //     number: Number(data.data.total),
+      //   }),
+      // );
     } catch (error) {
       console.log(error);
-    } finally {
-      setRefreshing(false);
-      setIsLoadMore(false);
+      //   ToastAndroid.show(
+      //     'Có lỗi xảy ra, vui lòng liên hệ ANTI-TEAMS để được hỗ trợ.',
+      //     ToastAndroid.SHORT,
+      //   );
     }
-  };
-  React.useEffect(() => {
-    getRequestedFriendsApi();
-  }, [params]);
+  }
 
   return (
     <ScrollView
@@ -116,12 +88,9 @@ const FriendScreen = () => {
         <RefreshControl
           colors={[Colors.primaryColor]}
           refreshing={refreshing}
-          onRefresh={onRefresh}
+          onRefresh={reload}
         />
       }>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>Bạn bè</Text>
-      </View> */}
       <HeaderTitle title={'Bạn bè'} />
       <View style={styles.buttons}>
         <TouchableOpacity

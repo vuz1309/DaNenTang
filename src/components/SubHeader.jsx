@@ -23,12 +23,7 @@ const SubHeader = ({onClick, buyCoin}) => {
     () => formatNumberSplitBy(Number(userLogged?.coins || '0')),
     [userLogged, [userLogged?.coins]],
   );
-  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
   const handleClickUpPost = () => {
-    if (Number(userLogged.coins) < 50) {
-      setIsShowDialogCoins(true);
-      return;
-    }
     onClick();
   };
   return (
@@ -64,21 +59,6 @@ const SubHeader = ({onClick, buyCoin}) => {
 
         <Text style={{fontWeight: '700', color: Colors.black}}>{coins}</Text>
       </TouchableOpacity>
-      <DialogConfirm
-        isVisible={isShowDialogCoins}
-        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
-        title={'Thiếu coins'}
-        content={
-          'Cần ít nhất 50 coins để tiếp tục, bạn có muốn mua thêm coins?'
-        }
-        mainBtn={{
-          text: 'Mua',
-          onPress: () => {
-            setIsShowDialogCoins(false);
-            buyCoin();
-          },
-        }}
-      />
     </View>
   );
 };

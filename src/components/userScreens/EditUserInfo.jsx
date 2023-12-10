@@ -51,7 +51,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
     try {
       await launchImageLibrary({noData: true}, response => {
         if (response.didCancel) {
-          console.log('User cancelled image picker');
+          // console.log('User cancelled image picker');
         } else if (response.error) {
           console.log('ImagePicker Error: ', response.error);
         } else {
@@ -67,9 +67,9 @@ const EditUserInfo = ({userInfo, closeModal}) => {
       console.log(error);
     }
   };
-  React.useEffect(() => {
-    console.log(userData);
-  }, [userData]);
+  // React.useEffect(() => {
+  //   console.log(userData);
+  // }, [userData]);
 
   const handleEdit = async () => {
     try {
@@ -91,7 +91,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
       }
 
       const {data} = await setUserInfo(formData);
-      console.log('update user info: ', data);
+      // console.log('update user info: ', data);
       if (data.code == SUCCESS_CODE) {
         store.dispatch(userInfoActions.updateUserInfo(data.data));
 
@@ -110,9 +110,9 @@ const EditUserInfo = ({userInfo, closeModal}) => {
       );
     }
   };
-  React.useEffect(() => {
-    console.log(userData);
-  }, [userData]);
+  // React.useEffect(() => {
+  //   console.log(userData);
+  // }, [userData]);
   return (
     <KeyboardAvoidingView
       style={styles.container}

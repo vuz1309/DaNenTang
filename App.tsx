@@ -28,9 +28,9 @@ const AppChild = () => {
     (state: FacebookRootState) => state.userInfo.user,
   );
 
-  React.useEffect(() => {
-    console.log('userlogged:', userLogged);
-  }, [userLogged]);
+  // React.useEffect(() => {
+  //   console.log('userlogged:', userLogged);
+  // }, [userLogged]);
   const appRoutes = React.useMemo(() => {
     if (userLogged) {
       if (
