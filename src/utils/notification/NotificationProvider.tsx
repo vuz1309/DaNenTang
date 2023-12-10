@@ -1,24 +1,61 @@
 import messaging from '@react-native-firebase/messaging';
-import React, { createContext, useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import React, {createContext, useState} from 'react';
+import {PermissionsAndroid, Platform} from 'react-native';
 import PushNotification from 'react-native-push-notification';
-import { firebaseNotify, resetBadgeNumber } from './NotifyService';
-import { logger } from '../helper';
-import { useAppTokens } from '../../hooks/useAppToken';
-import { AppStateContext } from './AppStateProvider';
+import {firebaseNotify, resetBadgeNumber} from './NotifyService';
+import {logger} from '../helper';
+import {useAppTokens} from '../../hooks/useAppToken';
+import {AppStateContext} from './AppStateProvider';
 import AlertMessage from '../../components/base/AlertMessage';
-
+import Enum from '../Enum';
 
 export const NotificationContext = createContext({});
-
+export const notiContents = {
+  [Enum.NotiType.FriendRequest]: {
+    title: `Bạn có yêu cầu kết bạn mới`,
+    body: `đã gửi yêu cầu kết bạn`,
+  },
+  [Enum.NotiType.FriendAccepted]: {
+    title: `Bạn có thông báo kết bạn mới`,
+    body: `đã chấp nhận lời mời kết bạn`,
+  },
+  [Enum.NotiType.PostAdded]: {
+    title: `Bạn có bài đăng mới chưa xem`,
+    body: `đã đăng bài viết mới.`,
+  },
+  [Enum.NotiType.PostUpdated]: {
+    title: `Bài đăng đã được cập nhật`,
+    body: `đã cập nhật bài đăng.`,
+  },
+  [Enum.NotiType.PostFelt]: {
+    title: `Thông báo từ bài viết của bạn`,
+    body: `đã bày tỏ cảm xúc về bài viết của bạn.`,
+  },
+  [Enum.NotiType.PostMarked]: {
+    title: `Thông báo từ bài viết của bạn`,
+    body: `đã bình luận vào bài viết của bạn.`,
+  },
+  [Enum.NotiType.MarkCommented]: {
+    title: `Thông báo từ bình luận của bạn`,
+    body: `đã phản hồi bình luận của bạn.`,
+  },
+  [Enum.NotiType.VideoAdded]: {
+    title: `Thông báo từ bài viết`,
+    body: `đã thêm video mới vào bài viết.`,
+  },
+  [Enum.NotiType.VideoAdded]: {
+    title: `Thông báo từ bài viết của bạn`,
+    body: `đã bày phản hồi bình luận bài viết của bạn.`,
+  },
+};
 const DEFINE_SAVE_TOKEN = false;
 
 export const NotificationProvider = (props: any) => {
-  const { children } = props;
+  const {children} = props;
   const [enableNotify, setEnableNotify] = React.useState(false);
   const [firebaseToken, setFirebaseToken] = useState<any>('');
-  const { appState } = React.useContext<any>(AppStateContext);
-  const { saveFcmToken, getFcmToken } = useAppTokens(); // save local storage
+  const {appState} = React.useContext<any>(AppStateContext);
+  const {saveFcmToken, getFcmToken} = useAppTokens(); // save local storage
 
   const createDefaultChannel = () => {
     if (Platform.OS === 'android') {
@@ -47,43 +84,46 @@ export const NotificationProvider = (props: any) => {
   ) => {
     //TODO :HANDLE LOGIC CLICK MESSAGE HERE: NAVIGATE SCREEN
   };
-  const handleOnMessageCome = (
-    messageId: any,
-    type : string, 
-    data: any,
-  ) => {
+
+  const handleOnMessageCome = (messageId: any, type: string, data: any) => {
     var title = 'Title...';
     var body = 'Body...';
-    switch(type){
-      case "1": {
-        const fromName = data.user.username;
-        title = `Bạn có yêu cầu kết bạn mới`,
-        body = `${fromName} đã gửi yêu cầu kết bạn`;
-        break;
-      }
-      case "2": {
-        const fromName = data.user.username;
-        title = `Bạn có thông báo kết bạn mới`,
-        body = `${fromName} đã chấp nhận lời mời kết bạn`;
-        break;
-      }
-      case "5": {
-        const fromName = data.user.username;
-        title = `Thông báo từ bài viết của bạn`,
-        body = `${fromName} đã bày tỏ cảm xúc về bài viết của bạn`;
-        break;
-      }
-      case "9": {
-        const fromName = data.user.username;
-        title = `Thông báo từ bài viết của bạn`,
-        body = `${fromName} đã bày bình luận về bài viết của bạn`;
-        break;
-      }
-      default: 
-        break;
-    }
-    firebaseNotify({messageId, title, body});
-  }
+    const numberType = Number(type);
+    // switch (type) {
+    //   case '1': {
+    //     const fromName = data.user.username;
+    //     (title = `Bạn có yêu cầu kết bạn mới`),
+    //       (body = `${fromName} đã gửi yêu cầu kết bạn`);
+    //     break;
+    //   }
+    //   case '2': {
+    //     const fromName = data.user.username;
+    //     (title = `Bạn có thông báo kết bạn mới`),
+    //       (body = `${fromName} đã chấp nhận lời mời kết bạn`);
+    //     break;
+    //   }
+    //   case '5': {
+    //     const fromName = data.user.username;
+    //     (title = `c`),
+    //       (body = `${fromName} đã bày tỏ cảm xúc về bài viết của bạn`);
+    //     break;
+    //   }
+    //   case '9': {
+    //     const fromName = data.user.username;
+    //     (title = `Thông báo từ bài viết của bạn`),
+    //       (body = `${fromName} đã bày bình luận về bài viết của bạn`);
+    //     break;
+    //   }
+    //   default:
+    //     break;
+    // }
+
+    firebaseNotify({
+      messageId,
+      title: notiContents[numberType].title,
+      body: `${data.user.username} notiContents[numberType].body}`,
+    });
+  };
 
   const onForegroundMessage = async (resp: any) => {
     const messageId = resp.mesesageId;
@@ -148,17 +188,17 @@ export const NotificationProvider = (props: any) => {
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
   }, []);
- 
+
   const checkPermission = async () => {
     const authStatus = await messaging().requestPermission();
-    const enabled = 
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    if(enabled){
-      logger("case AUTHORIZED");
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      logger('case AUTHORIZED');
       setEnableNotify(true);
-    }else{
-      logger("case DENIED");
+    } else {
+      logger('case DENIED');
     }
     // const authStatus = await messaging().hasPermission();
     // switch (authStatus) {

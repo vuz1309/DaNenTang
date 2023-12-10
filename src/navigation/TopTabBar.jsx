@@ -44,7 +44,7 @@ const TopTabBar = () => {
                       size={focused ? tab.size : tab.unFocusSize}
                       color={color}
                     />
-                    {!!notis[tab.name] && (
+                    {!!Number(notis[tab.name]) && (
                       <View
                         style={{
                           backgroundColor: Themes.COLORS.red,

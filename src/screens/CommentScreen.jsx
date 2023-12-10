@@ -21,6 +21,9 @@ import {getMarkComments, setMarkComments} from '../api/modules/comment.request';
 import PostHeaderComment from '../components/posts/PostHeaderComment';
 import PostBodyComment from '../components/posts/PostBodyComment';
 import {useNavigation} from '@react-navigation/native';
+import {useGetPostById} from '../hooks/useGetPostById';
+import Loading from '../components/base/Loading';
+import LoadingOverlay from '../components/base/LoadingOverlay';
 
 const Comment = ({
   id,
@@ -129,6 +132,8 @@ const CommentScreen = ({route, navigation}) => {
   const [comments, setComments] = useState([]);
   const [textComment, setTextComment] = useState('');
   const {item} = route.params;
+  const [post, setPost] = React.useState({});
+  const {isLoading, call, error} = useGetPostById(item.id);
   const inputRef = useRef(null);
   const onPressReply = markId => {
     logger('repling...', false, markId);
@@ -190,12 +195,20 @@ const CommentScreen = ({route, navigation}) => {
     };
     fetchMarkComments();
   }, [currentComment]);
-
+  React.useEffect(() => {
+    const getPost = async () => {
+      const post = await call();
+      console.log(post);
+      setPost(post.data);
+    };
+    getPost();
+  }, [item.id]);
+  if (!post.id) return <LoadingOverlay isLoading={true} />;
   return (
     <View style={styles.wrapper}>
-      <PostHeaderComment data={item} />
+      <PostHeaderComment data={post} />
       <ScrollView style={styles.subWrapper}>
-        <PostBodyComment key={item.id} item={item} />
+        <PostBodyComment key={post.id} item={post} />
         {Array.isArray(comments) &&
           comments.map(comment => (
             <Comment
