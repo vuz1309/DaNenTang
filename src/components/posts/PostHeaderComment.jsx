@@ -48,8 +48,8 @@ const PostHeaderComment = ({data, isShowRemove = false}) => {
           postId,
         }),
       );
-      const data = await deletePostRequest({id: postId});
-      console.log('remove post:', data);
+      deletePostRequest({id: postId});
+      // console.log('remove post:', data);
     } catch (error) {
       console.log(error);
     }

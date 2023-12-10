@@ -1,4 +1,10 @@
-import {View, Text, TouchableHighlight, Modal} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  Modal,
+  ToastAndroid,
+} from 'react-native';
 import React, {useMemo} from 'react';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
@@ -65,7 +71,8 @@ const ReportScreen = ({navigation, route}) => {
   const handleBlock = async () => {
     try {
       const {data} = await setBlockRequest({user_id: author.id});
-      console.log(data);
+      // console.log(data);
+      ToastAndroid.show('Block thành công ' + author.name, ToastAndroid.SHORT);
       navigation.goBack();
     } catch (error) {
       console.log(error);

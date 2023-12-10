@@ -14,7 +14,7 @@ import {StyledTouchable} from '../base';
 import Slider from '@react-native-community/slider';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
-const ScreenWidth = Dimensions.get('window').width;
+
 const formatTime = seconds => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
@@ -56,6 +56,8 @@ const PostVideo = ({videoUrl, onExpand}) => {
       setConfig(prev => ({...prev, totalTime: data.duration}));
     if (videoRef.current) {
       videoRef.current.seek(data.duration / 2);
+      setThumbnail(videoUrl);
+      videoRef.current.seek(0);
     }
   };
   const onSliderValueChange = value => {

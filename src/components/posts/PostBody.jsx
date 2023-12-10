@@ -37,90 +37,79 @@ const PostImg = ({img, onPress, isBanned}) => {
  * @param {object} props
  * @returns
  */
-const PostBody = ({item, editPost}) => {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const isBanned = React.useMemo(() => !!Number(item.banned));
-  const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
+const PostBody = React.memo(
+  ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
+    const isBanned = React.useMemo(() => !!Number(item.banned));
+    const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
 
-  return (
-    <>
-      <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-        <PostHeader onClickEdit={editPost} data={item} />
+    return (
+      <>
+        <View style={{backgroundColor: Colors.white, marginTop: 8}}>
+          <PostHeader
+            onClickEdit={editPost}
+            data={item}
+            setIsShowDialogCoins={setIsShowDialogCoins}
+          />
 
-        {!item.video && item.image.length > 0 && (
-          <View style={styles.postImg}>
-            <View style={{flex: 3, flexDirection: 'row'}}>
-              {item.image.slice(0, 2).map((img, index) => (
-                <PostImg
-                  key={img.url}
-                  img={img}
-                  onPress={() => setModalVisible(index + 1)}
-                  isBanned={isBanned}
-                />
-              ))}
-            </View>
-            {item.image.length > 2 && (
-              <View style={styles.spliter}>
-                {item.image.slice(2, 4).map((img, index) => (
+          {!item.video && item.image.length > 0 && (
+            <View style={styles.postImg}>
+              <View style={{flex: 3, flexDirection: 'row'}}>
+                {item.image.slice(0, 2).map((img, index) => (
                   <PostImg
                     key={img.url}
                     img={img}
-                    onPress={() => setModalVisible(index + 3)}
+                    onPress={() => setModalVisible({index: index + 1, item})}
                     isBanned={isBanned}
                   />
                 ))}
-                {item.image.length >= 5 && (
-                  <TouchableOpacity
-                    onPress={() => setModalVisible(5)}
-                    style={{flex: 1, ...styles.border, position: 'relative'}}>
-                    <>
-                      <Image
-                        style={styles.image}
-                        source={
-                          isBanned
-                            ? require('../../assets/images/banned.jpg')
-                            : {uri: item.image[4].url}
-                        }
-                      />
-
-                      {item.image.length > 5 && (
-                        <TouchableOpacity
-                          onPress={() => setModalVisible(6)}
-                          style={styles.overlayEndImg}>
-                          <Text style={{color: Colors.white}}>
-                            {item.image.length - 5}
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    </>
-                  </TouchableOpacity>
-                )}
               </View>
-            )}
-          </View>
-        )}
-        {item.video && <PostVideo videoUrl={item.video.url} />}
-        <PostFooter data={item} />
-      </View>
+              {item.image.length > 2 && (
+                <View style={styles.spliter}>
+                  {item.image.slice(2, 4).map((img, index) => (
+                    <PostImg
+                      key={img.url}
+                      img={img}
+                      onPress={() => setModalVisible({index: index + 3, item})}
+                      isBanned={isBanned}
+                    />
+                  ))}
+                  {item.image.length >= 5 && (
+                    <TouchableOpacity
+                      onPress={() => setModalVisible({index: 5, item})}
+                      style={{flex: 1, ...styles.border, position: 'relative'}}>
+                      <>
+                        <Image
+                          style={styles.image}
+                          source={
+                            isBanned
+                              ? require('../../assets/images/banned.jpg')
+                              : {uri: item.image[4].url}
+                          }
+                        />
 
-      {!!isModalVisible && item.image.length == 1 && (
-        <DetailsPost
-          isModalVisible={isModalVisible}
-          item={item}
-          onClose={() => setModalVisible(0)}
-        />
-      )}
-
-      {!!isModalVisible && item.image.length > 1 && (
-        <PostListImage
-          data={item}
-          onClose={() => setModalVisible(0)}
-          index={isModalVisible - 1}
-        />
-      )}
-    </>
-  );
-};
+                        {item.image.length > 5 && (
+                          <TouchableOpacity
+                            onPress={() => setModalVisible({index: 6, item})}
+                            style={styles.overlayEndImg}>
+                            <Text style={{color: Colors.white}}>
+                              {item.image.length - 5}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
+            </View>
+          )}
+          {item.video && <PostVideo videoUrl={item.video.url} />}
+          <PostFooter data={item} />
+        </View>
+      </>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   postImg: {

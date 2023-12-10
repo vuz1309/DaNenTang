@@ -20,9 +20,9 @@ const ListReactions = ({onClose, postId}) => {
 
   const getFeels = async () => {
     try {
-      console.log('postId', postId);
+      // console.log('postId', postId);
       const {data} = await getListFeels({id: postId, ...params});
-      console.log('comments:', data.data);
+      // console.log('comments:', data.data);
       setReactions(data.data);
     } catch (error) {
       console.log(error);
