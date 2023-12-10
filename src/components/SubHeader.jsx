@@ -71,7 +71,13 @@ const SubHeader = ({onClick, buyCoin}) => {
         content={
           'Cần ít nhất 50 coins để tiếp tục, bạn có muốn mua thêm coins?'
         }
-        mainBtn={{text: 'Mua', onPress: buyCoin}}
+        mainBtn={{
+          text: 'Mua',
+          onPress: () => {
+            setIsShowDialogCoins(false);
+            buyCoin();
+          },
+        }}
       />
     </View>
   );

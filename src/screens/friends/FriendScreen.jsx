@@ -26,6 +26,7 @@ import {useScrollHanler} from '../../hooks/useScrollHandler';
 import {notificationInfoActions} from '../../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../../data/TabData';
 import HeaderTitle from '../../components/layouts/HeaderTitle';
+import Loading from '../../components/base/Loading';
 
 const FriendScreen = () => {
   const navigation = useNavigation();
@@ -54,15 +55,20 @@ const FriendScreen = () => {
   };
   const loadMore = async () => {
     if (isLoadMore) return;
+    setIsLoadMore(true);
     setParams({
       index: (Number(params.index) + 1).toString(),
       count: '20',
     });
   };
-  const {handleScroll, onRefresh, refreshing, isLoadMore} = useScrollHanler(
-    reload,
-    loadMore,
-  );
+  const {
+    handleScroll,
+    onRefresh,
+    refreshing,
+    isLoadMore,
+    setRefreshing,
+    setIsLoadMore,
+  } = useScrollHanler(reload, loadMore);
 
   const setAcceptFriendApi = async (user_id, is_accept = '1') => {
     try {
@@ -74,10 +80,16 @@ const FriendScreen = () => {
   };
 
   const getRequestedFriendsApi = async () => {
+    if (isLoadMore || refreshing) return;
     try {
       const {data} = await getRequestFriends(params);
-
-      setRequestFriends(data.data.requests);
+      if (params.index == '0') setRequestFriends(data.data.requests);
+      else {
+        const newItems = data.data.requests.filter(
+          item => !requestFriends.find(re => re.id === item.id),
+        );
+        setRequestFriends(prev => [...prev, ...newItems]);
+      }
       setTotal(data.data.total);
       store.dispatch(
         notificationInfoActions.setNotification({
@@ -87,6 +99,9 @@ const FriendScreen = () => {
       );
     } catch (error) {
       console.log(error);
+    } finally {
+      setRefreshing(false);
+      setIsLoadMore(false);
     }
   };
   React.useEffect(() => {
@@ -147,6 +162,7 @@ const FriendScreen = () => {
           </View>
         </>
       )}
+      {isLoadMore && <Loading />}
     </ScrollView>
   );
 };

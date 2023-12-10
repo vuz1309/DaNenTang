@@ -22,7 +22,9 @@ import {APP_ROUTE} from '../navigation/config/routes';
 import {addPost, editPost, getPostRequest} from '../api/modules/post.request';
 import AlertMessage from '../components/base/AlertMessage';
 import {store} from '../state-management/redux/store';
-import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import HomeListPost, {
+  postInfoActions,
+} from '../state-management/redux/slices/HomeListPost';
 import {useSelector} from 'react-redux';
 import {createImageFormData} from '../helpers/helpers';
 import LoadingOverlay from '../components/base/LoadingOverlay';
@@ -108,7 +110,9 @@ const UploadScreen = ({
     });
   };
   const handleExit = () => {
-    if (text == '') {
+    if (text == '' && images.length == 0) {
+      onClose();
+    } else if (mode === Enum.PostMode.Edit) {
       onClose();
     } else {
       setIsExit(true);
@@ -133,17 +137,17 @@ const UploadScreen = ({
   const createPostRequest = async item => {
     try {
       setLoading(true);
+      store.dispatch(postInfoActions.startPosting());
       const formData = buildFormData(item);
       onClose();
       const {data} = await addPost(formData);
-      store.dispatch(userInfoActions.updateCoin(data.data.coins));
-      ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
 
       const res = await getPostRequest({id: data.data.id});
-
-      store.dispatch(postInfoActions.shiftPost(res.data.data));
+      ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
+      store.dispatch(postInfoActions.endPosting(res.data.data));
     } catch (error) {
       console.log(error);
+      store.dispatch(postInfoActions.endPosting({}));
     } finally {
       setLoading(false);
     }
@@ -156,13 +160,11 @@ const UploadScreen = ({
       const formData = buildFormData({...item, image: imgs, id: postData.id});
 
       const {data} = await editPost(formData);
-
+      console.log('post updated:', data);
       const res = await getPostRequest({id: data.data.id});
-
-      console.log('res', res);
-
+      console.log('update post: ', res);
       store.dispatch(postInfoActions.updatePost(res.data.data));
-      store.dispatch(userInfoActions.updateCoin(data.data.coins));
+
       ToastAndroid.show('Cập nhật thành công: ', ToastAndroid.SHORT);
 
       onClose();
@@ -186,7 +188,7 @@ const UploadScreen = ({
       createPostRequest(newPost);
       return;
     }
-    console.log('edit post', imageDel);
+
     const imgDelStr = imageDel.map(item => item.id).join(',');
 
     const editPost = {
@@ -383,7 +385,12 @@ const UploadScreen = ({
                 style={{alignItems: 'center'}}
               />
               <Text
-                style={{fontSize: 18, marginBottom: 10, fontWeight: 'bold'}}>
+                style={{
+                  fontSize: 18,
+                  marginBottom: 10,
+                  fontWeight: 'bold',
+                  color: Colors.textColor,
+                }}>
                 Lưu làm bản nháp
               </Text>
             </View>
@@ -397,7 +404,12 @@ const UploadScreen = ({
                   style={{alignItems: 'center'}}
                 />
                 <Text
-                  style={{fontSize: 18, marginBottom: 10, fontWeight: 'bold'}}>
+                  style={{
+                    fontSize: 18,
+                    marginBottom: 10,
+                    fontWeight: 'bold',
+                    color: Colors.textColor,
+                  }}>
                   Bỏ bài viết
                 </Text>
               </View>
@@ -408,7 +420,7 @@ const UploadScreen = ({
                   name="check"
                   type="Feather"
                   size={22}
-                  color={'#2873d7'}
+                  color={Colors.primaryColor}
                   style={{alignItems: 'center'}}
                 />
                 <Text
@@ -416,7 +428,7 @@ const UploadScreen = ({
                     fontSize: 18,
                     marginBottom: 10,
                     fontWeight: 'bold',
-                    color: '#2873d7',
+                    color: Colors.primaryColor,
                   }}>
                   Tiếp tục chỉnh sửa
                 </Text>

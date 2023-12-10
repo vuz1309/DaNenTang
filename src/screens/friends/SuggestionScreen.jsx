@@ -28,9 +28,7 @@ const SuggestionScreen = ({navigation}) => {
   });
 
   const getAll = async () => {
-    setIsLoadMore(true);
     try {
-      console.log(params);
       const {data} = await getSuggestionFriend(params);
       if (params.index == '0') setSuggestions(data.data);
       else {
@@ -40,7 +38,7 @@ const SuggestionScreen = ({navigation}) => {
         setSuggestions(prev => [...prev, ...newItems]);
       }
     } catch (error) {
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
+      console.log(error);
     } finally {
       setIsLoadMore(false);
     }
@@ -51,7 +49,6 @@ const SuggestionScreen = ({navigation}) => {
       console.log(data);
     } catch (error) {
       console.log('request: ', error);
-      if (error.status !== 400) AlertMessage('Vui lòng kiểm tra lại mạng!');
     }
   };
 
@@ -63,8 +60,8 @@ const SuggestionScreen = ({navigation}) => {
     });
   };
   const loadMore = () => {
-    console.log('load more');
     if (isLoadMore) return;
+    setIsLoadMore(true);
     setParams(prev => ({
       count: '20',
       index: (Number(prev.index) + 1).toString(),

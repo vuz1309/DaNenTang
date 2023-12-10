@@ -118,7 +118,7 @@ export const LoginBySaved = ({}) => {
             ))}
           </ScrollView>
         ) : (
-          <Text style={{textAlign: 'center'}}>
+          <Text style={{textAlign: 'center', color: Colors.textGrey}}>
             Chưa có tài khoản nào được lưu
           </Text>
         )}
