@@ -3,7 +3,12 @@ import axios from 'axios';
 
 import {store} from '../state-management/redux/store';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
-import {BUG_SERVER, INVALID_TOKEN, USER_INVALID} from '../utils/constants';
+import {
+  BUG_SERVER,
+  INVALID_TOKEN,
+  USER_INVALID,
+  errors,
+} from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
 
 /**
@@ -41,6 +46,16 @@ export const createApiInstance = (
      * @returns {import('axios').AxiosResponse}
      */
     response => {
+      if (response.data.data.coins) {
+        if (
+          response.data.data.id &&
+          response.data.data.username &&
+          response.data.data.id !=
+            store.getState().userInfo?.user?.id?.toString()
+        )
+          return response;
+        store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
+      }
       return response;
     },
     /**
@@ -56,9 +71,8 @@ export const createApiInstance = (
       const {response} = error;
       if (response.data.code == INVALID_TOKEN.toString()) {
         store.dispatch(userInfoActions.logOut());
-      } else if (response.data.code == BUG_SERVER.toString()) {
-        AlertMessage('Server lỗi!');
-      } else if (response.data.code == USER_INVALID.toString()) {
+      } else {
+        AlertMessage(errors[response.data.code] || 'Chưa xác định!', 'Lỗi!');
       }
       return Promise.reject({
         code: response.data.code,

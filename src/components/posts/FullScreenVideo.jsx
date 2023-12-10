@@ -9,11 +9,11 @@ const FullScreenVideo = ({route, navigation}) => {
 
   useEffect(() => {
     // Mở chế độ xoay ngang màn hình khi mở video full screen
-    Orientation.unlockAllOrientations();
-
+    // Orientation.unlockAllOrientations();
+    Orientation.lockToLandscape();
     // Cleanup khi đóng video full screen
     return () => {
-      Orientation.lockToPortrait(); // Khóa lại hướng màn hình khi đóng video full screen
+      Orientation.lockToPortrait();
     };
   }, [url]);
   return (

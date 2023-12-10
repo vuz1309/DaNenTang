@@ -9,7 +9,7 @@ export const USER_NOT_REQUEST_FRIEND = 9994;
 export const USER_IS_BLOCKED = 3001;
 export const NETWORK_ERROR = 9999;
 export const errors: any = {
-  [USER_NOT_REQUEST_FRIEND]: 'Đối phương đã hủy yêu cầu kết bạn!',
+  [USER_NOT_REQUEST_FRIEND]: 'Không thấy dữ liệu!',
   [PARAM_ERROR]: 'Truyền body lỗi, xem lại code hoặc api.',
   [IMAGE_ERROR]: 'Truyền ảnh lỗi, xem lại code hoặc api.',
 

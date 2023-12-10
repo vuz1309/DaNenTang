@@ -106,11 +106,6 @@ const AllFriendsScreen = ({route}) => {
           {allFriends.length > 0 && (
             <Text style={styles.titleText}>{total} bạn bè</Text>
           )}
-          {/* <TouchableHighlight>
-            <Text style={{color: Colors.primaryColor, fontSize: 16}}>
-              Sắp xếp
-            </Text>
-          </TouchableHighlight> */}
         </View>
         {allFriends.length > 0 ? (
           allFriends.map(fr => (
@@ -118,7 +113,12 @@ const AllFriendsScreen = ({route}) => {
           ))
         ) : (
           <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text style={{fontSize: 16, paddingHorizontal: 16}}>
+            <Text
+              style={{
+                fontSize: 16,
+                paddingHorizontal: 16,
+                color: Colors.textGrey,
+              }}>
               Không có bạn bè nào, hãy kết bạn nhé.
             </Text>
           </View>

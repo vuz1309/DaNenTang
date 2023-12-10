@@ -5,6 +5,8 @@ import {
   ScrollView,
   Modal,
   FlatList,
+  Image,
+  Text,
 } from 'react-native';
 import React, {useState} from 'react';
 import SubHeader from '../components/SubHeader';
@@ -25,6 +27,7 @@ import {TabName} from '../data/TabData';
 import BuyCoins from './coins/BuyCoins';
 import Enum from '../utils/Enum';
 import PostBody from '../components/posts/PostBody';
+import LoadingPosting from '../components/posts/LoadingPosting';
 
 const HomeScreen = () => {
   // const userLogged = useSelector(state => state.userInfo.user);
@@ -33,15 +36,12 @@ const HomeScreen = () => {
 
   const [postEdited, setPostEdited] = useState({});
   const toggleBuyCoinModal = () => {
-    console.log('buy coin');
     setIsBuyCoin(!isBuyCoin);
   };
   const openPostModal = (
     postMode = Enum.PostMode.Create,
     post = {image: [], status: 'OK', described: '', id: '0'},
   ) => {
-    // console.log('post mode:', postMode);
-
     setDetailsPostMode(postMode);
 
     const postTmp = {
@@ -57,6 +57,7 @@ const HomeScreen = () => {
     setDetailsPostMode(0);
   };
   const listPosts = useSelector(state => state.postInfo.posts);
+  const isPosting = useSelector(state => state.postInfo.isPosting);
   const params = useSelector(state => state.postInfo.paramsConfig);
 
   const getListPostsApi = async () => {
@@ -131,6 +132,7 @@ const HomeScreen = () => {
           <>
             <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
             <Stories />
+            {isPosting && <LoadingPosting />}
           </>
         }
         ListFooterComponent={() => isLoadMore && <Loading />}

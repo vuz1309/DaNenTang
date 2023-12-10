@@ -75,7 +75,9 @@ const ChangePassword = ({closeModal}) => {
         </TouchableOpacity>
         <Text style={styles.headerText}>Đổi mật khẩu</Text>
         <View style={styles.input}>
-          <Text style={{flex: 0.5}}>Mật khẩu cũ: </Text>
+          <Text style={{flex: 0.5, color: Colors.textColor}}>
+            Mật khẩu cũ:{' '}
+          </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
             value={oldPass}
@@ -84,7 +86,9 @@ const ChangePassword = ({closeModal}) => {
           />
         </View>
         <View style={styles.input}>
-          <Text style={{flex: 0.5}}>Mật khẩu mới: </Text>
+          <Text style={{flex: 0.5, color: Colors.textColor}}>
+            Mật khẩu mới:{' '}
+          </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
             value={newPass}
@@ -93,7 +97,9 @@ const ChangePassword = ({closeModal}) => {
           />
         </View>
         <View style={styles.input}>
-          <Text style={{flex: 0.5}}>Xác nhận mật khẩu mới: </Text>
+          <Text style={{flex: 0.5, color: Colors.textColor}}>
+            Xác nhận mật khẩu mới:{' '}
+          </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
             value={cfPass}

@@ -85,6 +85,7 @@ const logOut: Reducer = state => {
   delete state.user;
 };
 const updateCoin: Reducer<PayloadAction<string>> = (state, {payload}) => {
+  console.log('update coins:', payload);
   // Kiểm tra xem người dùng đã đăng nhập hay chưa
   if (state.user) {
     // Cập nhật số coin trong state

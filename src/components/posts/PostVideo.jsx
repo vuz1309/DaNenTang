@@ -55,7 +55,7 @@ const PostVideo = ({videoUrl, onExpand}) => {
     if (data?.duration && data.duration > 0)
       setConfig(prev => ({...prev, totalTime: data.duration}));
     if (videoRef.current) {
-      videoRef.current.seek(1); // Chuyển đến thời điểm 1 giây để có hình ảnh đầu tiên
+      videoRef.current.seek(data.duration / 2);
     }
   };
   const onSliderValueChange = value => {

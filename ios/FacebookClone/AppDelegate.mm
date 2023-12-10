@@ -1,8 +1,11 @@
 #import "AppDelegate.h"
-#import "Orientation.h"
-#import <React/RCTBundleURLProvider.h>
 
+#import <React/RCTBundleURLProvider.h>
+#import "Orientation.h"
 @implementation AppDelegate
+
+
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -33,12 +36,8 @@
   return true;
 }
 
- - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
-    while ([[UIDevice currentDevice] isGeneratingDeviceOrientationNotifications]) {
-        [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-    }
-  
-    return [Orientation getOrientation];
-  }
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+  return [Orientation getOrientation];
+}
 
 @end

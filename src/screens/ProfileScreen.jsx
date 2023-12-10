@@ -8,25 +8,12 @@ import {
   Animated,
   ScrollView,
 } from 'react-native';
-import React, {useContext, useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
-// import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
-// import auth from '@react-native-firebase/auth';
-// import fireStore from '@react-native-firebase/firestore';
-import {logout} from '../api/modules/userProfile.request';
 import Modal from 'react-native-modal';
-import {store} from '../state-management/redux/store';
-import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
-import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
-import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
-import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
-import {StyledTouchable} from '../components/base';
-import {Themes} from '../assets/themes';
-import BuyCoins from './coins/BuyCoins';
 import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
-import {getFreeDiskStorageOldSync} from 'react-native-device-info';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useLogout} from '../hooks/useLogout';
