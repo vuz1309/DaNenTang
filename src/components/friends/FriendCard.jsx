@@ -1,4 +1,11 @@
-import {View, Text, TouchableHighlight, Image, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  Image,
+  Pressable,
+  ToastAndroid,
+} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
 import Modal from 'react-native-modal';
@@ -18,7 +25,8 @@ const FriendCard = ({fr, reload}) => {
       const {data} = await setBlockRequest({
         user_id: fr.id,
       });
-      console.log('block:', data);
+      // console.log('block:', data);
+      ToastAndroid.show('Bạn đã block ' + fr.username, ToastAndroid.SHORT);
       reload();
     } catch (error) {
       console.log(error);
@@ -29,7 +37,8 @@ const FriendCard = ({fr, reload}) => {
       const {data} = await unFriend({
         user_id: fr.id,
       });
-      console.log('un friend:', data);
+      // console.log('un friend:', data);
+      ToastAndroid.show('Xóa bạn bè thành công!', ToastAndroid.SHORT);
       reload();
     } catch (error) {
       console.log(error);

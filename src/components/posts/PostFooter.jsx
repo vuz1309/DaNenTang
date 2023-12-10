@@ -79,7 +79,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const handleDelFeel = async id => {
     try {
       const {data} = await delFeelPost({id});
-      console.log('del feel:', data);
+      // console.log('del feel:', data);
       return data;
     } catch (error) {
       console.log(error);

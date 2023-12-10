@@ -161,9 +161,9 @@ const UploadScreen = ({
             const formData = buildFormData({...item, image: imgs, id: postData.id});
 
             const {data} = await editPost(formData);
-            console.log('post updated:', data);
+
             const res = await getPostRequest({id: data.data.id});
-            console.log('update post: ', res);
+
             store.dispatch(postInfoActions.updatePost(res.data.data));
 
             ToastAndroid.show('Cập nhật thành công: ', ToastAndroid.SHORT);

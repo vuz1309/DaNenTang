@@ -57,7 +57,7 @@ const endPosting: Reducer<PayloadAction<any>> = (state, {payload}) => {
 const addPosts: Reducer<PayloadAction<any>> = (state, {payload}) => {
   const posts = state.posts;
   const listPosts = payload.filter(
-    (post: any) => !posts.find(p => p.id === post.id),
+    (post: any) => !posts.some(p => p.id === post.id),
   );
   state.posts = [...posts, ...listPosts];
 };

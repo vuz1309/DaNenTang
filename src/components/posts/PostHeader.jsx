@@ -17,9 +17,14 @@ import Loading from '../base/Loading';
 import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
 import Enum from '../../utils/Enum';
 import DialogConfirm from '../base/dialog/DialogConfirm';
-import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
+import {useSelector} from 'react-redux';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
-const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
+const PostHeader = ({
+  data,
+  isShowRemove = true,
+  onClickEdit,
+  setIsShowDialogCoins,
+}) => {
   const {navigate} = useNavigation();
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
@@ -31,10 +36,6 @@ const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
   }, []);
   const toggleModalReport = () => {
     setShowModalReport(!isShowModalReport);
-  };
-  const [isEditPost, setEditPost] = React.useState(false);
-  const toggleEditModal = () => {
-    setEditPost(!isEditPost);
   };
   const [isModalVisible, setModalVisible] = React.useState(false);
   const handleCopyToClipboard = () => {
@@ -51,19 +52,23 @@ const PostHeader = ({data, isShowRemove = true, onClickEdit}) => {
       );
     }
   };
+  const userLogged = useSelector(state => state.userInfo.user);
 
   const removePost = async () => {
-    const postId = data.id;
-    // toggleModalDelPost();
     setModalVisible(false);
+    if (Number(userLogged.coins) < 50) {
+      setIsShowDialogCoins(true);
+      return;
+    }
+    const postId = data.id;
+
     try {
       store.dispatch(
         postInfoActions.removePost({
           postId,
         }),
       );
-      const {data} = await deletePostRequest({id: postId});
-      store.dispatch(userInfoActions.updateCoin(data.data.coins));
+      deletePostRequest({id: postId});
     } catch (error) {
       console.log(error);
     }
