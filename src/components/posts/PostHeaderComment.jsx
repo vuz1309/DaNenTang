@@ -249,7 +249,6 @@ const PostHeaderComment = ({data, isShowRemove = false}) => {
               </>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={() => console.log('edit post')}
               underlayColor={Colors.lightgrey}
               style={{
                 alignItems: 'center',

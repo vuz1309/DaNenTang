@@ -28,28 +28,29 @@ import {APP_ROUTE} from '../../navigation/config/routes';
 import {logger} from '../../utils/helper';
 import {useNavigation} from '@react-navigation/native';
 import {formatNumberSplitBy} from '../../helpers/helpers';
+import Enum from '../../utils/Enum';
 
 const ScreenHeight = Dimensions.get('window').height;
 
-const FEEL_ENUM = {
-  UN_FEEL: '-1',
-  LIKE: '0',
-  DISLIKE: '1',
-};
+// const Enum.Feel = {
+//   UN_FEEL: '-1',
+//   LIKE: '0',
+//   DISLIKE: '1',
+// };
 
 export const feelConfigs = {
-  [FEEL_ENUM.UN_FEEL]: {
+  [Enum.Feel.UN_FEEL]: {
     icon: 'like2',
     color: null,
     text: 'Thích',
   },
-  [FEEL_ENUM.LIKE]: {
+  [Enum.Feel.LIKE]: {
     icon: 'dislike1',
     color: Themes.COLORS.red,
     text: 'Yêu',
     img: Heart,
   },
-  [FEEL_ENUM.DISLIKE]: {
+  [Enum.Feel.DISLIKE]: {
     icon: 'like1',
     color: Colors.primaryColor,
     text: 'Thích',
@@ -70,7 +71,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [showModalReactions, setShowModalReactions] = useState(false);
 
   const feelText = useMemo(() => {
-    if (feelPost === FEEL_ENUM.UN_FEEL) return data.feel;
+    if (feelPost === Enum.Feel.UN_FEEL) return data.feel;
     else if (Number(data.feel) > 1)
       return `Bạn và ${formatNumberSplitBy(Number(data.feel) - 1)} người khác`;
     return 'Bạn';
@@ -96,13 +97,13 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
       console.log(error);
     }
   };
-  const handleClickLike = async (type = '1') => {
+  const handleClickLike = async (type = Enum.Feel.DISLIKE) => {
     if (type == feelPost) return;
 
     const id = data.id;
     setFeelPost(type);
     const res =
-      type == FEEL_ENUM.UN_FEEL
+      type == Enum.Feel.UN_FEEL
         ? await handleDelFeel(id)
         : await handleFeel(id, type);
 
@@ -163,7 +164,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               <TouchableOpacity
                 style={{transform: [{scale: 1.5}]}}
                 onPress={() => {
-                  handleClickLike(FEEL_ENUM.DISLIKE);
+                  handleClickLike(Enum.Feel.DISLIKE);
                   setReactionModal(false);
                 }}>
                 <View>
@@ -173,7 +174,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               <TouchableOpacity
                 style={{transform: [{scale: 1.5}]}}
                 onPress={() => {
-                  handleClickLike(FEEL_ENUM.LIKE);
+                  handleClickLike(Enum.Feel.LIKE);
                   setReactionModal(false);
                 }}>
                 <View>
@@ -196,9 +197,9 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           <TouchableOpacity
             onPress={() =>
               handleClickLike(
-                feelPost == FEEL_ENUM.UN_FEEL
-                  ? FEEL_ENUM.DISLIKE
-                  : FEEL_ENUM.UN_FEEL,
+                feelPost == Enum.Feel.UN_FEEL
+                  ? Enum.Feel.DISLIKE
+                  : Enum.Feel.UN_FEEL,
               )
             }
             onLongPress={() => setReactionModal(true)}>

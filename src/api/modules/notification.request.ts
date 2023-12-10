@@ -1,7 +1,7 @@
 import {requestJSONWithAuth} from '../request';
 
 export const getNotifications = (body: {index: string; count: string}) => {
-  return requestJSONWithAuth('/get_notifications', body);
+  return requestJSONWithAuth('/get_notification', body);
 };
 
 export const checkNewNotifications = (body: {

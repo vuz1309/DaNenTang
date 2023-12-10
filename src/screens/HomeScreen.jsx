@@ -55,7 +55,7 @@ const HomeScreen = () => {
 
     const postTmp = {
       image: post.image.map(item => ({id: item.id, uri: item.url})),
-      status: post.status,
+      status: post.state,
       described: post.described,
       id: post.id,
     };
