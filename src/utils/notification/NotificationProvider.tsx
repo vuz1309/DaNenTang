@@ -121,7 +121,7 @@ export const NotificationProvider = (props: any) => {
     firebaseNotify({
       messageId,
       title: notiContents[numberType].title,
-      body: `${data.user.username} notiContents[numberType].body}`,
+      body: `${data.user.username} ${notiContents[numberType].body}`,
     });
   };
 

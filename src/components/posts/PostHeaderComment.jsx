@@ -60,7 +60,7 @@ const PostHeaderComment = ({data, isShowRemove = false}) => {
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
         <VectorIcon
-          style={{marginRight: 5}}
+          style={{marginRight: 5, marginTop: -3}}
           name="arrow-back"
           type="Ionicons"
           color={Colors.black}
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
   postTopSec: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center'
   },
   username: {
     fontSize: 18,

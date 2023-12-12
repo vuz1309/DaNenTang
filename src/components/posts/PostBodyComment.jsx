@@ -18,7 +18,7 @@ const PostBodyComment = ({item}) => {
 
   return (
     <>
-      <View style={{backgroundColor: Colors.white, marginTop: 8}}>
+      <View style={{backgroundColor: Colors.white, marginTop: 8, padding: 5}}>
         <TouchableHighlight
           underlayColor={Colors.lightgrey}
           style={{marginTop: 8}}>

@@ -209,6 +209,17 @@ const CommentScreen = ({route, navigation}) => {
       <PostHeaderComment data={post} />
       <ScrollView style={styles.subWrapper}>
         <PostBodyComment key={post.id} item={post} />
+        <View style={{padding: 5, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+          <Text style = {{color: 'black', fontWeight: 'bold', fontSize: 16}}> Tất cả bình luận</Text>
+          <VectorIcon
+          name="down"
+          type="AntDesign"
+          color={Colors.black}
+          size={16}
+          style={{paddingLeft: 3, paddingTop : 2}}
+          onPress={onPressSendComment}
+        />
+        </View>
         {Array.isArray(comments) &&
           comments.map(comment => (
             <Comment
@@ -224,7 +235,16 @@ const CommentScreen = ({route, navigation}) => {
             />
           ))}
       </ScrollView>
+
       <View style={styles.addComment}>
+        <VectorIcon
+          name="camera"
+          type="FontAwesome"
+          color={Colors.gray}
+          size={20}
+          style={{paddingRight: 15, paddingBottom: 6}}
+          onPress={onPressSendComment}
+        />
         <TextInput
           onPressOut={() => setMarkType(1)}
           ref={inputRef}
@@ -236,7 +256,7 @@ const CommentScreen = ({route, navigation}) => {
         <VectorIcon
           name="paper-plane"
           type="FontAwesome"
-          color={Colors.black}
+          color={Colors.blue}
           size={20}
           style={styles.sendButton}
           onPress={onPressSendComment}
@@ -251,6 +271,8 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: 'white',
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
   },
   subWrapper: {
     backgroundColor: 'white',

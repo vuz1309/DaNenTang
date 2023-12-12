@@ -40,16 +40,32 @@ const HistoryItem = ({item, onCompleteDeleteSearch}) => {
         name="search-circle"
         type="Ionicons"
         size={70}
-        color={Colors.grey}
+        color={Colors.blue}
       />
       <View style={[styles.userSection]}>
-        <Text
-          style={[styles.titleItem]}
-          onPress={() => {
-          }}>
+        <Text style={[styles.titleItem]} onPress={() => {}}>
           Bạn đã tìm kiếm trên Facebook{' '}
         </Text>
         <Text style={[styles.subTitleItem]}>"{item.keyword}"</Text>
+        <View
+          style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
+          <VectorIcon
+            style={{marginTop: 0}}
+            name="lock"
+            type="FontAwesome6"
+            color="gray"
+            size={20}
+          />
+          <Text style ={{color: 'gray', fontSize: 12}}>Chỉ mình tôi</Text>
+          <VectorIcon
+            style={{marginTop: 0}}
+            name="dot-single"
+            type="Entypo"
+            color="gray"
+            size={20}
+          />
+          <Text style ={{color: 'gray', fontSize: 12}}>Đã ẩn khỏi dòng thời gian</Text>
+        </View>
       </View>
       <VectorIcon
         style={{marginLeft: 15}}
@@ -209,7 +225,7 @@ const styles = StyleSheet.create({
   userSection: {
     display: 'flex',
     flexDirection: 'column',
-    marginLeft: 20,
+    marginLeft: 10,
     marginTop: 7,
   },
   postTopSec: {
