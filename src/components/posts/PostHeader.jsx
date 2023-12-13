@@ -24,6 +24,7 @@ const PostHeader = ({
   isShowRemove = true,
   onClickEdit,
   setIsShowDialogCoins,
+  textStyles = {color: Colors.textColor},
 }) => {
   const {navigate} = useNavigation();
   const createTime = useMemo(
@@ -118,7 +119,7 @@ const PostHeader = ({
           <View style={styles.userSection}>
             <Text
               onPress={() => navigate('UserScreen', {userId: data.author.id})}
-              style={styles.username}>
+              style={[styles.username, textStyles]}>
               {data.author.name}
               <Text style={{fontWeight: '400', fontSize: 16}}>
                 {' '}
@@ -133,7 +134,7 @@ const PostHeader = ({
                 type="FontAwesome5"
                 size={13}
                 color={Colors.headerIconGrey}
-                style={styles.userIcon}
+                style={[styles.userIcon, textStyles]}
               />
             </View>
           </View>
@@ -144,7 +145,7 @@ const PostHeader = ({
               name="dots-three-horizontal"
               type="Entypo"
               size={25}
-              color={Colors.headerIconGrey}
+              color={[Colors.headerIconGrey, textStyles]}
             />
           </StyledTouchable>
           {showRemoveBtn && (
@@ -153,7 +154,7 @@ const PostHeader = ({
                 name="close"
                 type="Ionicons"
                 size={25}
-                color={Colors.headerIconGrey}
+                color={[Colors.headerIconGrey, textStyles]}
               />
             </StyledTouchable>
           )}
@@ -163,7 +164,7 @@ const PostHeader = ({
         underlayColor={Colors.lightgrey}
         style={{marginTop: 8}}
         onLongPress={handleCopyToClipboard}>
-        <PostDescription described={data.described} />
+        <PostDescription color={textStyles.color} described={data.described} />
       </TouchableHighlight>
       <DialogConfirm
         mainBtn={{text: 'Xóa', onPress: removePost}}

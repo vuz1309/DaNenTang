@@ -21,15 +21,16 @@ const formatTime = seconds => {
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
 
-const PostVideo = ({videoUrl, onExpand}) => {
+const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
   const {navigate, goBack} = useNavigation();
   const videoRef = useRef(null);
   const hideControlRef = useRef(null);
-  const [thumbnail, setThumbnail] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // const [thumbnail, setThumbnail] = useState(null);
   const [isShowControl, setIsShowControl] = useState(true);
 
   const [config, setConfig] = useState({
-    paused: true,
+    paused: !autoPlay,
     muted: false,
     currentTime: 1,
     totalTime: 1,
@@ -54,11 +55,6 @@ const PostVideo = ({videoUrl, onExpand}) => {
   const onVideoLoad = data => {
     if (data?.duration && data.duration > 0)
       setConfig(prev => ({...prev, totalTime: data.duration}));
-    if (videoRef.current) {
-      videoRef.current.seek(data.duration / 2);
-      setThumbnail(videoUrl);
-      videoRef.current.seek(0);
-    }
   };
   const onSliderValueChange = value => {
     videoRef.current.seek(value);
@@ -70,9 +66,6 @@ const PostVideo = ({videoUrl, onExpand}) => {
   };
   const onVideoProgress = data => {
     setConfig(prev => ({...prev, currentTime: data.currentTime}));
-    if (!thumbnail && data.currentTime >= 1) {
-      setThumbnail(videoUrl);
-    }
   };
   const handleEndVideo = () => {
     setConfig(prev => ({...prev, currentTime: 0, paused: true}));
@@ -101,9 +94,6 @@ const PostVideo = ({videoUrl, onExpand}) => {
   };
   return (
     <View style={styles.container}>
-      {thumbnail ? (
-        <Image source={{uri: thumbnail}} style={styles.thumbnail} />
-      ) : null}
       <Video
         ref={videoRef}
         source={{uri: videoUrl}}
@@ -119,7 +109,7 @@ const PostVideo = ({videoUrl, onExpand}) => {
 
       <Pressable onPress={handleClickBackdrop} style={styles.overlay}>
         <>
-          {isShowPauseIcon && (
+          {
             <StyledTouchable
               onPress={playPauseHandler}
               style={{
@@ -127,8 +117,9 @@ const PostVideo = ({videoUrl, onExpand}) => {
                 borderRadius: 30,
                 borderColor: Colors.white,
                 position: 'absolute',
-                left: '43%',
-                top: '43%',
+                left: '45%',
+                top: '45%',
+                display: isShowPauseIcon ? 'flex' : 'none',
               }}>
               <VectorIcon
                 name={iconControl}
@@ -137,7 +128,7 @@ const PostVideo = ({videoUrl, onExpand}) => {
                 color={Colors.white}
               />
             </StyledTouchable>
-          )}
+          }
           <View
             style={{
               flexDirection: 'row',

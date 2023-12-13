@@ -13,6 +13,7 @@ import PostFooter from './PostFooter';
 import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
 import PostVideo from './PostVideo';
+import VideoThumnails from './VideoThumnails';
 
 const PostImg = ({img, onPress, isBanned}) => {
   const source = React.useMemo(
@@ -103,7 +104,8 @@ const PostBody = React.memo(
               )}
             </View>
           )}
-          {item.video && <PostVideo videoUrl={item.video.url} />}
+          {/* {item.video && <PostVideo videoUrl={item.video.url} />} */}
+          {item.video && <VideoThumnails post={item} />}
           <PostFooter data={item} />
         </View>
       </>
