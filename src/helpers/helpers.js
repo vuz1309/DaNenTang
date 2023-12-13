@@ -45,3 +45,10 @@ export function createImageFormData(img) {
     uri: Platform.OS === 'ios' ? img.uri.replace('file://', '') : img.uri,
   };
 }
+export function createVideoFormData(vid) {
+  return {
+    name: vid.fileName,
+    type: vid.type,
+    uri: Platform.OS === 'ios' ? vid.uri.replace('file://', '') : vid.uri,
+  };
+}

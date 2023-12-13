@@ -11,7 +11,7 @@ import {
     ImageBackground,
     ToastAndroid,
 } from 'react-native';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {Colors} from '../utils/Colors';
 
 import VectorIcon from '../utils/VectorIcon';
@@ -34,19 +34,29 @@ import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {openLibraryDevice} from '../utils/helper';
 import StyledTouchableHighlight from "../components/base/StyledTouchableHighlight";
 import EmotionList from "../components/modal/EmotionList";
+import Video from "react-native-video";
 
 const UploadScreen = ({
                           onClose,
                           mode = Enum.PostMode.Create,
-                          postData = {image: [], status: 'OK', described: '', id: '0'},
+                          postData = {image: [], status: 'OK', described: '', id: '0', video: {}},
                       }) => {
     const user = useSelector(state => state.userInfo.user);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [text, setText] = useState(postData.described);
     const [images, setImages] = useState(postData.image);
+    const [video, setVideo] = useState(postData.video);
     const [status, setStatus] = useState(postData.status);
     const [isExit, setIsExit] = useState(false);
     const [imageDel, setImageDel] = useState([]);
+    const [config, setConfig] = useState({
+        paused: true,
+        muted: false,
+        currentTime: 1,
+        totalTime: 1,
+    });
+    const videoRef = useRef(null);
+
 
     const title = useMemo(
         () =>
@@ -62,17 +72,24 @@ const UploadScreen = ({
     const openLibrary = async () => {
         const imgs = (
             await openLibraryDevice({
+                mediaType: 'mixed',
                 noData: true,
                 selectionLimit: 20 - images.length,
             })
         ).assets;
-
-        if (images.length < 20) {
-            const newImgList = [...images, ...imgs];
-            setImages(newImgList);
-            return;
+        if (imgs[0].type === 'image/jpeg') {
+            if (images.length < 20) {
+                const newImgList = [...images, ...imgs];
+                setImages(newImgList);
+                return;
+            }
+            AlertMessage('Tối đa 20 ảnh');
         }
-        AlertMessage('Tối đa 20 ảnh');
+        if (imgs[0].type === "video/mp4") {
+            console.log(imgs[0])
+            setVideo(imgs[0]);
+        }
+
     };
     const removeImg = index => {
         const newImgList = [...images];
@@ -121,6 +138,7 @@ const UploadScreen = ({
     };
     const buildFormData = data => {
         const formData = new FormData();
+        console.log("data: ", data)
         for (const key in data) {
             if (key === 'image') {
                 data.image.forEach(item => {
@@ -130,9 +148,14 @@ const UploadScreen = ({
                 });
             } else if (data[key]) {
                 if (key === 'video') {
+                    // formData.delete('image')
+                    formData.append('video', createImageFormData(data[key]));
                 } else formData.append(key, data[key]);
+
+
             }
         }
+        console.log("formdata:", formData)
         return formData;
     };
     const createPostRequest = async item => {
@@ -141,8 +164,10 @@ const UploadScreen = ({
             store.dispatch(postInfoActions.startPosting());
             const formData = buildFormData(item);
             onClose();
-            const {data} = await addPost(formData);
+            const res1 = await addPost(formData);
 
+            console.log("res: ", res1)
+            const {data} = res1;
             const res = await getPostRequest({id: data.data.id});
             ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
             store.dispatch(postInfoActions.endPosting(res.data.data));
@@ -177,13 +202,17 @@ const UploadScreen = ({
     };
     const onCreateNewPost = () => {
         setLoading(true);
+
         const newPost = {
             image: images.filter(img => img.uri),
             described: text.trim() || '  ',
-            status: status,
-            video: null,
+            status: status || 'Hihi',
+            video: video,
             auto_accept: '1',
         };
+        if(video?.uri){
+            delete newPost.image
+        }
 
         if (mode === Enum.PostMode.Create) {
             createPostRequest(newPost);
@@ -214,6 +243,20 @@ const UploadScreen = ({
         toggleOpenEmo();
         setIsModalOpen(false)
     }
+    const handleEndVideo = () => {
+        setConfig(prev => ({...prev, currentTime: 0, paused: true}));
+    };
+    const [thumbnail, setThumbnail] = useState(null);
+
+    const onVideoLoad = data => {
+        if (data?.duration && data.duration > 0)
+            setConfig(prev => ({...prev, totalTime: data.duration}));
+        if (videoRef.current) {
+            videoRef.current.seek(data.duration / 2);
+            setThumbnail(video[0].uri);
+            videoRef.current.seek(0);
+        }
+    };
     return (
         <View style={styles.container}>
             {<LoadingOverlay isLoading={loading}/>}
@@ -320,6 +363,14 @@ const UploadScreen = ({
                                 </View>
                             );
                         })}
+                    {!!video?.uri &&
+                        <Video
+                            source={video}
+                            style={styles.video}
+                            controls={true}
+                            resizeMode="cover"
+                        />
+                    }
                 </View>
             </ScrollView>
             {/*footer*/}
@@ -416,7 +467,7 @@ const UploadScreen = ({
                                 Lưu làm bản nháp
                             </Text>
                         </View>
-                        <TouchableOpacity onPress={() => onClose()}>
+                        <TouchableOpacity onPress={onClose}>
                             <View style={styles.option}>
                                 <VectorIcon
                                     name="trash-2"
@@ -505,7 +556,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         flexDirection: 'row',
         gap: 5,
-        width:100
+        width: 100
     },
     stt: {
         fontSize: 14,
@@ -575,6 +626,11 @@ const styles = StyleSheet.create({
         padding: 4,
         backgroundColor: Colors.lightgrey,
         borderRadius: 20,
+    },
+    video: {
+        flex: 1,
+        width: '100%',
+        height: 250, // Adjust the height as needed
     },
 });
 

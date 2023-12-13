@@ -46,7 +46,7 @@ export const createApiInstance = (
      * @returns {import('axios').AxiosResponse}
      */
     response => {
-      if (response.data.data.coins) {
+      if (response.data?.data?.coins) {
         if (
           response.data.data.id &&
           response.data.data.username &&
