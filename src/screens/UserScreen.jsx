@@ -345,6 +345,17 @@ const UserScreen = ({navigation, route}) => {
                         color: Colors.textGrey,
                         alignItems: 'center',
                         flexDirection: 'row',
+                        paddingBottom:25,
+                    }}>
+                    <Text style={{fontWeight: '700', color: Colors.black, fontSize: 22}}>
+                        Thông tin
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        color: Colors.textGrey,
+                        alignItems: 'center',
+                        flexDirection: 'row',
                     }}>
                     <VectorIcon
                         name="coins"
