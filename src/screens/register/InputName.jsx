@@ -54,12 +54,14 @@ const InputName = ({navigation}) => {
           <TextInput
             value={familyName}
             placeholder="Họ"
+            placeholderTextColor={Colors.textGrey}
             style={styles.textInput}
             onChangeText={value => setFamilyName(value)}></TextInput>
           <TextInput
             value={name}
             placeholder="Tên"
             style={styles.textInput}
+            placeholderTextColor={Colors.textGrey}
             onChangeText={value => setName(value)}></TextInput>
         </View>
         <StyledButton
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: 'gray',
     paddingHorizontal: 8,
+    color: Colors.black,
   },
   nextButton: {
     backgroundColor: Colors.primaryColor,

@@ -82,7 +82,7 @@ const UserScreen = ({navigation, route}) => {
 
       const {data} = res;
       setUserInfo(data.data);
-      console.log(userInfo);
+
       if (userId == userLogged.id) {
         store.dispatch(userInfoActions.updateUserInfo(data.data));
         store.dispatch(userSavedInfoActions.updateUserSaved(data.data));
@@ -93,27 +93,18 @@ const UserScreen = ({navigation, route}) => {
     }
   };
   const openLibrary = () => {
-    launchImageLibrary(
-      // {noData: true, selectionLimit: 20 - images.length},
-      r => {
-        if (r.didCancel) {
-          return;
-        }
-        if (r.errorCode) {
-          console.log('error');
-        }
+    launchImageLibrary({noData: true, selectionLimit: 1}, r => {
+      if (r.didCancel) {
+        return;
+      }
+      if (r.errorCode) {
+        console.log('error');
+      }
 
-        const tmp = r.assets;
+      const tmp = r.assets;
 
-        // if (images.length < 20) {
-        //     const newImgList = [...images, ...tmp];
-        //     setImages(newImgList);
-        //     console.log('list img:', newImgList);
-        //     return;
-        // }
-        AlertMessage('Tối đa 20 ảnh');
-      },
-    );
+      AlertMessage('Tối đa 20 ảnh');
+    });
   };
   const requestCameraPermission = async () => {
     try {
@@ -144,7 +135,7 @@ const UserScreen = ({navigation, route}) => {
   };
   React.useEffect(() => {
     getUserInfoApi();
-  }, []);
+  }, [userId]);
   if (!userInfo.id)
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -223,43 +214,23 @@ const UserScreen = ({navigation, route}) => {
           closeModal={() => toggleEditModal()}
         />
       </Modal>
-      {/* <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <VectorIcon
-                        name="arrowleft"
-                        type="AntDesign"
-                        size={22}
-                        color={Colors.black}
-                    />
-                </TouchableOpacity>
-                <Text style={styles.headerText}>{userInfo.username}</Text>
-                <TouchableOpacity>
-                    <VectorIcon
-                        name="search1"
-                        type="AntDesign"
-                        size={22}
-                        color={Colors.black}
-                    />
-                </TouchableOpacity>
-            </View> */}
       <HeaderCenter text={userInfo.username} goBack={navigation.goBack} />
       <TouchableOpacity
         onPress={() => setImageViewed(userInfo.cover_image)}
         style={styles.avaContainer}>
         <>
-          <View>
-            {userInfo.cover_image ? (
-              <Image
-                style={styles.background}
-                source={{
-                  uri: userInfo.cover_image,
-                }}
-                defaultSource={nullImage}
-              />
-            ) : (
-              <Image style={styles.background} source={nullImage} />
-            )}
-          </View>
+          <Image
+            style={styles.background}
+            source={
+              userInfo.cover_image
+                ? {
+                    uri: userInfo.cover_image,
+                  }
+                : nullImage
+            }
+            defaultSource={nullImage}
+          />
+
           {isOwner && (
             <TouchableOpacity
               style={styles.changeCover}

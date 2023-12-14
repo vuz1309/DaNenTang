@@ -61,7 +61,7 @@ const actionsNoti = {
   }),
 };
 
-const Notification = ({noti, HandleOnPress, HandleAdditionalNotification}) => {
+const Notification = ({noti}) => {
   const {navigate} = useNavigation();
 
   const createdTime = React.useMemo(() =>
@@ -82,10 +82,8 @@ const Notification = ({noti, HandleOnPress, HandleAdditionalNotification}) => {
     [noti.user?.avatar],
   );
   const handleClickNoti = () => {
-    // console.log('noti: ', noti);
-
     const target = actionsNoti[Number(noti.type)](noti);
-    // console.log('target:', target);
+
     navigate(target.route, target.param);
   };
   return (
@@ -110,16 +108,16 @@ const Notification = ({noti, HandleOnPress, HandleAdditionalNotification}) => {
             </View>
           </View>
         </View>
-        <View>
+        {/* <View>
           <VectorIcon
-            onPress={HandleAdditionalNotification}
+          
             name="dots-three-horizontal"
             type="Entypo"
             size={14}
             color={Colors.headerIconGrey}
             style={styles.headerIcons}
           />
-        </View>
+        </View> */}
       </View>
     </TouchableHighlight>
   );

@@ -3,9 +3,7 @@ import {Colors} from '../../utils/Colors';
 import {StyledButton} from '../base';
 import {View} from 'react-native';
 const ActionsOwner = ({action}) => {
-
-
-    return (
+  return (
     <View
       style={{
         flexDirection: 'row',
@@ -45,9 +43,9 @@ const ActionsOwner = ({action}) => {
           type: 'MaterialIcons',
           color: Colors.black,
         }}
-        onPress={()=>action()}
+        onPress={() => action()}
       />
-      <StyledButton
+      {/* <StyledButton
         customStyle={{
           backgroundColor: Themes.COLORS.lightGreyBg,
           flex: 0.5,
@@ -60,7 +58,7 @@ const ActionsOwner = ({action}) => {
           size: 20,
           color: Colors.black,
         }}
-      />
+      /> */}
     </View>
   );
 };

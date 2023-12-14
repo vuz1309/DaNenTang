@@ -49,8 +49,8 @@ const CreatePassword = ({navigation}) => {
       requestLogin({email, password});
       // }
     } catch (ex) {
-      logger('User existed!');
-      AlertMessage('Email này đã được đăng ký trước đây');
+      console.log(ex);
+      // AlertMessage(ex.message);
     }
   };
   return (

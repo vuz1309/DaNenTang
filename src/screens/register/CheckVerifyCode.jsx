@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     paddingHorizontal: 8,
     borderRadius: 10,
+    color: Colors.black,
   },
   nextButton: {
     backgroundColor: Colors.primaryColor,

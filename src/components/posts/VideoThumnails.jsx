@@ -29,7 +29,7 @@ const VideoThumnails = ({post}) => {
     <TouchableOpacity style={{position: 'relative'}} onPress={handlePress}>
       <>
         <Image
-          style={{height: 250}}
+          style={{height: 250, resizeMode: 'cover'}}
           source={imgSource}
           defaultSource={require('../../assets/images/photo.png')}
         />

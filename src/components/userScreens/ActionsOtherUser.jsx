@@ -138,7 +138,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
           size: 16,
         }}
       />
-      <StyledButton
+      {/* <StyledButton
         customStyle={{
           backgroundColor: Themes.COLORS.lightGreyBg,
           flex: 0.5,
@@ -154,7 +154,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
           size: 20,
           color: Colors.black,
         }}
-      />
+      /> */}
       {!!modalMode && (
         <Modal
           isVisible={true}

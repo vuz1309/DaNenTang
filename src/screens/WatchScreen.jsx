@@ -75,7 +75,7 @@ const WatchScreen = () => {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: Colors.white}}>
       <FlatList
         data={posts}
         onScroll={handleScroll}

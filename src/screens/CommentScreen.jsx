@@ -209,16 +209,25 @@ const CommentScreen = ({route, navigation}) => {
       <PostHeaderComment data={post} />
       <ScrollView style={styles.subWrapper}>
         <PostBodyComment key={post.id} item={post} />
-        <View style={{padding: 5, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-          <Text style = {{color: 'black', fontWeight: 'bold', fontSize: 16}}> Tất cả bình luận</Text>
+        <View
+          style={{
+            padding: 5,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Text style={{color: 'black', fontWeight: 'bold', fontSize: 16}}>
+            {' '}
+            Tất cả bình luận
+          </Text>
           <VectorIcon
-          name="down"
-          type="AntDesign"
-          color={Colors.black}
-          size={16}
-          style={{paddingLeft: 3, paddingTop : 2}}
-          onPress={onPressSendComment}
-        />
+            name="down"
+            type="AntDesign"
+            color={Colors.black}
+            size={16}
+            style={{paddingLeft: 3, paddingTop: 2}}
+            onPress={onPressSendComment}
+          />
         </View>
         {Array.isArray(comments) &&
           comments.map(comment => (
@@ -333,7 +342,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   addComment: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     width: '100%',
     position: 'absolute',
     alignItems: 'center',
@@ -342,17 +351,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     borderTopWidth: 1,
-    borderTopColor: 'lightgray',
+    borderTopColor: Colors.borderGrey,
     padding: 5,
     paddingTop: 10,
   },
   inputComment: {
-    width: '70%',
-    backgroundColor: '#f0f1f4',
+    flex: 1,
+    backgroundColor: Colors.white,
     borderRadius: 20,
     padding: 5,
     paddingLeft: 10,
     marginBottom: 10,
+    color: Colors.black,
   },
   sendButton: {
     marginBottom: 10,

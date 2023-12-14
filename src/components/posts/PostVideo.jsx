@@ -1,12 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  Pressable,
-  Dimensions,
-} from 'react-native';
+import {View, StyleSheet, Text, Pressable} from 'react-native';
 import Video from 'react-native-video';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
@@ -26,7 +19,6 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
   const videoRef = useRef(null);
   const hideControlRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  // const [thumbnail, setThumbnail] = useState(null);
   const [isShowControl, setIsShowControl] = useState(true);
 
   const [config, setConfig] = useState({
@@ -99,7 +91,7 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
         source={{uri: videoUrl}}
         style={styles.video}
         controls={false}
-        resizeMode="cover"
+        resizeMode="contain"
         onEnd={handleEndVideo}
         paused={config.paused}
         muted={config.muted}

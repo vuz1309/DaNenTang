@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  ToastAndroid,
+} from 'react-native';
 import React, {useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
@@ -70,6 +77,7 @@ const PostHeader = ({
         }),
       );
       deletePostRequest({id: postId});
+      ToastAndroid.show('Xóa bài đăng thành công!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
     }
@@ -99,21 +107,17 @@ const PostHeader = ({
               height: 40,
               width: 40,
             }}>
-            {data?.author?.avatar ? (
-              <Image
-                style={styles.userProfile}
-                source={{
-                  uri: data?.author?.avatar,
-                }}
-                defaultSource={avatarNullImage}
-              />
-            ) : (
-              <Image
-                style={styles.userProfile}
-                source={avatarNullImage}
-                defaultSource={avatarNullImage}
-              />
-            )}
+            <Image
+              style={styles.userProfile}
+              source={
+                data?.author?.avatar
+                  ? {
+                      uri: data?.author?.avatar,
+                    }
+                  : avatarNullImage
+              }
+              defaultSource={avatarNullImage}
+            />
           </StyledTouchable>
 
           <View style={styles.userSection}>
@@ -130,10 +134,10 @@ const PostHeader = ({
               <Text style={styles.days}>{createTime}</Text>
               <Text style={styles.dot}>•</Text>
               <VectorIcon
-                name="user-friends"
-                type="FontAwesome5"
+                name="globe"
+                type="FontAwesome"
                 size={13}
-                color={Colors.headerIconGrey}
+                color={textStyles.color}
                 style={[styles.userIcon, textStyles]}
               />
             </View>
@@ -145,7 +149,7 @@ const PostHeader = ({
               name="dots-three-horizontal"
               type="Entypo"
               size={25}
-              color={[Colors.headerIconGrey, textStyles]}
+              color={textStyles.color}
             />
           </StyledTouchable>
           {showRemoveBtn && (
@@ -154,7 +158,7 @@ const PostHeader = ({
                 name="close"
                 type="Ionicons"
                 size={25}
-                color={[Colors.headerIconGrey, textStyles]}
+                color={textStyles.color}
               />
             </StyledTouchable>
           )}

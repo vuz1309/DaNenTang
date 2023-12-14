@@ -49,7 +49,7 @@ const WatchNightScreen = ({navigation, route}) => {
 
       const newItems = getNewItems(data.data.post, posts);
 
-      setPosts(prev => [...prev, ...newItems]);
+      setPosts([...posts, ...newItems]);
     } catch (error) {
       console.log(error);
     }
