@@ -20,11 +20,13 @@ import {TabName} from '../data/TabData';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import Loading from '../components/base/Loading';
 import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
+import VideoThumnails from '../components/posts/VideoThumnails';
 
 const VideoItem = React.memo(({item}) => (
   <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
     <PostHeader data={item} isShowRemove={false} />
-    <PostVideo videoUrl={item.video.url} />
+    {/* <PostVideo videoUrl={item.video.url} /> */}
+    <VideoThumnails post={item} />
     <PostFooter data={item} />
   </View>
 ));
@@ -64,7 +66,7 @@ const WatchScreen = () => {
       }
       if (params.index == '0') setPosts(data.data.post);
       else {
-        const newItems = getNewItems(data.data.posts, posts);
+        const newItems = getNewItems(data.data.post, posts);
         setPosts(prev => [...prev, ...newItems]);
       }
     } catch (error) {
@@ -73,7 +75,7 @@ const WatchScreen = () => {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: Colors.white}}>
       <FlatList
         data={posts}
         onScroll={handleScroll}

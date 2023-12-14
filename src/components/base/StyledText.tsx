@@ -3,6 +3,7 @@ import isEqual from 'react-fast-compare';
 import {StyleProp, StyleSheet, Text, TextProps, TextStyle} from 'react-native';
 import Size from '../../assets/size';
 import {Themes} from '../../assets/themes';
+import {Colors} from '../../utils/Colors';
 
 interface StyledTextProps extends TextProps {
   originValue?: string;
@@ -28,7 +29,7 @@ const StyledText = (props: StyledTextProps) => {
 
 const styles = StyleSheet.create({
   text: {
-    color: Themes.COLORS.textPrimary,
+    color: Colors.black,
     fontSize: Size.FONTSIZE.normal,
     fontFamily: Themes.fonts.regular,
   },

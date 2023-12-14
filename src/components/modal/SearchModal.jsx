@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -69,18 +70,20 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
       }}>
       <View>
         <View style={styles.searchHeader}>
-          <View style={styles.marginTopHalf}>
+          <TouchableHighlight
+            underlayColor={Colors.lightgrey}
+            style={{padding: 4, borderRadius: 20}}
+            onPress={() => {
+              setKeyword('');
+              onCloseModal();
+            }}>
             <VectorIcon
-              name="chevron-back"
-              type="Ionicons"
+              name="arrowleft"
+              type="AntDesign"
+              size={24}
               color={Colors.black}
-              size={28}
-              onPress={() => {
-                setKeyword('');
-                onCloseModal();
-              }}
             />
-          </View>
+          </TouchableHighlight>
           <TextInput
             value={keyword}
             style={styles.searchInput}
@@ -105,7 +108,7 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
         )}
         {keyword === '' ? (
           <View>
-            <View style={[styles.rowBetween, {alignItems: 'center'}]}>
+            <View style={[styles.rowBetween]}>
               <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
               <TouchableOpacity>
                 <Text
@@ -164,11 +167,11 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: 'black',
+    color: Colors.black,
   },
   item: {
     padding: 20,
@@ -219,21 +222,19 @@ const styles = StyleSheet.create({
   },
   searchHeader: {
     flexDirection: 'row',
-    marginLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    gap: 8,
   },
   searchInput: {
-    backgroundColor: '#f0f1f4',
+    backgroundColor: Colors.lightgrey,
     borderRadius: 20,
-    marginLeft: '3%',
-    width: '88%',
-    height: '100%',
-    padding: 10,
-    paddingLeft: 15,
+    paddingHorizontal: 12,
+    fontSize: 16,
     alignItems: 'center',
-  },
-  marginTopHalf: {
-    marginTop: '3%',
+    color: Colors.black,
+    flex: 1,
+    height: 42,
   },
   biggerText: {
     marginTop: '3%',

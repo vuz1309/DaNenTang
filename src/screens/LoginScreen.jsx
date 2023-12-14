@@ -45,7 +45,7 @@ const LoginScreen = ({navigation}) => {
             fontSize: 28,
             marginBottom: 24,
           }}>
-          FACEBOOK
+          ANTI-FACEBOOK
         </Text>
         <TextInput
           placeholder="Email"
