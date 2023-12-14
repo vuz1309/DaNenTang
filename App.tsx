@@ -3,7 +3,7 @@ import React from 'react';
 import LoginScreen from './src/screens/LoginScreen';
 import {Colors} from './src/utils/Colors';
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import RegisterScreen from './src/screens/register/RegisterScreen';
 import MainScreen from './src/screens/MainScreen';
 
@@ -26,9 +26,6 @@ const AppChild = () => {
     (state: FacebookRootState) => state.userInfo.user,
   );
 
-  // React.useEffect(() => {
-  //   console.log('userlogged:', userLogged);
-  // }, [userLogged]);
   const appRoutes = React.useMemo(() => {
     if (userLogged) {
       if (
@@ -115,21 +112,17 @@ const AppChild = () => {
             name={ONBOARDING_ROUTE.CREATE_PASSWORD}
             component={CreatePassword}
           />
-          {/* <Stack.Screen
-        name={ONBOARDING_ROUTE.CHECK_VERIFY_CODE}
-        component={CheckVerifyCode}
-      /> */}
         </>
       );
     }
   }, [userLogged]);
   return (
-    <NavigationContainer>
+    <>
       <StatusBar backgroundColor={Colors.white} barStyle="light-content" />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {appRoutes}
       </Stack.Navigator>
-    </NavigationContainer>
+    </>
   );
 };
 
@@ -148,12 +141,16 @@ import FullScreenVideo from './src/components/posts/FullScreenVideo';
 import ChangeProfileAfterSignUp from './src/screens/auths/ChangeProfileAfterSignUp';
 import Enum from './src/utils/Enum';
 import WatchNightScreen from './src/screens/WatchNightScreen';
+import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
 const App = () => {
   return (
     <Provider store={store}>
       <AppStateProvider>
         <NotificationProvider>
-          <AppChild />
+          <NavigationContainer>
+            <StatusBarHandler />
+            <AppChild />
+          </NavigationContainer>
         </NotificationProvider>
       </AppStateProvider>
     </Provider>

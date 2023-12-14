@@ -24,5 +24,9 @@ const Enum = {
     VideoAdded: 8,
     POstCommented: 9,
   },
+  ThumnailMode: {
+    Navigate: 1,
+    Play: 2,
+  },
 };
 export default Enum;

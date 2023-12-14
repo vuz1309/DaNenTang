@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, Text, Pressable} from 'react-native';
 import Video from 'react-native-video';
 import VectorIcon from '../../utils/VectorIcon';
@@ -7,6 +7,8 @@ import {StyledTouchable} from '../base';
 import Slider from '@react-native-community/slider';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import LoadingOverlay from '../base/LoadingOverlay';
+import VideoThumnails from './VideoThumnails';
 
 const formatTime = seconds => {
   const minutes = Math.floor(seconds / 60);
@@ -14,48 +16,56 @@ const formatTime = seconds => {
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
 
-const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
+const PostVideo = ({videoUrl, isFullScreen = false, autoPlay = false}) => {
   const {navigate, goBack} = useNavigation();
+  const [isInitial, setInitial] = useState(!autoPlay);
   const videoRef = useRef(null);
   const hideControlRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [isShowControl, setIsShowControl] = useState(true);
+  const [isShowControl, setIsShowControl] = useState(false);
 
   const [config, setConfig] = useState({
-    paused: !autoPlay,
+    paused: true,
     muted: false,
-    currentTime: 1,
+    currentTime: 0,
     totalTime: 1,
   });
   const expandIcon = React.useMemo(
-    () => (onExpand ? 'expand-arrows-alt' : 'expand-alt'),
-    [onExpand],
+    () => (isFullScreen ? 'expand-arrows-alt' : 'expand-alt'),
+    [isFullScreen],
   );
   const isShowPauseIcon = React.useMemo(() => {
-    return isShowControl || config.paused;
-  }, [isShowControl, config.paused]);
+    return !loading && (isShowControl || config.paused);
+  }, [isShowControl, config.paused, loading]);
+
   const iconControl = React.useMemo(() => {
     return config.paused ? 'play-circle' : 'pause-circle';
   }, [config.paused]);
+
   const iconMute = React.useMemo(() => {
     return config.muted ? 'mute' : 'unmute';
   }, [config.muted]);
+
   const totalTime = React.useMemo(
     () => formatTime(config.totalTime),
     [config.totalTime],
   );
+
+  const onVideoLoadStart = () => {
+    setLoading(true);
+  };
   const onVideoLoad = data => {
-    if (data?.duration && data.duration > 0)
-      setConfig(prev => ({...prev, totalTime: data.duration}));
+    if (data?.duration && data.duration > 0) {
+      console.log('init:', isInitial);
+      setConfig(prev => ({
+        ...prev,
+        totalTime: data.duration,
+        paused: isInitial ? false : !autoPlay,
+      }));
+      setLoading(false);
+    }
   };
-  const onSliderValueChange = value => {
-    videoRef.current.seek(value);
-    setConfig(prev => ({
-      ...prev,
-      currentTime: value,
-      paused: false,
-    }));
-  };
+
   const onVideoProgress = data => {
     setConfig(prev => ({...prev, currentTime: data.currentTime}));
   };
@@ -71,6 +81,7 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
       ...prev,
       paused: !prev.paused,
     }));
+    setInitial(false);
   };
   const handleClickBackdrop = () => {
     if (hideControlRef.current) {
@@ -84,34 +95,56 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
 
     setIsShowControl(!isShowControl);
   };
+
+  const onSliderSlidingComplete = value => {
+    videoRef.current.seek(value);
+    setConfig(prev => ({
+      ...prev,
+      currentTime: value,
+      paused: false,
+    }));
+  };
+
   return (
     <View style={styles.container}>
-      <Video
-        ref={videoRef}
-        source={{uri: videoUrl}}
-        style={styles.video}
-        controls={false}
-        resizeMode="contain"
-        onEnd={handleEndVideo}
-        paused={config.paused}
-        muted={config.muted}
-        onLoad={onVideoLoad}
-        onProgress={onVideoProgress}
-      />
-
+      <LoadingOverlay isLoading={loading} />
+      {isInitial ? (
+        <View style={styles.video}>
+          <VideoThumnails uri={videoUrl} />
+        </View>
+      ) : (
+        <Video
+          ref={videoRef}
+          source={{uri: videoUrl}}
+          style={styles.video}
+          controls={false}
+          resizeMode="contain"
+          onEnd={handleEndVideo}
+          paused={config.paused}
+          muted={config.muted}
+          onLoad={onVideoLoad}
+          onLoadStart={onVideoLoadStart}
+          onProgress={onVideoProgress}
+        />
+      )}
       <Pressable onPress={handleClickBackdrop} style={styles.overlay}>
         <>
-          {
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: isShowPauseIcon ? 'flex' : 'none',
+                backgroundColor: Colors.transparent,
+              },
+            ]}>
             <StyledTouchable
               onPress={playPauseHandler}
               style={{
                 backgroundColor: 'rgba(0,0,0,0.1)',
-                borderRadius: 30,
+                borderRadius: 50,
                 borderColor: Colors.white,
-                position: 'absolute',
-                left: '45%',
-                top: '45%',
-                display: isShowPauseIcon ? 'flex' : 'none',
               }}>
               <VectorIcon
                 name={iconControl}
@@ -120,7 +153,7 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
                 color={Colors.white}
               />
             </StyledTouchable>
-          }
+          </View>
           <View
             style={{
               flexDirection: 'row',
@@ -129,7 +162,11 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
               width: '100%',
               transform: [{translateY: -10}],
             }}>
-            <Text style={{...styles.timer}}>
+            <Text
+              style={{
+                ...styles.timer,
+                display: isShowControl ? 'flex' : 'none',
+              }}>
               {formatTime(config.currentTime)} / {totalTime}
             </Text>
             <View style={{flexDirection: 'row', gap: 8}}>
@@ -139,6 +176,7 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
                 }
                 style={{
                   elevation: 4,
+                  display: isShowControl ? 'flex' : 'none',
                 }}>
                 <VectorIcon
                   name={iconMute}
@@ -149,7 +187,7 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
               </StyledTouchable>
               <StyledTouchable
                 onPress={() => {
-                  if (onExpand) {
+                  if (isFullScreen) {
                     goBack();
                   } else {
                     navigate(APP_ROUTE.FULL_VIDEO, {url: videoUrl});
@@ -157,12 +195,13 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
                 }}
                 style={{
                   elevation: 4,
+                  display: isShowControl ? 'flex' : 'none',
                 }}>
                 <VectorIcon
                   name={expandIcon}
                   type="FontAwesome5"
                   color={Colors.white}
-                  size={24}
+                  size={20}
                 />
               </StyledTouchable>
             </View>
@@ -170,18 +209,20 @@ const PostVideo = ({videoUrl, onExpand, autoPlay = false}) => {
           <Slider
             style={{
               height: 4,
-              backgroundColor: Colors.white,
+              backgroundColor: 'transparent',
               zIndex: 1000,
               width: '100%',
               borderRadius: 12,
+              padding: 0,
+              margin: 0,
             }}
             thumbTintColor={Colors.primaryColor}
             minimumTrackTintColor={Colors.primaryColor}
-            maximumTrackTintColor={Colors.grey}
+            maximumTrackTintColor={Colors.white}
             minimumValue={0}
             maximumValue={config.totalTime}
             value={config.currentTime}
-            onValueChange={onSliderValueChange}
+            onSlidingComplete={onSliderSlidingComplete}
           />
         </>
       </Pressable>

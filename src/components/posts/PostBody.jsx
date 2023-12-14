@@ -14,6 +14,8 @@ import DetailsPost from './DetailsPost';
 import PostListImage from './PostListImage';
 import PostVideo from './PostVideo';
 import VideoThumnails from './VideoThumnails';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 
 const PostImg = ({img, onPress, isBanned}) => {
   const source = React.useMemo(
@@ -42,7 +44,7 @@ const PostBody = React.memo(
   ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
     const isBanned = React.useMemo(() => !!Number(item.banned));
     const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
-
+    const {navigate} = useNavigation();
     return (
       <>
         <View style={{backgroundColor: Colors.white, marginTop: 8}}>
@@ -105,7 +107,12 @@ const PostBody = React.memo(
             </View>
           )}
           {/* {item.video && <PostVideo videoUrl={item.video.url} />} */}
-          {item.video && <VideoThumnails post={item} />}
+          {item.video && (
+            <Pressable
+              onPress={() => navigate(APP_ROUTE.WATCH_NIGHT, {post: item})}>
+              <VideoThumnails uri={item.video.url} />
+            </Pressable>
+          )}
           <PostFooter data={item} />
         </View>
       </>

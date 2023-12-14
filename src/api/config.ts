@@ -10,6 +10,7 @@ import {
   errors,
 } from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
+import {ToastAndroid} from 'react-native';
 
 /**
  * Khởi tạo cách truyền và xử lí Rest-API
@@ -55,6 +56,11 @@ export const createApiInstance = (
         )
           return response;
         store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
+        ToastAndroid.showWithGravity(
+          `Số coins còn lại: ${response.data.data.coins}`,
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
       }
       return response;
     },

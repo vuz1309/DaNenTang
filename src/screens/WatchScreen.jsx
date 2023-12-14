@@ -5,6 +5,7 @@ import {
   RefreshControl,
   ScrollView,
   FlatList,
+  Pressable,
 } from 'react-native';
 import React, {useRef} from 'react';
 import {Colors} from '../utils/Colors';
@@ -21,15 +22,25 @@ import HeaderTitle from '../components/layouts/HeaderTitle';
 import Loading from '../components/base/Loading';
 import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
 import VideoThumnails from '../components/posts/VideoThumnails';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../navigation/config/routes';
 
-const VideoItem = React.memo(({item}) => (
-  <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
-    <PostHeader data={item} isShowRemove={false} />
-    {/* <PostVideo videoUrl={item.video.url} /> */}
-    <VideoThumnails post={item} />
-    <PostFooter data={item} />
-  </View>
-));
+const VideoItem = React.memo(({item}) => {
+  const {navigate} = useNavigation();
+  const handlePress = () => {
+    navigate(APP_ROUTE.WATCH_NIGHT, {post: item});
+  };
+  return (
+    <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
+      <PostHeader data={item} isShowRemove={false} />
+
+      <Pressable onPress={handlePress}>
+        <VideoThumnails uri={item.video.url} />
+      </Pressable>
+      <PostFooter data={item} />
+    </View>
+  );
+});
 
 const WatchScreen = () => {
   const [posts, setPosts] = React.useState([]);

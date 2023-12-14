@@ -26,7 +26,7 @@ const NotificationScreen = () => {
   async function getNotis() {
     try {
       const {data} = await getNotifications(params);
-      console.log('res notis:', data);
+
       if (params.index == '0') {
         setNotiList(data.data);
       } else {

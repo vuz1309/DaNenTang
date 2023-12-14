@@ -43,6 +43,7 @@ const updateUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
   const index = state.userSaved.findIndex(
     (user: any) => user.id === payload.id,
   );
+  console.log('update saved: ', payload);
   if (index > -1) {
     state.userSaved[index] = {
       ...state.userSaved[index],

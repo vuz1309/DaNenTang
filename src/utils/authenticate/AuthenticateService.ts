@@ -14,6 +14,7 @@ import TokenProvider from './TokenProvider';
 import {storeStringAsyncData} from './LocalStorage';
 import {useAppTokens} from '../../hooks/useAppToken';
 import {logger} from '../helper';
+import {ToastAndroid} from 'react-native';
 
 interface LoginRequest {
   loading: boolean;
@@ -77,9 +78,11 @@ export const useLogin = (): LoginRequest => {
     AuthenticateService.handlerLogin(data);
     try {
       const fcmToken = (await getFcmToken()) || '';
-      logger('fcmToken: ', true, fcmToken);
+      // logger('fcmToken: ', true, fcmToken);
       await setDevToken({devtype: '1', devtoken: fcmToken});
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
   return {
     loading,
