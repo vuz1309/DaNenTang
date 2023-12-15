@@ -1,56 +1,53 @@
-import {Image, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {createThumbnail} from 'react-native-create-thumbnail';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
-import {useNavigation} from '@react-navigation/native';
-import {APP_ROUTE} from '../../navigation/config/routes';
 
-const VideoThumnails = ({post}) => {
-  const {navigate} = useNavigation();
+const VideoThumnails = ({uri}) => {
   const [url, setUrl] = React.useState('');
   React.useEffect(() => {
     createThumbnail({
-      url: post.video.url,
+      url: uri,
       timeStamp: 2,
     })
       .then(response => setUrl(response.path))
       .catch(err => console.log({err}));
-  }, [post.video.url]);
+  }, [uri]);
   const imgSource = React.useMemo(
-    () => (url ? {uri: url} : require('../../assets/images/photo.png')),
+    () => (url ? {uri: url} : require('../../assets/images/defaultVideo.jpg')),
     [url],
   );
 
-  const handlePress = () => {
-    navigate(APP_ROUTE.WATCH_NIGHT, {post});
-  };
   return (
-    <TouchableOpacity style={{position: 'relative'}} onPress={handlePress}>
+    <View style={{position: 'relative'}}>
       <>
         <Image
           style={{height: 250, resizeMode: 'cover'}}
           source={imgSource}
-          defaultSource={require('../../assets/images/photo.png')}
+          defaultSource={require('../../assets/images/defaultVideo.jpg')}
         />
         <View
-          style={{
-            backgroundColor: 'rgba(0,0,0,0.1)',
-            borderRadius: 30,
-            borderColor: Colors.white,
-            position: 'absolute',
-            left: '45%',
-            top: '45%',
-          }}>
-          <VectorIcon
-            name="play-circle"
-            type="Feather"
-            size={52}
-            color={Colors.white}
-          />
+          style={[
+            StyleSheet.absoluteFill,
+            {alignItems: 'center', justifyContent: 'center'},
+          ]}>
+          <View
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.1)',
+              borderRadius: 30,
+              borderColor: Colors.white,
+            }}>
+            <VectorIcon
+              name="play-circle"
+              type="Feather"
+              size={52}
+              color={Colors.white}
+            />
+          </View>
         </View>
       </>
-    </TouchableOpacity>
+    </View>
   );
 };
 export default VideoThumnails;

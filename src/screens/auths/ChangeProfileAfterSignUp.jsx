@@ -13,7 +13,7 @@ import {store} from '../../state-management/redux/store';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 import Enum from '../../utils/Enum';
 import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
-const ChangeProfileAfterSignUp = ({navigation}) => {
+const ChangeProfileAfterSignUp = ({}) => {
   const [username, setUsername] = React.useState('');
   const [image, setImage] = React.useState(nullImage);
   const openLibrary = async () => {
@@ -22,12 +22,12 @@ const ChangeProfileAfterSignUp = ({navigation}) => {
     setImage(img.assets[0]);
   };
   const isDisableSubmit = React.useMemo(() => {
-    !username.trim();
+    return !username.trim();
   }, [username]);
   const [loading, setLoading] = React.useState(false);
   const onSubmit = async () => {
     if (loading) return;
-    if (!username.trim()) {
+    if (isDisableSubmit) {
       AlertMessage('Vui lòng nhập tên!');
       return;
     }
@@ -37,7 +37,7 @@ const ChangeProfileAfterSignUp = ({navigation}) => {
       formData.append('username', username);
       formData.append('avatar', createImageFormData(image));
       const {data} = await changeProfileAfterSignup(formData);
-      console.log('data', data);
+
       store.dispatch(
         userInfoActions.updateUserInfo({
           ...data.data,
@@ -47,7 +47,6 @@ const ChangeProfileAfterSignUp = ({navigation}) => {
       store.dispatch(
         userSavedInfoActions.updateUserSaved({
           ...data.data,
-          active: Enum.AccountStatus.VALID.toString(),
         }),
       );
     } catch (error) {
@@ -90,6 +89,7 @@ const ChangeProfileAfterSignUp = ({navigation}) => {
           <TextInput
             inputMode="text"
             value={username}
+            autoFocus={true}
             placeholder="Nhập họ tên"
             placeholderTextColor={Colors.textGrey}
             onChangeText={value => setUsername(value)}

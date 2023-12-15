@@ -30,6 +30,7 @@ import {store} from '../state-management/redux/store';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {userSavedInfoActions} from '../state-management/redux/slices/UserSavedSlice';
 import HeaderCenter from '../components/base/headers/HeaderCenter';
+import {formatNumberSplitBy} from '../helpers/helpers';
 
 const nullImage = require('../assets/images/avatar_null.jpg');
 const Detail = ({iconName, iconType, type, info}) => {
@@ -65,6 +66,10 @@ const UserScreen = ({navigation, route}) => {
 
   const [imageViewed, setImageViewed] = React.useState('');
   const [isChangeImg, setIsChangeImg] = React.useState(false);
+  const coins = React.useMemo(
+    () => formatNumberSplitBy(Number(userInfo.coins)),
+    [userInfo?.coins],
+  );
   const toggleChangeImg = () => {
     setIsChangeImg(!isChangeImg);
   };
@@ -83,7 +88,7 @@ const UserScreen = ({navigation, route}) => {
       const {data} = res;
       setUserInfo(data.data);
 
-      if (userId == userLogged.id) {
+      if (isOwner) {
         store.dispatch(userInfoActions.updateUserInfo(data.data));
         store.dispatch(userSavedInfoActions.updateUserSaved(data.data));
       }
@@ -336,8 +341,7 @@ const UserScreen = ({navigation, route}) => {
             size={20}
           />
           <Text style={{fontWeight: '700', color: Colors.black, fontSize: 18}}>
-            {'  '}
-            {userInfo.coins}
+            {coins}
           </Text>
         </View>
 

@@ -26,7 +26,7 @@ const NotificationScreen = () => {
   async function getNotis() {
     try {
       const {data} = await getNotifications(params);
-      console.log('res notis:', data);
+
       if (params.index == '0') {
         setNotiList(data.data);
       } else {
@@ -53,7 +53,7 @@ const NotificationScreen = () => {
         ListHeaderComponent={<HeaderTitle title={'Thông báo'} />}
         ListFooterComponent={() => isLoadMore && <Loading />}
         renderItem={({item}) => <Notification noti={item} />}
-        keyExtractor={item => JSON.stringify(item)}
+        keyExtractor={item => JSON.stringify(item).replace('_', '')}
         horizontal={false}
         showsVerticalScrollIndicator={false}
         refreshControl={

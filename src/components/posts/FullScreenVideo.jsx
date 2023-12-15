@@ -28,7 +28,7 @@ const FullScreenVideo = ({route, navigation}) => {
           color={Colors.black}
         />
       </TouchableOpacity>
-      <PostVideo onExpand={true} videoUrl={url} autoPlay={true} />
+      <PostVideo isFullScreen={true} videoUrl={url} autoPlay={true} />
     </View>
   );
 };

@@ -16,4 +16,5 @@ export const Colors = {
   headerIconGrey: '#606770',
   darkBackground: '#212121',
   greyBold: '#262626',
+  transparent: 'transparent',
 };

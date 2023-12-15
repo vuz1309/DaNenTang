@@ -46,19 +46,20 @@ const AllFriendsScreen = ({route}) => {
   const [total, setTotal] = React.useState('0');
   const {
     handleScroll,
-    loadMore,
+
     reload,
     getNewItems,
     params,
     refreshing,
     isLoadMore,
-  } = useLoadOnScroll(getAllFriendsRequest, [user]);
+  } = useLoadOnScroll(getAllFriendsRequest, [user?.id]);
+
   async function getAllFriendsRequest() {
     try {
       const {data} = await getAllFriends({...params, user_id: user.id});
 
       setTotal(data.data.total);
-      // console.log('friends:', data);
+
       if (params.index == '0') setFriends(data.data.friends);
       else {
         const newItems = getNewItems(data.data.friends, allFriends);
@@ -66,7 +67,7 @@ const AllFriendsScreen = ({route}) => {
         setFriends(prev => [...prev, ...newItems]);
       }
     } catch (error) {
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
+      console.log('All friend:', error);
     }
   }
 
@@ -76,48 +77,10 @@ const AllFriendsScreen = ({route}) => {
         title={isOwner ? 'Bạn bè' : user.username}
         onBack={goBack}
       />
-      <ScrollView
-        onScroll={handleScroll}
-        style={styles.container}
-        refreshControl={
-          <RefreshControl
-            colors={[Colors.primaryColor]}
-            refreshing={refreshing}
-            onRefresh={reload}
-          />
-        }>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: 12,
-            marginTop: 12,
-          }}>
-          {allFriends.length > 0 && (
-            <Text style={styles.titleText}>{total} bạn bè</Text>
-          )}
-        </View>
-        {allFriends.length > 0 ? (
-          allFriends.map(fr => (
-            <FriendCard reload={reload} key={fr.id} fr={fr} />
-          ))
-        ) : (
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text
-              style={{
-                fontSize: 16,
-                paddingHorizontal: 16,
-                color: Colors.textGrey,
-              }}>
-              Không có bạn bè nào, hãy kết bạn nhé.
-            </Text>
-          </View>
-        )}
-        {isLoadMore && <Loading />}
-      </ScrollView>
-      {/* <FlatList
+
+      <FlatList
         data={allFriends}
+        onScroll={handleScroll}
         ListHeaderComponent={
           <View
             style={{
@@ -146,12 +109,10 @@ const AllFriendsScreen = ({route}) => {
             onRefresh={reload}
           />
         }
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}
-      /> */}
+      />
     </View>
   );
 };

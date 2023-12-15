@@ -11,7 +11,7 @@ import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
 import Modal from 'react-native-modal';
-import Clipboard from '@react-native-clipboard/clipboard';
+import {copyToClipboard} from '../../utils/helper';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import AlertMessage from '../base/AlertMessage';
 import {APP_ROUTE} from '../../navigation/config/routes';
@@ -34,6 +34,7 @@ const PostHeader = ({
   textStyles = {color: Colors.textColor},
 }) => {
   const {navigate} = useNavigation();
+  const userLogged = useSelector(state => state.userInfo.user);
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
     [data.created],
@@ -46,10 +47,11 @@ const PostHeader = ({
     setShowModalReport(!isShowModalReport);
   };
   const [isModalVisible, setModalVisible] = React.useState(false);
-  const handleCopyToClipboard = () => {
-    Clipboard.setString(data.described);
-    AlertMessage('Copy thành công.');
-  };
+  // const handleCopyToClipboard = () => {
+  //   Clipboard.setString(data.described);
+  //   // AlertMessage('Copy thành công.');
+  //   ToastAndroid.show('Copy thành công!', ToastAndroid.SHORT);
+  // };
   const toggleModalDelPost = () => {
     if (Number(data.can_edit) > 0) setModalVisible(!isModalVisible);
     else {
@@ -60,7 +62,6 @@ const PostHeader = ({
       );
     }
   };
-  const userLogged = useSelector(state => state.userInfo.user);
 
   const removePost = async () => {
     setModalVisible(false);
@@ -76,7 +77,7 @@ const PostHeader = ({
           postId,
         }),
       );
-      deletePostRequest({id: postId});
+      await deletePostRequest({id: postId});
       ToastAndroid.show('Xóa bài đăng thành công!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
@@ -122,7 +123,9 @@ const PostHeader = ({
 
           <View style={styles.userSection}>
             <Text
-              onPress={() => navigate('UserScreen', {userId: data.author.id})}
+              onPress={() =>
+                navigate(APP_ROUTE.USER_SCREEN, {userId: data.author.id})
+              }
               style={[styles.username, textStyles]}>
               {data.author.name}
               <Text style={{fontWeight: '400', fontSize: 16}}>
@@ -167,7 +170,7 @@ const PostHeader = ({
       <TouchableHighlight
         underlayColor={Colors.lightgrey}
         style={{marginTop: 8}}
-        onLongPress={handleCopyToClipboard}>
+        onLongPress={copyToClipboard}>
         <PostDescription color={textStyles.color} described={data.described} />
       </TouchableHighlight>
       <DialogConfirm
@@ -312,4 +315,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostHeader;
+export default React.memo(
+  PostHeader,
+  (prev, next) => JSON.stringify(prev.data) === JSON.stringify(next.data),
+);

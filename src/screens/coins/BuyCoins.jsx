@@ -21,10 +21,9 @@ import UserInfoSlice, {
   userInfoActions,
 } from '../../state-management/redux/slices/UserInfoSlice';
 import AlertMessage from '../../components/base/AlertMessage';
-import LoadingOverlay from '../../components/base/LoadingOverlay';
 
 const BuyCoins = ({closeModal}) => {
-  const [coin, setCoin] = React.useState(0);
+  const [coin, setCoin] = React.useState('');
   const [code, setCode] = React.useState('');
 
   const [loading, setLoading] = React.useState(false);
@@ -39,12 +38,13 @@ const BuyCoins = ({closeModal}) => {
       if (coin > 0 && code !== '') {
         setLoading(true);
         const data = {
-          code: code,
-          coins: coin,
+          code,
+          coins: Number(coin),
         };
-        const rq = await buyCoin(data);
-        store.dispatch(userInfoActions.updateCoin(rq.data.data.coins));
-        setCoin(0);
+        await buyCoin(data);
+
+        // store.dispatch(userInfoActions.updateCoin(rq.data.data.coins));
+        setCoin('');
         setCode('');
         ToastAndroid.show('Mua coins thành công!', ToastAndroid.SHORT);
       } else {
@@ -87,11 +87,12 @@ const BuyCoins = ({closeModal}) => {
           <Text style={{flex: 0.4, color: Colors.textColor}}>Số coin: </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
-            value={coin.toString()}
+            autoFocus={true}
+            value={coin}
             keyboardType={'numeric'}
             style={styles.inputBox}
             onChangeText={value => {
-              setCoin(Number(value));
+              setCoin(value);
             }}
           />
         </View>

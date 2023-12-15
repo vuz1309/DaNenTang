@@ -103,6 +103,7 @@ export const LoginBySaved = ({}) => {
                       setIsShowModal({
                         id: Number(user.id),
                         username: user.username,
+                        email: user.email,
                       })
                     }
                     style={styles.moreBtn}>
@@ -177,6 +178,7 @@ export const LoginBySaved = ({}) => {
       <Modal
         isVisible={!!isShowModal.id}
         backdropColor="transparent"
+        onBackButtonPress={() => setIsShowModal({id: 0})}
         onBackdropPress={() => setIsShowModal({id: 0})}>
         <View
           style={{
@@ -276,6 +278,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     marginTop: 12,
+    paddingVertical: 4,
   },
   avatar: {
     height: 70,

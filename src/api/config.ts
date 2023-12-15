@@ -1,4 +1,6 @@
-export const BE_URL = 'https://it4788.catan.io.vn';
+// export const BE_URL = 'https://it4788.catan.io.vn';
+export const BE_URL =
+  'https://1985-2001-ee0-4a77-2bf0-8593-5c3e-c34f-60ed.ngrok-free.app';
 import axios from 'axios';
 
 import {store} from '../state-management/redux/store';
@@ -10,6 +12,8 @@ import {
   errors,
 } from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
+import {ToastAndroid} from 'react-native';
+import {formatNumberSplitBy} from '../helpers/helpers';
 
 /**
  * Khởi tạo cách truyền và xử lí Rest-API
@@ -55,6 +59,13 @@ export const createApiInstance = (
         )
           return response;
         store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
+        ToastAndroid.showWithGravity(
+          `Số coins còn lại: ${formatNumberSplitBy(
+            Number(response.data.data.coins),
+          )}`,
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
       }
       return response;
     },

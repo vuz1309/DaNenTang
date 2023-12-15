@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import {Themes} from '../assets/themes';
 import {View, Text} from 'react-native';
 import {useSelector} from 'react-redux';
+import Loading from '../components/base/Loading';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -22,7 +23,6 @@ const TopTabBar = () => {
           tabBarShowLabel: false,
           tabBarActiveTintColor: Colors.primaryColor,
           tabBarInactiveTintColor: Colors.grey,
-          tabBarStyle: {borderRadius: 0},
         })}
         screenListeners={{
           state: e => {
@@ -71,6 +71,11 @@ const TopTabBar = () => {
                   </View>
                 );
               },
+              tabBarIndicatorContainerStyle: {
+                borderRadius: 0,
+              },
+              lazy: true,
+              lazyPlaceholder: () => <Loading />,
             }}
           />
         ))}

@@ -5,6 +5,7 @@ import {
   RefreshControl,
   ScrollView,
   FlatList,
+  Pressable,
 } from 'react-native';
 import React, {useRef} from 'react';
 import {Colors} from '../utils/Colors';
@@ -21,15 +22,30 @@ import HeaderTitle from '../components/layouts/HeaderTitle';
 import Loading from '../components/base/Loading';
 import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
 import VideoThumnails from '../components/posts/VideoThumnails';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../navigation/config/routes';
 
-const VideoItem = React.memo(({item}) => (
-  <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
-    <PostHeader data={item} isShowRemove={false} />
-    {/* <PostVideo videoUrl={item.video.url} /> */}
-    <VideoThumnails post={item} />
-    <PostFooter data={item} />
-  </View>
-));
+const VideoItem = React.memo(
+  ({item}) => {
+    const {navigate} = useNavigation();
+    const handlePress = () => {
+      navigate(APP_ROUTE.WATCH_NIGHT, {post: item});
+    };
+    return (
+      <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
+        <PostHeader data={item} isShowRemove={false} />
+
+        <Pressable onPress={handlePress}>
+          <VideoThumnails uri={item.video.url} />
+        </Pressable>
+        <PostFooter data={item} />
+      </View>
+    );
+  },
+  (prevProps, nextProps) => {
+    return prevProps.item.video.url === nextProps.item.video.url;
+  },
+);
 
 const WatchScreen = () => {
   const [posts, setPosts] = React.useState([]);
@@ -75,7 +91,7 @@ const WatchScreen = () => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.white}}>
+    <View style={{flex: 1, backgroundColor: Colors.background}}>
       <FlatList
         data={posts}
         onScroll={handleScroll}
@@ -92,8 +108,8 @@ const WatchScreen = () => {
             onRefresh={onReload}
           />
         }
-        // onEndReached={loadMore}
-        onEndReachedThreshold={0.1}
+        // // onEndReached={loadMore}
+        // onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}
