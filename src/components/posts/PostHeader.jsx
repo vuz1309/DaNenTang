@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     width: '100%',
     color: Colors.black,
 

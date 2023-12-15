@@ -261,12 +261,13 @@ const CommentScreen = ({route, navigation}) => {
           value={textComment}
           style={styles.inputComment}
           placeholder="Bình luận dưới tên bạn"
+          placeholderTextColor={Colors.textGrey}
           onChangeText={value => setTextComment(value)}
         />
         <VectorIcon
-          name="paper-plane"
-          type="FontAwesome"
-          color={Colors.blue}
+          name="send"
+          type="Feather"
+          color={Colors.primaryColor}
           size={20}
           style={styles.sendButton}
           onPress={onPressSendComment}
@@ -278,14 +279,12 @@ const CommentScreen = ({route, navigation}) => {
 // }
 const styles = StyleSheet.create({
   wrapper: {
-    height: '100%',
-    backgroundColor: 'white',
+    flex: 1,
+    backgroundColor: Colors.white,
     position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
   },
   subWrapper: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     position: 'relative',
     marginBottom: '15%',
   },
@@ -360,17 +359,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    padding: 5,
-    paddingLeft: 10,
-    marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     color: Colors.black,
+    borderWidth: 1,
+    borderColor: Colors.borderGrey,
   },
   sendButton: {
-    marginBottom: 10,
-    paddingLeft: 10,
-    // backgroundColor: 'pink',
-    // padding: 8,
-    // borderRadius: 5,
+    padding: 10,
   },
 });
 export default CommentScreen;

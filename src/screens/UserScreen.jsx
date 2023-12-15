@@ -172,7 +172,7 @@ const UserScreen = ({navigation, route}) => {
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <View
             style={{
-              backgroundColor: 'white',
+              backgroundColor: Colors.white,
             }}>
             <View
               style={{
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     top: 80,
     left: 10,
-    borderColor: 'white',
+    borderColor: Colors.white,
     borderWidth: 4,
     backgroundColor: Colors.white,
     overflow: 'hidden',

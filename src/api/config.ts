@@ -59,6 +59,7 @@ export const createApiInstance = (
         )
           return response;
         store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
+
         ToastAndroid.showWithGravity(
           `Số coins còn lại: ${formatNumberSplitBy(
             Number(response.data.data.coins),

@@ -43,6 +43,17 @@ const UploadScreen = ({
   const [isExit, setIsExit] = useState(false);
   const [imageDel, setImageDel] = useState([]);
 
+  const [isAddEmo, setIsAddEmo] = React.useState(false);
+
+  const maxOriginalIndex = React.useMemo(
+    () => postData.image.length,
+    [postData.image.length],
+  );
+
+  const isDisabledPost = useMemo(
+    () => text.trim() === '' && images.length === 0,
+    [text, images],
+  );
   const title = useMemo(
     () =>
       mode === Enum.PostMode.Create ? 'Tạo mới bài viết' : 'Cập nhật bài viết',
@@ -53,7 +64,9 @@ const UploadScreen = ({
     [mode],
   );
   const [loading, setLoading] = useState(false);
-
+  const toggleOpenEmo = () => {
+    setIsAddEmo(!isAddEmo);
+  };
   const openLibrary = async () => {
     const imgs = (
       await openLibraryDevice({
@@ -62,6 +75,7 @@ const UploadScreen = ({
         selectionLimit: 20 - images.length,
       })
     ).assets;
+
     if (imgs[0].type === 'image/jpeg') {
       if (images.length < 20) {
         const newImgList = [...imgs, ...images];
@@ -77,42 +91,22 @@ const UploadScreen = ({
   };
   const removeImg = index => {
     const newImgList = [...images];
-    if (newImgList[index].uri.includes(BE_URL)) {
-      setImageDel(prev => [...prev, newImgList[index]]);
+    if (images[index].uri.includes(BE_URL)) {
+      setImageDel(prev => [...prev, images[index]]);
     }
     newImgList.splice(index, 1);
 
     setImages(newImgList);
   };
-  //   const requestCameraPermission = async () => {
-  //     try {
-  //       const granted = await PermissionsAndroid.request(
-  //         PermissionsAndroid.PERMISSIONS.CAMERA,
-  //         {
-  //           title: 'Quyền truy cập máy ảnh',
-  //           message: 'Ứng dụng cần truy cập Camera của bạn',
-  //           buttonNeutral: 'Hỏi lại sau',
-  //           buttonNegative: 'Từ chối',
-  //           buttonPositive: 'Đồng ý',
-  //         },
-  //       );
-  //       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //         console.log('Không có quyền truy cập máy ảnh');
-  //       } else {
-  //         console.log('Quyền truy cập bị từ chối');
-  //       }
-  //     } catch (err) {
-  //       console.warn(err);
-  //     }
-  //   };
-  const openCamera = () => {
-    requestCameraPermission().then(() => {
-      const options = {};
-      launchCamera(options).then(r => console.log(r));
-    });
+
+  const openCamera = async () => {
+    await requestCameraPermission();
+
+    const options = {};
+    launchCamera(options).then(r => console.log(r));
   };
   const handleExit = () => {
-    if (text === '' && images.length === 0) {
+    if (isDisabledPost) {
       onClose();
     } else if (mode === Enum.PostMode.Edit) {
       onClose();
@@ -189,7 +183,7 @@ const UploadScreen = ({
       image: images.filter(img => img.uri),
       described: text.trim() || '  ',
       status: status || 'Hihi',
-      video: video,
+      video,
       auto_accept: '1',
     };
     if (video?.uri) {
@@ -201,34 +195,46 @@ const UploadScreen = ({
       return;
     }
 
-    const imgDelStr = imageDel.map(item => item.id).join(',');
+    const imgsDelStr = imageDel.map(item => item.id).join(',');
 
+    let startNewImgIndex = maxOriginalIndex;
+    const newImgSort = images.map(imgSource => {
+      if (imgSource.uri.includes(BE_URL)) {
+        return imgSource.originalIndex;
+      } else {
+        startNewImgIndex++;
+        return `${startNewImgIndex}`;
+      }
+    });
+    const imgDelSorterStr = newImgSort.join(', ');
     const editPost = {
       ...newPost,
       id: postData.id,
-      image_del: imgDelStr,
-      image_sort: null,
+      image_del: imgsDelStr || null,
+      image_sort: imgDelSorterStr || null,
     };
     editPostRequest(editPost);
   };
 
-  const isDisabledPost = useMemo(
-    () => text.trim() === '' && images.length === 0,
-    [text, images],
-  );
-  const [isAddEmo, setIsAddEmo] = React.useState(false);
-  const toggleOpenEmo = () => {
-    setIsAddEmo(!isAddEmo);
-  };
   const handleSetStatus = emo => {
     setStatus(emo.name + ' ' + emo.emo);
     toggleOpenEmo();
     setIsModalOpen(false);
   };
+  const handleUnRemoveImgDel = (imgDel, index) => {
+    const imgDels = [...imageDel];
+    imgDels.splice(index, 1);
+    setImageDel(imgDels);
+    setImages([imgDel, ...images]);
+  };
 
   return (
     <View style={styles.container}>
-      <View style={[{transform: [{scale: 1.5}]}, StyleSheet.absoluteFill]}>
+      <View
+        style={[
+          {transform: [{scale: 1.5}], zIndex: loading ? 10000 : 0},
+          StyleSheet.absoluteFill,
+        ]}>
         {<LoadingOverlay isLoading={loading} />}
       </View>
       <View style={styles.header}>
@@ -292,8 +298,9 @@ const UploadScreen = ({
       {/*input box*/}
       <View style={styles.input}>
         <TextInput
+          autoFocus
           multiline
-          numberOfLines={4}
+          numberOfLines={3}
           onChangeText={e => setText(e)}
           value={text}
           placeholder={'Bạn đang nghĩ gì?'}
@@ -303,18 +310,59 @@ const UploadScreen = ({
           textAlignVertical="top"
         />
       </View>
-
+      {imageDel.length > 0 && (
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 8,
+            alignItems: 'center',
+            marginBottom: 8,
+            paddingHorizontal: 8,
+            flexWrap: 'wrap',
+          }}>
+          <Text
+            style={{color: Colors.textColor, fontSize: 18, fontWeight: 'bold'}}>
+            Khôi phục:
+          </Text>
+          <View style={{flexDirection: 'row', gap: 8}}>
+            {imageDel.map((img, index) => (
+              <TouchableOpacity
+                key={img.uri}
+                onPress={() => handleUnRemoveImgDel(img, index)}
+                style={{
+                  borderWidth: 1,
+                  borderColor: Colors.borderGrey,
+                  borderStyle: 'solid',
+                }}>
+                <Image
+                  style={{height: 48, width: 48, resizeMode: 'cover'}}
+                  source={img}
+                  defaultSource={require('../assets/images/avatar_null.jpg')}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        style={{flex: 1}}>
+        style={{flex: 1, marginBottom: 100}}>
         <View
           style={{
             flexDirection: 'row',
             flexWrap: 'wrap',
             gap: 4,
           }}>
-          {images.length > 0 &&
+          {!!video?.uri ? (
+            <Video
+              source={video}
+              style={styles.video}
+              controls={true}
+              resizeMode="contain"
+            />
+          ) : (
+            images.length > 0 &&
             images.map((e, index) => {
               return (
                 <View key={index} style={styles.image}>
@@ -335,14 +383,7 @@ const UploadScreen = ({
                   </TouchableOpacity>
                 </View>
               );
-            })}
-          {!!video?.uri && (
-            <Video
-              source={video}
-              style={styles.video}
-              controls={true}
-              resizeMode="contain"
-            />
+            })
           )}
         </View>
       </ScrollView>
@@ -412,7 +453,7 @@ const UploadScreen = ({
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <View
             style={{
-              backgroundColor: 'white',
+              backgroundColor: Colors.white,
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
               padding: 20,
@@ -489,7 +530,7 @@ const UploadScreen = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     position: 'relative',
     flex: 1,
   },
@@ -551,7 +592,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
   },
   logoOption: {
     width: 24,
@@ -562,7 +603,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   modal: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     marginTop: 'auto',
     borderWidth: 1,
     borderTopRightRadius: 5,

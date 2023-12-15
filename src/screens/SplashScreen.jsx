@@ -3,6 +3,7 @@ import {View, Image, StyleSheet} from 'react-native';
 import {APP_ROUTE, AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 import {store} from '../state-management/redux/store';
 import Loading from '../components/base/Loading';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white', // Màu nền của Splash
+    backgroundColor: Colors.white, // Màu nền của Splash
   },
   image: {
     width: 300,

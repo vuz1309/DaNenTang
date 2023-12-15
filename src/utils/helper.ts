@@ -76,7 +76,7 @@ export const requestCameraPermission = async () => {
       },
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      ToastAndroid.show('Không có quyền truy cập máy ảnh', ToastAndroid.SHORT);
+      ToastAndroid.show('Truy cập máy ảnh', ToastAndroid.SHORT);
     } else {
       ToastAndroid.show('Quyền truy cập bị từ chối', ToastAndroid.SHORT);
     }
