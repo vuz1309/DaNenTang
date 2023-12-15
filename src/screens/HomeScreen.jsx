@@ -32,7 +32,7 @@ import {hasGms} from 'react-native-device-info';
 import DetailsPost from '../components/posts/DetailsPost';
 import PostListImage from '../components/posts/PostListImage';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
-
+import {emotionList} from '../components/modal/EmotionList';
 const HomeScreen = () => {
   const userLogged = useSelector(state => state.userInfo.user);
   const [detailsPostMode, setDetailsPostMode] = useState(0);
@@ -45,7 +45,12 @@ const HomeScreen = () => {
   };
   const openPostModal = (
     postMode = Enum.PostMode.Create,
-    post = {image: [], status: 'OK', described: '', id: '0'},
+    post = {
+      image: [],
+      status: `${emotionList[0].name} ${emotionList[0].emo}`,
+      described: '',
+      id: '0',
+    },
   ) => {
     if (Number(userLogged.coins) < 50) {
       setIsShowDialogCoins(true);
@@ -54,7 +59,7 @@ const HomeScreen = () => {
     setDetailsPostMode(postMode);
 
     const postTmp = {
-      image: post.image.map(item => ({id: item.id, uri: item.url})),
+      image: post.image.map((item, index) => ({id: item.id, uri: item.url})),
       status: post.state,
       described: post.described,
       id: post.id,
@@ -168,7 +173,7 @@ const HomeScreen = () => {
         //   />
         // )}
         renderItem={postRenderItem}
-        keyExtractor={item => JSON.stringify(item).replace('_', '')}
+        keyExtractor={item => JSON.stringify(item)}
         horizontal={false}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -178,6 +183,7 @@ const HomeScreen = () => {
             onRefresh={reload}
           />
         }
+        initialNumToRender={5}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}

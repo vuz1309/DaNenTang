@@ -266,7 +266,7 @@ const CommentScreen = ({route, navigation}) => {
         <VectorIcon
           name="paper-plane"
           type="FontAwesome"
-          color={Colors.blue}
+          color={Colors.primaryColor}
           size={20}
           style={styles.sendButton}
           onPress={onPressSendComment}
@@ -360,17 +360,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    padding: 5,
-    paddingLeft: 10,
-    marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     color: Colors.black,
+    borderWidth: 1,
+    borderColor: Colors.borderGrey,
   },
   sendButton: {
-    marginBottom: 10,
-    paddingLeft: 10,
-    // backgroundColor: 'pink',
-    // padding: 8,
-    // borderRadius: 5,
+    padding: 10,
   },
 });
 export default CommentScreen;
