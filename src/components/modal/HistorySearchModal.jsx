@@ -56,7 +56,9 @@ const HistoryItem = ({item, onCompleteDeleteSearch}) => {
             color="gray"
             size={20}
           />
-          <Text style ={{color: 'gray', fontSize: 12}}>Chỉ mình tôi</Text>
+          <Text style={{color: Colors.textGrey, fontSize: 12}}>
+            Chỉ mình tôi
+          </Text>
           <VectorIcon
             style={{marginTop: 0}}
             name="dot-single"
@@ -64,7 +66,9 @@ const HistoryItem = ({item, onCompleteDeleteSearch}) => {
             color="gray"
             size={20}
           />
-          <Text style ={{color: 'gray', fontSize: 12}}>Đã ẩn khỏi dòng thời gian</Text>
+          <Text style={{color: Colors.textGrey, fontSize: 12}}>
+            Đã ẩn khỏi dòng thời gian
+          </Text>
         </View>
       </View>
       <VectorIcon
@@ -86,19 +90,17 @@ export default function HistorySearchModal({historySearch, onCloseModal}) {
     setSavedData(savedData => savedData.filter(item => item.id !== deletedId));
   };
   const handleDeleteAll = async () => {
-      try{
-        const response = await deleteSearchHistory({all: "1"});
-        if(response.status === 200){
-          AlertMessage('Xoá lịch sử tìm kiếm thành công');
-          setSavedData([]);
-        }
-      }catch(err){
-
+    try {
+      const response = await deleteSearchHistory({all: '1'});
+      if (response.status === 200) {
+        AlertMessage('Xoá lịch sử tìm kiếm thành công');
+        setSavedData([]);
       }
-  }
+    } catch (err) {}
+  };
   const requestClose = () => {
     onCloseModal(savedData);
-  }
+  };
   return (
     <Modal
       animationType="fade"
@@ -113,7 +115,7 @@ export default function HistorySearchModal({historySearch, onCloseModal}) {
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          backgroundColor: 'white',
+          backgroundColor: Colors.white,
         }}>
         <View style={styles.searchHeader}>
           <View style={styles.row}>
@@ -129,12 +131,12 @@ export default function HistorySearchModal({historySearch, onCloseModal}) {
             <Text style={styles.title}> Nhật ký hoạt động</Text>
           </View>
           <View
-              style={{
-                marginTop: '4%',
-                borderBottomColor: 'black',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-              }}
-            />
+            style={{
+              marginTop: '4%',
+              borderBottomColor: 'black',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          />
           <View style={styles.middle}>
             <Text
               onPress={() => {
@@ -146,17 +148,17 @@ export default function HistorySearchModal({historySearch, onCloseModal}) {
             </Text>
           </View>
           <View
-              style={{
-                borderBottomColor: 'black',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-              }}
-            />
+            style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          />
         </View>
         <ScrollView>
           <View style={{marginBottom: 12}}>
             {savedData.map(item => (
               <HistoryItem
-                key = {item.id}
+                key={item.id}
                 item={item}
                 onCompleteDeleteSearch={onCompleteDeleteSearch}
               />
@@ -169,7 +171,7 @@ export default function HistorySearchModal({historySearch, onCloseModal}) {
 }
 const styles = StyleSheet.create({
   middle: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     display: 'flex',
     flexDirection: 'column',
     height: '60%',
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   searchHeader: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     flexDirection: 'column',
     marginLeft: 10,
     paddingRight: 10,

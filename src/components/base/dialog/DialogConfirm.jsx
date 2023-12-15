@@ -79,7 +79,7 @@ const DialogConfirm = ({
 
 const styles = StyleSheet.create({
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     width: '100%',
     color: Colors.black,
 

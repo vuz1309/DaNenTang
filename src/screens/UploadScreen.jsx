@@ -453,7 +453,7 @@ const UploadScreen = ({
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <View
             style={{
-              backgroundColor: 'white',
+              backgroundColor: Colors.white,
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
               padding: 20,
@@ -530,7 +530,7 @@ const UploadScreen = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     position: 'relative',
     flex: 1,
   },
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
   },
   logoOption: {
     width: 24,
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   modal: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     marginTop: 'auto',
     borderWidth: 1,
     borderTopRightRadius: 5,

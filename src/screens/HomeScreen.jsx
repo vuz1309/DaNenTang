@@ -52,7 +52,7 @@ const HomeScreen = () => {
       id: '0',
     },
   ) => {
-    if (Number(userLogged.coins) < 50) {
+    if (Number(store.getState().userInfo.user.coins) < 50) {
       setIsShowDialogCoins(true);
       return;
     }

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Modal, View, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {Modal, View, StyleSheet} from 'react-native';
+import {Colors} from '../../utils/Colors';
 
-  const  NewModalizeManager = () => {
+const NewModalizeManager = () => {
   const [visible, setVisible] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
@@ -22,15 +23,13 @@ import { Modal, View, StyleSheet } from 'react-native';
     setVisible(false);
   };
 
-  (
-    <Modal visible={visible} onRequestClose={hide} transparent>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>{modalContent}</View>
-      </View>
-    </Modal>
-  );
+  <Modal visible={visible} onRequestClose={hide} transparent>
+    <View style={styles.modalContainer}>
+      <View style={styles.modalContent}>{modalContent}</View>
+    </View>
+  </Modal>;
   return {show};
-}
+};
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     padding: 20,
     borderRadius: 8,
   },

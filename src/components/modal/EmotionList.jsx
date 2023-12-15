@@ -63,7 +63,7 @@ const EmotionList = ({close, setStatus}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     position: 'relative',
     flex: 1,
   },
