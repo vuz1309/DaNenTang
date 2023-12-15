@@ -59,7 +59,11 @@ const HomeScreen = () => {
     setDetailsPostMode(postMode);
 
     const postTmp = {
-      image: post.image.map((item, index) => ({id: item.id, uri: item.url})),
+      image: post.image.map((item, index) => ({
+        id: item.id,
+        uri: item.url,
+        originalIndex: index + 1,
+      })),
       status: post.state,
       described: post.described,
       id: post.id,
@@ -164,14 +168,6 @@ const HomeScreen = () => {
           </>
         }
         ListFooterComponent={() => isLoadMore && <Loading />}
-        // renderItem={({item}) => (
-        //   <PostBody
-        //     setModalVisible={setModalVisible}
-        //     editPost={openPostModal}
-        //     item={item}
-        //     setIsShowDialogCoins={setIsShowDialogCoins}
-        //   />
-        // )}
         renderItem={postRenderItem}
         keyExtractor={item => JSON.stringify(item)}
         horizontal={false}

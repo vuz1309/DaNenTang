@@ -45,6 +45,11 @@ const UploadScreen = ({
 
   const [isAddEmo, setIsAddEmo] = React.useState(false);
 
+  const maxOriginalIndex = React.useMemo(
+    () => postData.image.length,
+    [postData.image.length],
+  );
+
   const isDisabledPost = useMemo(
     () => text.trim() === '' && images.length === 0,
     [text, images],
@@ -192,12 +197,12 @@ const UploadScreen = ({
 
     const imgsDelStr = imageDel.map(item => item.id).join(',');
 
-    let startNewImgIndex = 0;
+    let startNewImgIndex = maxOriginalIndex;
     const newImgSort = images.map(imgSource => {
       if (imgSource.uri.includes(BE_URL)) {
-        return imgSource.id;
+        return imgSource.originalIndex;
       } else {
-        startNewImgIndex--;
+        startNewImgIndex++;
         return `${startNewImgIndex}`;
       }
     });
