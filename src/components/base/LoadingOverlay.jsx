@@ -2,7 +2,7 @@ import {View, StyleSheet} from 'react-native';
 import Loading from './Loading';
 import {Colors} from '../../utils/Colors';
 
-const LoadingOverlay = ({isLoading}) => {
+const LoadingOverlay = ({isLoading = true}) => {
   return (
     <View
       style={[

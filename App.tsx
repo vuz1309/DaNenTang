@@ -35,6 +35,8 @@ import Enum from './src/utils/Enum';
 import WatchNightScreen from './src/screens/WatchNightScreen';
 import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
 import {Colors} from './src/utils/Colors';
+
+import UploadScreen from './src/screens/UploadScreen';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -90,6 +92,7 @@ const AppChild = () => {
               component={WatchNightScreen}
               name={APP_ROUTE.WATCH_NIGHT}
             />
+            <Stack.Screen component={UploadScreen} name={APP_ROUTE.UPLOAD} />
           </>
         );
       }

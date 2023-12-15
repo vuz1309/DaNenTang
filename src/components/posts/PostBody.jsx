@@ -13,6 +13,8 @@ import PostFooter from './PostFooter';
 import VideoThumnails from './VideoThumnails';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import DetailsPost from './DetailsPost';
+import PostListImage from './PostListImage';
 
 const PostImg = ({img, onPress, isBanned}) => {
   const source = React.useMemo(
@@ -37,17 +39,14 @@ const PostImg = ({img, onPress, isBanned}) => {
  * @param {object} props
  * @returns
  */
-const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
+const PostBody = ({item, setIsShowDialogCoins}) => {
   const isBanned = React.useMemo(() => !!Number(item.banned));
   const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
   const {navigate} = useNavigation();
+  const [isModalVisible, setModalVisible] = React.useState(0);
   return (
     <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-      <PostHeader
-        onClickEdit={editPost}
-        data={item}
-        setIsShowDialogCoins={setIsShowDialogCoins}
-      />
+      <PostHeader data={item} setIsShowDialogCoins={setIsShowDialogCoins} />
 
       {!item.video && item.image.length > 0 && (
         <View style={styles.postImg}>
@@ -56,7 +55,7 @@ const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
               <PostImg
                 key={img.url}
                 img={img}
-                onPress={() => setModalVisible({index: index + 1, item})}
+                onPress={() => setModalVisible(index + 1)}
                 isBanned={isBanned}
               />
             ))}
@@ -67,13 +66,13 @@ const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
                 <PostImg
                   key={img.url}
                   img={img}
-                  onPress={() => setModalVisible({index: index + 3, item})}
+                  onPress={() => setModalVisible(index + 3)}
                   isBanned={isBanned}
                 />
               ))}
               {item.image.length >= 5 && (
                 <TouchableOpacity
-                  onPress={() => setModalVisible({index: 5, item})}
+                  onPress={() => setModalVisible(5)}
                   style={{flex: 1, ...styles.border, position: 'relative'}}>
                   <>
                     <Image
@@ -87,7 +86,7 @@ const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
 
                     {item.image.length > 5 && (
                       <TouchableOpacity
-                        onPress={() => setModalVisible({index: 6, item})}
+                        onPress={() => setModalVisible(6)}
                         style={styles.overlayEndImg}>
                         <Text style={{color: Colors.white}}>
                           {item.image.length - 5}
@@ -109,6 +108,21 @@ const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
         </Pressable>
       )}
       <PostFooter data={item} />
+      {!!isModalVisible && item.image.length == 1 && (
+        <DetailsPost
+          isModalVisible={isModalVisible}
+          item={item}
+          onClose={() => setModalVisible(0)}
+        />
+      )}
+
+      {!!isModalVisible && item.image.length > 1 && (
+        <PostListImage
+          data={item}
+          onClose={() => setModalVisible(0)}
+          index={isModalVisible.index - 1}
+        />
+      )}
     </View>
   );
 };

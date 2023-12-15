@@ -11,6 +11,8 @@ export interface IPostsState {
   status?: CommonStatus;
   error?: any;
   lastId: string;
+  uploadScreenMode?: number;
+  uploadScreenData?: any;
 }
 
 type Reducer<A extends Action<any> = AnyAction> = CaseReducer<IPostsState, A>;
@@ -71,6 +73,12 @@ const updatePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
       post[key] = payload[key];
     });
 };
+
+const openEditPost: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  state.uploadScreenMode = payload.mode;
+  state.uploadScreenData = payload.data;
+};
+
 const persisConfig = generatePersistConfig('postInfo', ['posts']);
 
 const postsSlice = createSlice({
@@ -86,6 +94,7 @@ const postsSlice = createSlice({
     shiftPost,
     startPosting,
     endPosting,
+    openEditPost,
   },
 });
 
