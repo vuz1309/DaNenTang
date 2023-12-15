@@ -1,9 +1,8 @@
 import {StatusBar} from 'react-native';
 import React from 'react';
 import LoginScreen from './src/screens/LoginScreen';
-import {Colors} from './src/utils/Colors';
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import RegisterScreen from './src/screens/register/RegisterScreen';
 import MainScreen from './src/screens/MainScreen';
 
@@ -20,6 +19,21 @@ import InputBirthDate from './src/screens/register/InputBirthDate';
 import InputEmail from './src/screens/register/InputEmail';
 import CreatePassword from './src/screens/register/CreatePassword';
 import UserScreen from './src/screens/UserScreen';
+import AllFriendsScreen from './src/screens/friends/AllFriends';
+import SuggestionScreen from './src/screens/friends/SuggestionScreen';
+import ReportScreen from './src/screens/reports/ReportScreen';
+import WebViewScreen from './src/screens/webView/WebViewScreen';
+import LoginBySaved from './src/screens/auths/LoginBySaved';
+import SplashScreen from './src/screens/SplashScreen';
+import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
+import CommentScreen from './src/screens/CommentScreen';
+import {NotificationProvider} from './src/utils/notification/NotificationProvider';
+import {AppStateProvider} from './src/utils/notification/AppStateProvider';
+import FullScreenVideo from './src/components/posts/FullScreenVideo';
+import ChangeProfileAfterSignUp from './src/screens/auths/ChangeProfileAfterSignUp';
+import Enum from './src/utils/Enum';
+import WatchNightScreen from './src/screens/WatchNightScreen';
+import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -119,7 +133,7 @@ const AppChild = () => {
   return (
     <>
       <StatusBar
-        backgroundColor={Colors.transparent}
+        // backgroundColor={Colors.white}
         barStyle="light-content"
       />
       <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -129,22 +143,6 @@ const AppChild = () => {
   );
 };
 
-import {PermissionsAndroid} from 'react-native';
-import AllFriendsScreen from './src/screens/friends/AllFriends';
-import SuggestionScreen from './src/screens/friends/SuggestionScreen';
-import ReportScreen from './src/screens/reports/ReportScreen';
-import WebViewScreen from './src/screens/webView/WebViewScreen';
-import LoginBySaved from './src/screens/auths/LoginBySaved';
-import SplashScreen from './src/screens/SplashScreen';
-import CheckVerifyCode from './src/screens/register/CheckVerifyCode';
-import CommentScreen from './src/screens/CommentScreen';
-import {NotificationProvider} from './src/utils/notification/NotificationProvider';
-import {AppStateProvider} from './src/utils/notification/AppStateProvider';
-import FullScreenVideo from './src/components/posts/FullScreenVideo';
-import ChangeProfileAfterSignUp from './src/screens/auths/ChangeProfileAfterSignUp';
-import Enum from './src/utils/Enum';
-import WatchNightScreen from './src/screens/WatchNightScreen';
-import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
 const App = () => {
   return (
     <Provider store={store}>
