@@ -121,18 +121,17 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
 
   return (
     <>
-      <View style={{marginTop: 8}}>
+      <View>
         <View underlayColor={Colors.lightgrey} style={styles.footerReactionSec}>
           {Number(data.feel) > 0 && (
             <TouchableHighlight
               underlayColor={Colors.lightgrey}
+              style={{padding: 8, flex: 1}}
               onPress={handleClickLikeNums}>
               <View
                 style={{
                   ...styles.row,
-                  height: '100%',
                   backgroundColor: 'transparent',
-                  transform: [{translateY: 8}],
                 }}>
                 <Image source={Like} style={styles.reactionIcon} />
                 <Image source={Heart} style={styles.reactionIcon} />
@@ -145,14 +144,14 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           )}
           {Number(data.comment_mark) > 0 && (
             <TouchableHighlight
+              style={{padding: 8, flex: 1}}
               underlayColor={Colors.lightgrey}
               onPress={handleClickCommentNums}>
               <Text
                 style={{
                   ...styles.reactionCount,
                   ...textStyles,
-                  position: 'absolute',
-                  right: 16,
+                  textAlign: 'right',
                 }}>
                 {data.comment_mark} Bình luận
               </Text>
@@ -308,8 +307,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightgrey,
-    padding: 14,
-    paddingTop: 0,
+    paddingHorizontal: 14,
   },
   userActionSec: {
     marginTop: 10,

@@ -144,4 +144,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostBody;
+export default React.memo(
+  PostBody,
+  (prev, next) => JSON.stringify(prev.item) == JSON.stringify(next.item),
+);

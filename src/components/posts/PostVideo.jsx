@@ -55,8 +55,8 @@ const PostVideo = ({videoUrl, isFullScreen = false, autoPlay = false}) => {
     setLoading(true);
   };
   const onVideoLoad = data => {
+    console.log('init:', isInitial);
     if (data?.duration && data.duration > 0) {
-      console.log('init:', isInitial);
       setConfig(prev => ({
         ...prev,
         totalTime: data.duration,
@@ -258,4 +258,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
-export default PostVideo;
+export default React.memo(
+  PostVideo,
+  (prev, next) => prev.videoUrl === next.videoUrl,
+);

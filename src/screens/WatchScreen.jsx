@@ -91,7 +91,7 @@ const WatchScreen = () => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.white}}>
+    <View style={{flex: 1, backgroundColor: Colors.background}}>
       <FlatList
         data={posts}
         onScroll={handleScroll}
@@ -108,8 +108,8 @@ const WatchScreen = () => {
             onRefresh={onReload}
           />
         }
-        // onEndReached={loadMore}
-        onEndReachedThreshold={0.1}
+        // // onEndReached={loadMore}
+        // onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}

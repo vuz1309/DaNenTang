@@ -12,6 +12,8 @@ import {StyledButton} from '../../components/base';
 import ConfirmScreen from './ConfirmScreen';
 import {setBlockRequest} from '../../api/modules/block.request';
 import {useNavigation} from '@react-navigation/native';
+import {store} from '../../state-management/redux/store';
+import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 
 const reportOptions = [
   'Ảnh khỏa thân',
@@ -70,9 +72,10 @@ const ReportScreen = ({navigation, route}) => {
   };
   const handleBlock = async () => {
     try {
-      const {data} = await setBlockRequest({user_id: author.id});
+      await setBlockRequest({user_id: author.id});
       // console.log(data);
       ToastAndroid.show('Block thành công ' + author.name, ToastAndroid.SHORT);
+      store.dispatch(postInfoActions.removePost({postId}));
       navigation.goBack();
     } catch (error) {
       console.log(error);

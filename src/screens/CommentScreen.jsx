@@ -232,6 +232,7 @@ const CommentScreen = ({route, navigation}) => {
         {Array.isArray(comments) &&
           comments.map(comment => (
             <Comment
+              key={comment.id}
               id={comment.id}
               type={comment.type_of_mark}
               authorId={comment.poster.id}

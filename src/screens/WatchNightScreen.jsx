@@ -76,6 +76,7 @@ const WatchNightScreen = ({navigation, route}) => {
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 100,
         }}
+        windowSize={16}
         initialNumToRender={1}
         removeClippedSubviews={true}
       />

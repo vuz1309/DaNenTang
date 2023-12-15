@@ -75,7 +75,6 @@ const FriendCard = ({fr, reload}) => {
                 borderStyle: 'solid',
                 borderRadius: 25,
               }}>
-              (
               <Image
                 style={{
                   height: '100%',
@@ -89,7 +88,6 @@ const FriendCard = ({fr, reload}) => {
                 }
                 defaultSource={require('../../assets/images/avatar_null.jpg')}
               />
-              )
             </View>
             <View>
               <Text
@@ -157,4 +155,7 @@ const FriendCard = ({fr, reload}) => {
   );
 };
 
-export default FriendCard;
+export default React.memo(
+  FriendCard,
+  (prev, next) => prev.fr.id === next.fr.id,
+);

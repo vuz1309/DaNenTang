@@ -1,4 +1,6 @@
-export const BE_URL = 'https://it4788.catan.io.vn';
+// export const BE_URL = 'https://it4788.catan.io.vn';
+export const BE_URL =
+  'https://1985-2001-ee0-4a77-2bf0-8593-5c3e-c34f-60ed.ngrok-free.app';
 import axios from 'axios';
 
 import {store} from '../state-management/redux/store';

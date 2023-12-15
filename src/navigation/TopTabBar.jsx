@@ -75,7 +75,7 @@ const TopTabBar = () => {
                 borderRadius: 0,
               },
               lazy: true,
-              lazyPlaceholder: <Loading />,
+              lazyPlaceholder: () => <Loading />,
             }}
           />
         ))}
