@@ -29,11 +29,9 @@ import {openLibraryDevice, requestCameraPermission} from '../utils/helper';
 import EmotionList from '../components/modal/EmotionList';
 import Video from 'react-native-video';
 
-const UploadScreen = ({
-  onClose,
-  mode = Enum.PostMode.Create,
-  postData = {image: [], status: 'OK', described: '', id: '0', video: {}},
-}) => {
+const UploadScreen = ({navigation, route}) => {
+  const {postData, mode, onClose} = route.params;
+
   const user = useSelector(state => state.userInfo.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [text, setText] = useState(postData.described);
@@ -107,9 +105,10 @@ const UploadScreen = ({
   };
   const handleExit = () => {
     if (isDisabledPost) {
-      onClose();
+      // onClose();
+      navigation.goBack();
     } else if (mode === Enum.PostMode.Edit) {
-      onClose();
+      navigation.goBack();
     } else {
       setIsExit(true);
     }
@@ -138,15 +137,16 @@ const UploadScreen = ({
     try {
       setLoading(true);
       store.dispatch(postInfoActions.startPosting());
+      navigation.goBack();
       const formData = buildFormData(item);
-      onClose();
+
       const res1 = await addPost(formData);
 
       const {data} = res1;
       const res = await getPostRequest({id: data.data.id});
 
       store.dispatch(postInfoActions.endPosting(res.data.data));
-      ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
+      ToastAndroid.show('Đăng bài mới thành công! ', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
       store.dispatch(postInfoActions.endPosting({}));
@@ -167,13 +167,14 @@ const UploadScreen = ({
 
       store.dispatch(postInfoActions.updatePost(res.data.data));
 
-      ToastAndroid.show('Cập nhật thành công: ', ToastAndroid.SHORT);
+      ToastAndroid.show('Cập nhật thành công!', ToastAndroid.SHORT);
 
-      onClose();
+      onClose?.();
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
+      navigation.goBack();
     }
   };
   const onCreateNewPost = () => {
@@ -182,7 +183,7 @@ const UploadScreen = ({
     const newPost = {
       image: images.filter(img => img.uri),
       described: text.trim() || '  ',
-      status: status || 'Hihi',
+      status,
       video,
       auto_accept: '1',
     };
@@ -217,7 +218,7 @@ const UploadScreen = ({
   };
 
   const handleSetStatus = emo => {
-    setStatus(emo.name + ' ' + emo.emo);
+    setStatus(`${emo.name} ${emo.emo}`);
     toggleOpenEmo();
     setIsModalOpen(false);
   };
@@ -327,7 +328,7 @@ const UploadScreen = ({
           <View style={{flexDirection: 'row', gap: 8}}>
             {imageDel.map((img, index) => (
               <TouchableOpacity
-                key={img.uri}
+                key={index}
                 onPress={() => handleUnRemoveImgDel(img, index)}
                 style={{
                   borderWidth: 1,
@@ -481,7 +482,7 @@ const UploadScreen = ({
                 Lưu làm bản nháp
               </Text>
             </View>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={navigation.goBack}>
               <View style={styles.option}>
                 <VectorIcon
                   name="trash-2"

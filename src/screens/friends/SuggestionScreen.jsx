@@ -1,38 +1,28 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
-  ScrollView,
-  RefreshControl,
-  FlatList,
-} from 'react-native';
+import {View, Text, StyleSheet, RefreshControl, FlatList} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
 
-import VectorIcon from '../../utils/VectorIcon';
 import AddFriendRequest from '../../components/friends/AddFriendRequest';
 import {
   getSuggestionFriend,
   setRequestFriend,
 } from '../../api/modules/friends.request';
-import {useScrollHanler} from '../../hooks/useScrollHandler';
 import Loading from '../../components/base/Loading';
 import HeaderSearch from '../layouts/HeaderSearch';
 import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
 
 const SuggestionScreen = ({navigation}) => {
   const [allSuggestions, setSuggestions] = React.useState([]);
-
+  const [searchText, setSearchText] = React.useState('');
   const {
     getNewItems,
     handleScroll,
-    loadMore,
+
     params,
     reload,
     refreshing,
     isLoadMore,
-  } = useLoadOnScroll(getAll);
+  } = useLoadOnScroll(getAll, [searchText]);
 
   const setRequestApi = async user_id => {
     try {

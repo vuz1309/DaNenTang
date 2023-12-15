@@ -47,6 +47,7 @@ const PostDescription = ({described, color = Colors.textColor}) => {
         elements.push(
           <TouchableHighlight
             key={`link_${index}`}
+            style={{alignSelf: 'flex-start'}}
             onPress={() => handleLinkPress(match)}
             underlayColor={Colors.lightgrey}>
             <Text style={{fontSize: 15, color: Colors.primaryColor}}>
@@ -72,18 +73,19 @@ const PostDescription = ({described, color = Colors.textColor}) => {
   };
   // Hàm kiểm tra độ dài của caption và trả về nội dung hiển thị
   const htmlContent = useMemo(() => {
-    if (described.length <= MAX_CAPTION_LENGTH || isExpanded) {
-      return <>{extractLinks(described)}</>;
-    } else {
-      return (
-        <>
-          {extractLinks(described.slice(0, MAX_CAPTION_LENGTH))}
-          <TouchableOpacity onPress={() => setIsExpanded(true)}>
-            <Text style={{color: Colors.textGrey}}>...Xem thêm</Text>
-          </TouchableOpacity>
-        </>
-      );
-    }
+    return described.length <= MAX_CAPTION_LENGTH || isExpanded ? (
+      <>{extractLinks(described)}</>
+    ) : (
+      <>
+        {extractLinks(described.slice(0, MAX_CAPTION_LENGTH))}
+        <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+          <Text style={{color: Colors.textGrey}}>
+            {' '}
+            {isExpanded ? 'Ẩn bớt' : '...Xem thêm'}
+          </Text>
+        </TouchableOpacity>
+      </>
+    );
   }, [isExpanded]);
   const handleHashtagPress = keyWord => {
     console.log('hastag press:', keyWord);

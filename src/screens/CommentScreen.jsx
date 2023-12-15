@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {forwardRef, useRef, useState} from 'react';
-import {Button, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import AlertMessage from '../components/base/AlertMessage';
-import ModalizeManager from '../components/modal/ModalizeManager';
+import {useRef, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {logger} from '../utils/helper';
-import React, {ReactElement} from 'react';
+import React from 'react';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
-import {APP_ROUTE, ONBOARDING_ROUTE} from '../navigation/config/routes';
-import PostBody from '../components/posts/PostBody';
 import {
   ScrollView,
   TextInput,
@@ -22,12 +18,14 @@ import PostHeaderComment from '../components/posts/PostHeaderComment';
 import PostBodyComment from '../components/posts/PostBodyComment';
 import {useNavigation} from '@react-navigation/native';
 import {useGetPostById} from '../hooks/useGetPostById';
-import Loading from '../components/base/Loading';
 import LoadingOverlay from '../components/base/LoadingOverlay';
+import {convertTimeToFacebookStyle} from '../helpers/helpers';
+import PostHeader from '../components/posts/PostHeader';
+import PostBody from '../components/posts/PostBody';
+import HeaderCenter from '../components/base/headers/HeaderCenter';
 
 const Comment = ({
   id,
-  type,
   authorId,
   authorName,
   authorAvatar,
@@ -36,23 +34,10 @@ const Comment = ({
   replies,
   onClickReply,
 }) => {
-  const inputRef = useRef(null);
-  const targetDate = new Date(createTime);
-  const currentTime = new Date();
-  const timeDiff = Math.abs(targetDate - currentTime);
-  const minutesDiff = timeDiff / (1000 * 60);
-  var createdValue;
-  if (minutesDiff < 60) {
-    createdValue = `${Math.floor(minutesDiff)} phút trước`;
-  } else if (minutesDiff < 1440) {
-    createdValue = `${Math.floor(minutesDiff / 60)} giờ `;
-  } else if (minutesDiff < 10080) {
-    createdValue = `${Math.floor(minutesDiff / 60 / 24)} ngày `;
-  } else if (minutesDiff < 524160) {
-    createdValue = `${Math.floor(minutesDiff / 60 / 24 / 7)} tuần `;
-  } else {
-    createdValue = `${Math.floor(minutesDiff)} phút `;
-  }
+  const createdValue = React.useMemo(() =>
+    convertTimeToFacebookStyle(createTime),
+  );
+
   const {navigate} = useNavigation();
 
   return (
@@ -168,7 +153,7 @@ const CommentScreen = ({route, navigation}) => {
         const response = await getMarkComments({
           id: item.id,
           index: 0,
-          count: 10,
+          count: 20,
         });
         setComments(response?.data?.data);
         setCurrentComment(response?.data?.data?.created);
@@ -177,7 +162,7 @@ const CommentScreen = ({route, navigation}) => {
       }
     };
     await fetchMarkComments();
-    logger('response set mark comment: ', false, response.data.data);
+    // logger('response set mark comment: ', false, response.data.data);
   };
   React.useEffect(() => {
     const fetchMarkComments = async () => {
@@ -198,7 +183,9 @@ const CommentScreen = ({route, navigation}) => {
   React.useEffect(() => {
     const getPost = async () => {
       const post = await call();
-      console.log(post);
+      if (error) {
+        navigation.goBack();
+      }
       setPost(post.data);
     };
     getPost();
@@ -206,9 +193,14 @@ const CommentScreen = ({route, navigation}) => {
   if (!post.id) return <LoadingOverlay isLoading={true} />;
   return (
     <View style={styles.wrapper}>
-      <PostHeaderComment data={post} />
+      {/* <PostHeaderComment data={post} /> */}
+      <HeaderCenter text={post.author.name} goBack={navigation.goBack} />
+      <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
       <ScrollView style={styles.subWrapper}>
-        <PostBodyComment key={post.id} item={post} />
+        {/* <PostBodyComment key={post.id} item={post} /> */}
+        {/* <PostHeader data={post}  /> */}
+        {/* <PostBody  /> */}
+        <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
         <View
           style={{
             padding: 5,
@@ -302,7 +294,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     paddingRight: 10,
-    flexDirection: 'column',
+
     backgroundColor: '#f0f1f4',
     borderRadius: 10,
     width: 'auto',

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import React from 'react';
 import {Colors} from '../utils/Colors';
@@ -12,11 +13,16 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import VectorIcon from '../utils/VectorIcon';
 import {Themes} from '../assets/themes';
-import {formatNumberSplitBy} from '../helpers/helpers';
+import {
+  checkCoinsIsSmallerThan50,
+  formatNumberSplitBy,
+} from '../helpers/helpers';
 import DialogConfirm from './base/dialog/DialogConfirm';
-
+import {APP_ROUTE} from '../navigation/config/routes';
+import Enum from '../utils/Enum';
+import {emotionList} from './modal/EmotionList';
 const nullAvatar = require('../assets/images/avatar_null.jpg');
-const SubHeader = ({onClick, buyCoin}) => {
+const SubHeader = ({buyCoin}) => {
   const navigation = useNavigation();
   const userLogged = useSelector(state => state.userInfo.user);
   const coins = React.useMemo(
@@ -24,7 +30,23 @@ const SubHeader = ({onClick, buyCoin}) => {
     [userLogged, [userLogged?.coins]],
   );
   const handleClickUpPost = () => {
-    onClick();
+    if (checkCoinsIsSmallerThan50()) {
+      ToastAndroid.show(
+        'Cần ít nhất 50 coins để tiếp tục, vui lòng nạp thêm',
+        ToastAndroid.SHORT,
+      );
+      buyCoin();
+      return;
+    }
+    navigation.navigate(APP_ROUTE.UPLOAD, {
+      mode: Enum.PostMode.Create,
+      postData: {
+        image: [],
+        status: `${emotionList[0].name} ${emotionList[0].emo}`,
+        described: '',
+        id: '0',
+      },
+    });
   };
   return (
     <View style={styles.container}>

@@ -73,7 +73,7 @@ const CreatePassword = ({navigation}) => {
         <StyledText content="Tạo mật khẩu" customStyle={[styles.biggerText]} />
         <View style={styles.wrapperTextInput}>
           <TextInput
-            label="Password"
+            label="Mật khẩu"
             outlineColor="black"
             activeOutlineColor="#326A81"
             autoCapitalize="none"
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: 'gray',
     paddingHorizontal: 8,
+    color: Colors.textColor,
   },
   nextButton: {
     backgroundColor: Colors.primaryColor,

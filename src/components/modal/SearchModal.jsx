@@ -88,9 +88,11 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
             value={keyword}
             style={styles.searchInput}
             placeholder={'Tìm kiếm trên Facebook'}
+            placeholderTextColor={Colors.textGrey}
             onFocus={() => setSearchData([])}
             onChangeText={text => setKeyword(text)}
-            onSubmitEditing={fetchSearchData}></TextInput>
+            onSubmitEditing={fetchSearchData}
+          />
         </View>
 
         <View

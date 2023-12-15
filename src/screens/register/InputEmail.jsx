@@ -94,9 +94,11 @@ const styles = StyleSheet.create({
   textInput: {
     width: '90%',
     height: 40,
-    borderColor: 'gray',
+    fontWeight: '600',
+    borderColor: Colors.borderGrey,
     borderBottomWidth: 0.5,
     paddingHorizontal: 8,
+    color: Colors.textColor,
   },
   nextButton: {
     backgroundColor: Colors.primaryColor,
