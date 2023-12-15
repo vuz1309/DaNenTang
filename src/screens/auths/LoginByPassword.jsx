@@ -68,13 +68,15 @@ const LoginByPassword = ({user, onClose}) => {
             />
           </View>
           <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
             style={{
               fontSize: 24,
               marginTop: 8,
               fontWeight: 'bold',
               color: Colors.black,
             }}>
-            {user.username}
+            {user.username || user.email}
           </Text>
         </View>
         <View

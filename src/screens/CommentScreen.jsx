@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {forwardRef, useRef, useState} from 'react';
-import {Button, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import AlertMessage from '../components/base/AlertMessage';
-import ModalizeManager from '../components/modal/ModalizeManager';
+import {useRef, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {logger} from '../utils/helper';
-import React, {ReactElement} from 'react';
+import React from 'react';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
-import {APP_ROUTE, ONBOARDING_ROUTE} from '../navigation/config/routes';
-import PostBody from '../components/posts/PostBody';
 import {
   ScrollView,
   TextInput,
@@ -22,7 +18,6 @@ import PostHeaderComment from '../components/posts/PostHeaderComment';
 import PostBodyComment from '../components/posts/PostBodyComment';
 import {useNavigation} from '@react-navigation/native';
 import {useGetPostById} from '../hooks/useGetPostById';
-import Loading from '../components/base/Loading';
 import LoadingOverlay from '../components/base/LoadingOverlay';
 
 const Comment = ({

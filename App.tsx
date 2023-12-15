@@ -34,6 +34,7 @@ import ChangeProfileAfterSignUp from './src/screens/auths/ChangeProfileAfterSign
 import Enum from './src/utils/Enum';
 import WatchNightScreen from './src/screens/WatchNightScreen';
 import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
+import {Colors} from './src/utils/Colors';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -132,10 +133,7 @@ const AppChild = () => {
   }, [userLogged]);
   return (
     <>
-      <StatusBar
-        // backgroundColor={Colors.white}
-        barStyle="light-content"
-      />
+      <StatusBar backgroundColor={Colors.white} barStyle="dark-content" />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {appRoutes}
       </Stack.Navigator>

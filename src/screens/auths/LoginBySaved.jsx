@@ -59,7 +59,6 @@ export const LoginBySaved = ({}) => {
             user={userSaved[index - 1]}
             onClose={() => {
               setIndex(0);
-              console.log('close');
             }}
           />
         </Modal>
@@ -87,17 +86,18 @@ export const LoginBySaved = ({}) => {
                 style={styles.userContainer}>
                 <>
                   <View style={styles.avatar}>
-                    {user.avatar ? (
-                      <Image
-                        source={{uri: user.avatar}}
-                        defaultSource={NullImg}
-                        style={styles.userAvatar}
-                      />
-                    ) : (
-                      <Image source={NullImg} style={styles.userAvatar} />
-                    )}
+                    <Image
+                      source={user?.avatar ? {uri: user.avatar} : NullImg}
+                      defaultSource={NullImg}
+                      style={styles.userAvatar}
+                    />
                   </View>
-                  <Text style={styles.username}>{user.username}</Text>
+                  <Text
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                    style={styles.username}>
+                    {user.username || user.email}
+                  </Text>
                   <StyledTouchable
                     onPress={() =>
                       setIsShowModal({
@@ -137,7 +137,7 @@ export const LoginBySaved = ({}) => {
             <View
               style={{
                 padding: 8,
-                backgroundColor: Colors.lightPrimarColor,
+                backgroundColor: Colors.lightPrimaryColorHigher,
                 borderRadius: 4,
                 overflow: 'hidden',
               }}>
@@ -164,7 +164,7 @@ export const LoginBySaved = ({}) => {
         <StyledButton
           onPress={() => navigate(AUTHENTICATE_ROUTE.REGISTER)}
           customStyle={{
-            backgroundColor: Colors.lightPrimarColor,
+            backgroundColor: Colors.lightPrimaryColorHigher,
             width: '100%',
           }}
           customStyleText={{
@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.black,
     justifyContent: 'center',
+
     flex: 1,
     alignItems: 'center',
   },
