@@ -55,3 +55,32 @@ export const openLibraryDevice = (options: ImageLibraryOptions) => {
     return r.assets;
   });
 };
+import Clipboard from '@react-native-clipboard/clipboard';
+import {PermissionsAndroid, ToastAndroid} from 'react-native';
+
+export const copyToClipboard = (data: string) => {
+  Clipboard.setString(data);
+  ToastAndroid.show('Copy thành công!', ToastAndroid.SHORT);
+};
+
+export const requestCameraPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: 'Quyền truy cập máy ảnh',
+        message: 'Ứng dụng cần truy cập Camera của bạn',
+        buttonNeutral: 'Hỏi lại sau',
+        buttonNegative: 'Từ chối',
+        buttonPositive: 'Đồng ý',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      ToastAndroid.show('Không có quyền truy cập máy ảnh', ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show('Quyền truy cập bị từ chối', ToastAndroid.SHORT);
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};

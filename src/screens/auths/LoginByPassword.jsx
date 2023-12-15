@@ -4,7 +4,7 @@ const {
   Image,
   Text,
   TextInput,
-  TouchableOpacity,
+
   TouchableHighlight,
 } = require('react-native');
 const {Colors} = require('../../utils/Colors');
@@ -88,6 +88,7 @@ const LoginByPassword = ({user, onClose}) => {
             secureTextEntry={true}
             placeholder="Mật khẩu"
             placeholderTextColor={Colors.textGrey}
+            autoFocus={true}
             value={password}
             onChangeText={value => setPassword(value)}
             style={{

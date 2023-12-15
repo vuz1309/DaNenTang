@@ -54,15 +54,18 @@ const InputName = ({navigation}) => {
           <TextInput
             value={familyName}
             placeholder="Họ"
+            autoFocus={true}
             placeholderTextColor={Colors.textGrey}
             style={styles.textInput}
-            onChangeText={value => setFamilyName(value)}></TextInput>
+            onChangeText={value => setFamilyName(value)}
+          />
           <TextInput
             value={name}
             placeholder="Tên"
             style={styles.textInput}
             placeholderTextColor={Colors.textGrey}
-            onChangeText={value => setName(value)}></TextInput>
+            onChangeText={value => setName(value)}
+          />
         </View>
         <StyledButton
           title="Tiếp"
@@ -77,6 +80,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.white,
     padding: 16,
+    flex: 1,
   },
   wrapperTextInput: {
     marginTop: '20%',
@@ -97,11 +101,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     paddingHorizontal: 8,
     color: Colors.black,
+    fontSize: 16,
   },
   nextButton: {
     backgroundColor: Colors.primaryColor,
     width: '95%',
-    height: '15%',
+    height: 48,
     marginTop: '10%',
   },
   biggerText: {

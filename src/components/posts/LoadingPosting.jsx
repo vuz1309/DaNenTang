@@ -3,7 +3,7 @@ import Loading from '../base/Loading';
 import {useSelector} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 
-const LoadingPosting = ({}) => {
+const LoadingPosting = ({isLoading = true}) => {
   const userLogged = useSelector(state => state.userInfo.user);
 
   return (
@@ -16,6 +16,7 @@ const LoadingPosting = ({}) => {
         borderWidth: 4,
         borderColor: Colors.lightgrey,
         borderStyle: 'solid',
+        display: isLoading ? 'flex' : 'none',
       }}>
       <View
         style={{
@@ -27,7 +28,7 @@ const LoadingPosting = ({}) => {
         <Image
           style={{width: 40, height: 40, resizeMode: 'cover'}}
           source={
-            userLogged.avatar
+            userLogged?.avatar
               ? {uri: userLogged.avatar}
               : require('../../assets/images/avatar_null.jpg')
           }

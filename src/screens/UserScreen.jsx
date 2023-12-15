@@ -83,7 +83,7 @@ const UserScreen = ({navigation, route}) => {
       const {data} = res;
       setUserInfo(data.data);
 
-      if (userId == userLogged.id) {
+      if (isOwner) {
         store.dispatch(userInfoActions.updateUserInfo(data.data));
         store.dispatch(userSavedInfoActions.updateUserSaved(data.data));
       }

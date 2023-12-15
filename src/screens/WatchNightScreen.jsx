@@ -1,5 +1,5 @@
 import {View, FlatList} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Colors} from '../utils/Colors';
 import {getListVideos} from '../api/modules/post.request';
 
@@ -54,7 +54,7 @@ const WatchNightScreen = ({navigation, route}) => {
       console.log(error);
     }
   }
-
+  const [currView, setCurrView] = useState(0);
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkBackground}}>
       <HeaderCenter
@@ -68,15 +68,16 @@ const WatchNightScreen = ({navigation, route}) => {
         onScroll={handleScroll}
         ListFooterComponent={() => isLoadMore && <Loading />}
         renderItem={({item, index}) => (
-          <VideoItem item={item} isViewable={index === 0} />
+          <VideoItem item={item} isViewable={currView === index} />
         )}
         keyExtractor={item => item.id}
         horizontal={false}
         showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.1}
         viewabilityConfig={{
-          viewAreaCoveragePercentThreshold: 50,
+          viewAreaCoveragePercentThreshold: 100,
         }}
+        initialNumToRender={1}
+        removeClippedSubviews={true}
       />
     </View>
   );

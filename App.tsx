@@ -118,7 +118,10 @@ const AppChild = () => {
   }, [userLogged]);
   return (
     <>
-      <StatusBar backgroundColor={Colors.white} barStyle="light-content" />
+      <StatusBar
+        backgroundColor={Colors.transparent}
+        barStyle="light-content"
+      />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {appRoutes}
       </Stack.Navigator>

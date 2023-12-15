@@ -134,6 +134,18 @@ const HomeScreen = () => {
   }, [params]);
   const [isModalVisible, setModalVisible] = useState({index: 0, item: {}});
 
+  const postRenderItem = React.useCallback(
+    ({item}) => (
+      <PostBody
+        setModalVisible={setModalVisible}
+        editPost={openPostModal}
+        item={item}
+        setIsShowDialogCoins={setIsShowDialogCoins}
+      />
+    ),
+    [],
+  );
+
   return (
     <View style={{flex: 1}}>
       <FlatList
@@ -143,19 +155,20 @@ const HomeScreen = () => {
           <>
             <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
             <Stories />
-            {isPosting && <LoadingPosting />}
+            <LoadingPosting isLoading={isPosting} />
           </>
         }
         ListFooterComponent={() => isLoadMore && <Loading />}
-        renderItem={({item}) => (
-          <PostBody
-            setModalVisible={setModalVisible}
-            editPost={openPostModal}
-            item={item}
-            setIsShowDialogCoins={setIsShowDialogCoins}
-          />
-        )}
-        keyExtractor={item => JSON.stringify(item)}
+        // renderItem={({item}) => (
+        //   <PostBody
+        //     setModalVisible={setModalVisible}
+        //     editPost={openPostModal}
+        //     item={item}
+        //     setIsShowDialogCoins={setIsShowDialogCoins}
+        //   />
+        // )}
+        renderItem={postRenderItem}
+        keyExtractor={item => JSON.stringify(item).replace('_', '')}
         horizontal={false}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -165,8 +178,6 @@ const HomeScreen = () => {
             onRefresh={reload}
           />
         }
-        // onEndReached={loadMore}
-        onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}

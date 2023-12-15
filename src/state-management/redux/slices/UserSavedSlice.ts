@@ -44,11 +44,13 @@ const updateUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {
     (user: any) => user.id === payload.id,
   );
   console.log('update saved: ', payload);
+
   if (index > -1) {
     state.userSaved[index] = {
       ...state.userSaved[index],
       ...payload,
     };
+    console.log('updated:', state.userSaved[index]);
   }
 };
 const removeUserSaved: Reducer<PayloadAction<any>> = (state, {payload}) => {

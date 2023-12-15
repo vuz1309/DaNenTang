@@ -53,7 +53,7 @@ const NotificationScreen = () => {
         ListHeaderComponent={<HeaderTitle title={'Thông báo'} />}
         ListFooterComponent={() => isLoadMore && <Loading />}
         renderItem={({item}) => <Notification noti={item} />}
-        keyExtractor={item => JSON.stringify(item)}
+        keyExtractor={item => JSON.stringify(item).replace('_', '')}
         horizontal={false}
         showsVerticalScrollIndicator={false}
         refreshControl={

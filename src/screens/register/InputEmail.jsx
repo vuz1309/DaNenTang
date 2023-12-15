@@ -50,9 +50,6 @@ const InputEmail = ({navigation}) => {
         <View
           style={{
             marginTop: '10%',
-            justifyContent: 'flex-start',
-            display: 'flex',
-            flexDirection: 'column',
           }}>
           <StyledText
             content="Địa chỉ email"
@@ -62,7 +59,10 @@ const InputEmail = ({navigation}) => {
             <TextInput
               value={email}
               style={styles.textInput}
-              onChangeText={value => setEmail(value)}></TextInput>
+              inputMode="email"
+              autoFocus={true}
+              onChangeText={value => setEmail(value)}
+            />
           </View>
         </View>
 

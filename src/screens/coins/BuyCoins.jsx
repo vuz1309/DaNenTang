@@ -87,6 +87,7 @@ const BuyCoins = ({closeModal}) => {
           <Text style={{flex: 0.4, color: Colors.textColor}}>Số coin: </Text>
           <TextInput
             placeholderTextColor={Colors.grey}
+            autoFocus={true}
             value={coin}
             keyboardType={'numeric'}
             style={styles.inputBox}

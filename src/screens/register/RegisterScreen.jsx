@@ -27,7 +27,7 @@ const RegisterScreen = ({navigation}) => {
         }}
       />
       <View style={styles.subContainer}>
-        <Image source={register} style={styles.image}></Image>
+        <Image source={register} style={styles.image} />
         <StyledText
           customStyle={[styles.biggerText]}
           content="Tham gia Facebook"
@@ -49,8 +49,9 @@ const RegisterScreen = ({navigation}) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     padding: 16,
+    flex: 1,
   },
   subContainer: {
     marginTop: '20%',
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
   nextButton: {
     backgroundColor: Colors.primaryColor,
     width: '95%',
-    height: '13%',
+    height: 48,
     marginTop: '10%',
   },
   nextText: {

@@ -86,37 +86,7 @@ export const NotificationProvider = (props: any) => {
   };
 
   const handleOnMessageCome = (messageId: any, type: string, data: any) => {
-    var title = 'Title...';
-    var body = 'Body...';
     const numberType = Number(type);
-    // switch (type) {
-    //   case '1': {
-    //     const fromName = data.user.username;
-    //     (title = `Bạn có yêu cầu kết bạn mới`),
-    //       (body = `${fromName} đã gửi yêu cầu kết bạn`);
-    //     break;
-    //   }
-    //   case '2': {
-    //     const fromName = data.user.username;
-    //     (title = `Bạn có thông báo kết bạn mới`),
-    //       (body = `${fromName} đã chấp nhận lời mời kết bạn`);
-    //     break;
-    //   }
-    //   case '5': {
-    //     const fromName = data.user.username;
-    //     (title = `c`),
-    //       (body = `${fromName} đã bày tỏ cảm xúc về bài viết của bạn`);
-    //     break;
-    //   }
-    //   case '9': {
-    //     const fromName = data.user.username;
-    //     (title = `Thông báo từ bài viết của bạn`),
-    //       (body = `${fromName} đã bày bình luận về bài viết của bạn`);
-    //     break;
-    //   }
-    //   default:
-    //     break;
-    // }
 
     firebaseNotify({
       messageId,
@@ -178,7 +148,7 @@ export const NotificationProvider = (props: any) => {
     } else {
       fcmToken = await messaging().getToken();
     }
-    await setFirebaseToken(fcmToken);
+    setFirebaseToken(fcmToken);
     await saveFcmToken(fcmToken);
   };
 

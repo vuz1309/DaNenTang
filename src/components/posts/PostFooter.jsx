@@ -32,12 +32,6 @@ import Enum from '../../utils/Enum';
 
 const ScreenHeight = Dimensions.get('window').height;
 
-// const Enum.Feel = {
-//   UN_FEEL: '-1',
-//   LIKE: '0',
-//   DISLIKE: '1',
-// };
-
 export const feelConfigs = {
   [Enum.Feel.UN_FEEL]: {
     icon: 'like2',
@@ -117,19 +111,22 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
       }),
     );
   };
-  const handleReactionClick = () => {
+  const handleClickLikeNums = () => {
     if (Number(data.feel) > 0) setShowModalReactions(true);
+  };
+  const handleClickCommentNums = () => {
+    if (Number(data.comment_mark) > 0)
+      navigate(APP_ROUTE.COMMENT_PAGE, {item: {id: data.id}});
   };
 
   return (
     <>
       <View style={{marginTop: 8}}>
-        <TouchableHighlight
-          underlayColor={Colors.lightgrey}
-          onPress={handleReactionClick}
-          style={styles.footerReactionSec}>
-          <>
-            {Number(data.feel) > 0 && (
+        <View underlayColor={Colors.lightgrey} style={styles.footerReactionSec}>
+          {Number(data.feel) > 0 && (
+            <TouchableHighlight
+              underlayColor={Colors.lightgrey}
+              onPress={handleClickLikeNums}>
               <View
                 style={{
                   ...styles.row,
@@ -144,8 +141,12 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
                   {feelText}
                 </Text>
               </View>
-            )}
-            {Number(data.comment_mark) > 0 && (
+            </TouchableHighlight>
+          )}
+          {Number(data.comment_mark) > 0 && (
+            <TouchableHighlight
+              underlayColor={Colors.lightgrey}
+              onPress={handleClickCommentNums}>
               <Text
                 style={{
                   ...styles.reactionCount,
@@ -155,9 +156,9 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
                 }}>
                 {data.comment_mark} Bình luận
               </Text>
-            )}
-          </>
-        </TouchableHighlight>
+            </TouchableHighlight>
+          )}
+        </View>
         <View style={styles.userActionSec}>
           {reactionModal && (
             <View style={styles.reactionModalContainer}>
@@ -354,4 +355,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostFooter;
+export default React.memo(
+  PostFooter,
+  (prev, next) => JSON.stringify(prev.data) === JSON.stringify(next.data),
+);

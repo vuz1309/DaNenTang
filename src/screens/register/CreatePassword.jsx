@@ -78,6 +78,7 @@ const CreatePassword = ({navigation}) => {
             activeOutlineColor="#326A81"
             autoCapitalize="none"
             returnKeyType="go"
+            autoFocus={true}
             mode="outlined"
             selectionColor="#326A81"
             blurOnSubmit={false}

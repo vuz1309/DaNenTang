@@ -25,22 +25,27 @@ import VideoThumnails from '../components/posts/VideoThumnails';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../navigation/config/routes';
 
-const VideoItem = React.memo(({item}) => {
-  const {navigate} = useNavigation();
-  const handlePress = () => {
-    navigate(APP_ROUTE.WATCH_NIGHT, {post: item});
-  };
-  return (
-    <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
-      <PostHeader data={item} isShowRemove={false} />
+const VideoItem = React.memo(
+  ({item}) => {
+    const {navigate} = useNavigation();
+    const handlePress = () => {
+      navigate(APP_ROUTE.WATCH_NIGHT, {post: item});
+    };
+    return (
+      <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
+        <PostHeader data={item} isShowRemove={false} />
 
-      <Pressable onPress={handlePress}>
-        <VideoThumnails uri={item.video.url} />
-      </Pressable>
-      <PostFooter data={item} />
-    </View>
-  );
-});
+        <Pressable onPress={handlePress}>
+          <VideoThumnails uri={item.video.url} />
+        </Pressable>
+        <PostFooter data={item} />
+      </View>
+    );
+  },
+  (prevProps, nextProps) => {
+    return prevProps.item.video.url === nextProps.item.video.url;
+  },
+);
 
 const WatchScreen = () => {
   const [posts, setPosts] = React.useState([]);
