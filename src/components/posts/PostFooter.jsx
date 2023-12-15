@@ -8,7 +8,7 @@ import {
   Dimensions,
   TouchableHighlight,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import Like from '../../assets/images/like.jpeg';
 import Heart from '../../assets/images/heart.jpeg';
 import {Colors} from '../../utils/Colors';
@@ -24,22 +24,27 @@ import {SUCCESS_CODE} from '../../utils/constants';
 import {Themes} from '../../assets/themes';
 
 import ListReactions from '../comments/ListReactions';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {logger} from '../../utils/helper';
+import {useNavigation} from '@react-navigation/native';
+import {formatNumberSplitBy} from '../../helpers/helpers';
+import Enum from '../../utils/Enum';
 
 const ScreenHeight = Dimensions.get('window').height;
 
 export const feelConfigs = {
-  '-1': {
+  [Enum.Feel.UN_FEEL]: {
     icon: 'like2',
     color: null,
     text: 'Thích',
   },
-  0: {
+  [Enum.Feel.LIKE]: {
     icon: 'dislike1',
     color: Themes.COLORS.red,
     text: 'Yêu',
     img: Heart,
   },
-  1: {
+  [Enum.Feel.DISLIKE]: {
     icon: 'like1',
     color: Colors.primaryColor,
     text: 'Thích',
@@ -53,101 +58,113 @@ export const feelConfigs = {
  * @returns
  */
 const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
+  const {navigate} = useNavigation();
   const [reactionModal, setReactionModal] = useState(false);
   const [feelPost, setFeelPost] = useState(data.is_felt);
 
   const [showModalReactions, setShowModalReactions] = useState(false);
 
-  const handleDelFeel = async () => {
-    const updateData = {...data};
+  const feelText = useMemo(() => {
+    if (feelPost === Enum.Feel.UN_FEEL) return data.feel;
+    else if (Number(data.feel) > 1)
+      return `Bạn và ${formatNumberSplitBy(Number(data.feel) - 1)} người khác`;
+    return 'Bạn';
+  }, [data.feel, feelPost]);
+
+  const handleDelFeel = async id => {
     try {
-      const {data} = await delFeelPost({id: data.id});
-      console.log('del feel:', data);
-      store.dispatch(postInfoActions.updatePost(updateData));
+      const {data} = await delFeelPost({id});
+      // console.log('del feel:', data);
+      return data;
     } catch (error) {
       console.log(error);
     }
   };
-  const handleClickLike = async (type = '1') => {
-    if (type == feelPost) return;
-    const updateData = {...data};
-    setFeelPost(type);
-    if (type == '-1') {
-      return await handleDelFeel();
-    }
-
-    const id = data.id;
-
+  const handleFeel = async (id, type) => {
     try {
       const {data} = await feelPostApi({
         id,
         type,
       });
-      console.log('like reponse', data);
-      if (data.code == SUCCESS_CODE) {
-        updateData.feel = (
-          Number(data.data.kudos) + Number(data.data.disappointed)
-        ).toString();
-        updateData.is_felt = type;
-
-        store.dispatch(postInfoActions.updatePost(updateData));
-      }
+      return data;
     } catch (error) {
       console.log(error);
     }
   };
-  const handleReactionClick = () => {
-    if (Number(data.comment_mark) > 0) {
-      // open modal comment (TODO)
-    } else {
-      setShowModalReactions(true);
-    }
+  const handleClickLike = async (type = Enum.Feel.DISLIKE) => {
+    if (type == feelPost) return;
+
+    const id = data.id;
+    setFeelPost(type);
+    const res =
+      type == Enum.Feel.UN_FEEL
+        ? await handleDelFeel(id)
+        : await handleFeel(id, type);
+
+    store.dispatch(
+      postInfoActions.updatePost({
+        ...data,
+        is_felt: type,
+        feel: (
+          Number(res.data.kudos) + Number(res.data.disappointed)
+        ).toString(),
+      }),
+    );
+  };
+  const handleClickLikeNums = () => {
+    if (Number(data.feel) > 0) setShowModalReactions(true);
+  };
+  const handleClickCommentNums = () => {
+    if (Number(data.comment_mark) > 0)
+      navigate(APP_ROUTE.COMMENT_PAGE, {item: {id: data.id}});
   };
 
   return (
     <>
-      <View style={{marginTop: 8}}>
-        <TouchableHighlight
-          underlayColor={Colors.lightgrey}
-          onPress={handleReactionClick}
-          style={styles.footerReactionSec}>
-          <>
-            {Number(data.feel) > 0 && (
+      <View>
+        <View underlayColor={Colors.lightgrey} style={styles.footerReactionSec}>
+          {Number(data.feel) > 0 && (
+            <TouchableHighlight
+              underlayColor={Colors.lightgrey}
+              style={{padding: 8, flex: 1}}
+              onPress={handleClickLikeNums}>
               <View
                 style={{
                   ...styles.row,
-                  height: '100%',
                   backgroundColor: 'transparent',
-                  transform: [{translateY: 8}],
                 }}>
                 <Image source={Like} style={styles.reactionIcon} />
                 <Image source={Heart} style={styles.reactionIcon} />
 
                 <Text style={{...styles.reactionCount, ...textStyles}}>
-                  {data.feel}
+                  {feelText}
                 </Text>
               </View>
-            )}
-            {Number(data.comment_mark) > 0 && (
+            </TouchableHighlight>
+          )}
+          {Number(data.comment_mark) > 0 && (
+            <TouchableHighlight
+              style={{padding: 8, flex: 1}}
+              underlayColor={Colors.lightgrey}
+              onPress={handleClickCommentNums}>
               <Text
                 style={{
                   ...styles.reactionCount,
                   ...textStyles,
-                  position: 'absolute',
-                  right: 16,
+                  textAlign: 'right',
                 }}>
                 {data.comment_mark} Bình luận
               </Text>
-            )}
-          </>
-        </TouchableHighlight>
+            </TouchableHighlight>
+          )}
+        </View>
         <View style={styles.userActionSec}>
           {reactionModal && (
             <View style={styles.reactionModalContainer}>
               <TouchableOpacity
                 style={{transform: [{scale: 1.5}]}}
                 onPress={() => {
-                  handleClickLike('1');
+                  handleClickLike(Enum.Feel.DISLIKE);
                   setReactionModal(false);
                 }}>
                 <View>
@@ -157,7 +174,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
               <TouchableOpacity
                 style={{transform: [{scale: 1.5}]}}
                 onPress={() => {
-                  handleClickLike('0');
+                  handleClickLike(Enum.Feel.LIKE);
                   setReactionModal(false);
                 }}>
                 <View>
@@ -178,7 +195,13 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           }
 
           <TouchableOpacity
-            onPress={() => handleClickLike(feelPost == '-1' ? '1' : '-1')}
+            onPress={() =>
+              handleClickLike(
+                feelPost == Enum.Feel.UN_FEEL
+                  ? Enum.Feel.DISLIKE
+                  : Enum.Feel.UN_FEEL,
+              )
+            }
             onLongPress={() => setReactionModal(true)}>
             <View style={styles.row}>
               {feelConfigs[feelPost].img ? (
@@ -220,17 +243,22 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
             </View>
           </TouchableOpacity>
 
-          <View style={styles.row}>
-            <VectorIcon
-              name="chatbox-outline"
-              type="Ionicons"
-              size={25}
-              color={textStyles.color}
-            />
-            <Text style={{...styles.reactionCount, ...textStyles}}>
-              Bình luận
-            </Text>
-          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigate(APP_ROUTE.COMMENT_PAGE, {item: data});
+            }}>
+            <View style={styles.row}>
+              <VectorIcon
+                name="chatbox-outline"
+                type="Ionicons"
+                size={25}
+                color={textStyles.color}
+              />
+              <Text style={{...styles.reactionCount, ...textStyles}}>
+                Bình luận
+              </Text>
+            </View>
+          </TouchableOpacity>
 
           <View style={styles.row}>
             <VectorIcon
@@ -279,8 +307,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightgrey,
-    padding: 14,
-    paddingTop: 0,
+    paddingHorizontal: 14,
   },
   userActionSec: {
     marginTop: 10,
@@ -326,4 +353,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostFooter;
+export default React.memo(
+  PostFooter,
+  (prev, next) => JSON.stringify(prev.data) === JSON.stringify(next.data),
+);

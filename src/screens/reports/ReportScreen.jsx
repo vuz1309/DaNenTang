@@ -1,4 +1,10 @@
-import {View, Text, TouchableHighlight, Modal} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  Modal,
+  ToastAndroid,
+} from 'react-native';
 import React, {useMemo} from 'react';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
@@ -6,6 +12,8 @@ import {StyledButton} from '../../components/base';
 import ConfirmScreen from './ConfirmScreen';
 import {setBlockRequest} from '../../api/modules/block.request';
 import {useNavigation} from '@react-navigation/native';
+import {store} from '../../state-management/redux/store';
+import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
 
 const reportOptions = [
   'Ảnh khỏa thân',
@@ -64,8 +72,10 @@ const ReportScreen = ({navigation, route}) => {
   };
   const handleBlock = async () => {
     try {
-      const {data} = await setBlockRequest({user_id: author.id});
-      console.log(data);
+      await setBlockRequest({user_id: author.id});
+      // console.log(data);
+      ToastAndroid.show('Block thành công ' + author.name, ToastAndroid.SHORT);
+      store.dispatch(postInfoActions.removePost({postId}));
       navigation.goBack();
     } catch (error) {
       console.log(error);
@@ -198,7 +208,8 @@ const ReportScreen = ({navigation, route}) => {
                 <Text style={{color: Colors.black, fontSize: 18}}>
                   Chặn {author.name}
                 </Text>
-                <Text style={{fontSize: 15, width: '90%'}}>
+                <Text
+                  style={{fontSize: 15, width: '90%', color: Colors.textGrey}}>
                   Các bạn sẽ không thể nhìn thấy hoặc liên hệ với nhau
                 </Text>
               </View>
@@ -224,7 +235,13 @@ const ReportScreen = ({navigation, route}) => {
                 color={Colors.headerIconGrey}
               />
             </View>
-            <Text style={{flex: 1, paddingRight: 12, fontSize: 15}}>
+            <Text
+              style={{
+                flex: 1,
+                paddingRight: 12,
+                fontSize: 15,
+                color: Colors.textGrey,
+              }}>
               Nếu bạn nhận thấy ai đó đang gặp nguy hiểm, đừng chần chừ mà hãy
               báo ngay cho dịch vụ cấp cứu tại địa phương
             </Text>

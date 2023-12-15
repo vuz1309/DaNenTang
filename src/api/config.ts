@@ -1,4 +1,6 @@
-export const BE_URL = 'https://it4788.catan.io.vn';
+// export const BE_URL = 'https://it4788.catan.io.vn';
+export const BE_URL =
+  'https://1985-2001-ee0-4a77-2bf0-8593-5c3e-c34f-60ed.ngrok-free.app';
 import axios from 'axios';
 
 import {store} from '../state-management/redux/store';
@@ -6,12 +8,12 @@ import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {
   BUG_SERVER,
   INVALID_TOKEN,
-  NETWORK_ERROR,
   USER_INVALID,
-  USER_NOT_REQUEST_FRIEND,
   errors,
 } from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
+import {ToastAndroid} from 'react-native';
+import {formatNumberSplitBy} from '../helpers/helpers';
 
 /**
  * Khởi tạo cách truyền và xử lí Rest-API
@@ -37,20 +39,35 @@ export const createApiInstance = (
     },
     error => {
       console.log('error frontend');
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
       Promise.reject(error);
     },
   );
   api.interceptors.response.use(
-    (
-      /**
-       * Nếu response nhận về là json về convert về dạng camelCase
-       * @author NTVu - 14/09/2023
-       * @param {import('axios').AxiosResponse} response
-       * @returns {import('axios').AxiosResponse}
-       */
-      response: import('axios').AxiosResponse,
-    ): import('axios').AxiosResponse => {
+    /**
+     * Nếu response nhận về là json về convert về dạng camelCase
+     * @author NTVu - 14/09/2023
+     * @param {import('axios').AxiosResponse} response
+     * @returns {import('axios').AxiosResponse}
+     */
+    response => {
+      if (response.data?.data?.coins) {
+        if (
+          response.data.data.id &&
+          response.data.data.username &&
+          response.data.data.id !=
+            store.getState().userInfo?.user?.id?.toString()
+        )
+          return response;
+        store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
+
+        ToastAndroid.showWithGravity(
+          `Số coins còn lại: ${formatNumberSplitBy(
+            Number(response.data.data.coins),
+          )}`,
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        );
+      }
       return response;
     },
     /**
@@ -61,24 +78,14 @@ export const createApiInstance = (
      */
     error => {
       if (!silent) {
-        console.log('error api', JSON.stringify(error));
+        console.log(JSON.stringify(error.response));
       }
-      if (error.name.includes('Network')) {
-        AlertMessage('Vui lòng kiểm tra lại mạng!');
-        return Promise.reject({
-          message: 'Kết nối mạng không ổn định.',
-          code: NETWORK_ERROR,
-        });
-      }
-
       const {response} = error;
-
       if (response.data.code == INVALID_TOKEN.toString()) {
         store.dispatch(userInfoActions.logOut());
-      } else
-        AlertMessage(
-          errors[response.data.code.toString()] || 'Lỗi chưa xác định',
-        );
+      } else {
+        AlertMessage(errors[response.data.code] || 'Chưa xác định!', 'Lỗi!');
+      }
       return Promise.reject({
         code: response.data.code,
         message: response.data.message,

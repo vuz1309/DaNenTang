@@ -2,7 +2,7 @@ import {Themes} from '../../assets/themes';
 import {Colors} from '../../utils/Colors';
 import {StyledButton} from '../base';
 import {View} from 'react-native';
-const ActionsOwner = ({userId}) => {
+const ActionsOwner = ({action}) => {
   return (
     <View
       style={{
@@ -43,8 +43,9 @@ const ActionsOwner = ({userId}) => {
           type: 'MaterialIcons',
           color: Colors.black,
         }}
+        onPress={() => action()}
       />
-      <StyledButton
+      {/* <StyledButton
         customStyle={{
           backgroundColor: Themes.COLORS.lightGreyBg,
           flex: 0.5,
@@ -57,7 +58,7 @@ const ActionsOwner = ({userId}) => {
           size: 20,
           color: Colors.black,
         }}
-      />
+      /> */}
     </View>
   );
 };

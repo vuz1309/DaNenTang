@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import {Themes} from '../assets/themes';
 import {View, Text} from 'react-native';
 import {useSelector} from 'react-redux';
+import Loading from '../components/base/Loading';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -43,7 +44,7 @@ const TopTabBar = () => {
                       size={focused ? tab.size : tab.unFocusSize}
                       color={color}
                     />
-                    {!!notis[tab.name] && (
+                    {!!Number(notis[tab.name]) && (
                       <View
                         style={{
                           backgroundColor: Themes.COLORS.red,
@@ -70,6 +71,11 @@ const TopTabBar = () => {
                   </View>
                 );
               },
+              tabBarIndicatorContainerStyle: {
+                borderRadius: 0,
+              },
+              lazy: true,
+              lazyPlaceholder: () => <Loading />,
             }}
           />
         ))}

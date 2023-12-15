@@ -1,5 +1,13 @@
-import {StyleSheet, Text, View, RefreshControl, ScrollView} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+  ScrollView,
+  FlatList,
+  Pressable,
+} from 'react-native';
+import React, {useRef} from 'react';
 import {Colors} from '../utils/Colors';
 import {useScrollHanler} from '../hooks/useScrollHandler';
 import {getListVideos} from '../api/modules/post.request';
@@ -10,50 +18,58 @@ import PostFooter from '../components/posts/PostFooter';
 import {store} from '../state-management/redux/store';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
+import HeaderTitle from '../components/layouts/HeaderTitle';
+import Loading from '../components/base/Loading';
+import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
+import VideoThumnails from '../components/posts/VideoThumnails';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../navigation/config/routes';
+
+const VideoItem = React.memo(
+  ({item}) => {
+    const {navigate} = useNavigation();
+    const handlePress = () => {
+      navigate(APP_ROUTE.WATCH_NIGHT, {post: item});
+    };
+    return (
+      <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
+        <PostHeader data={item} isShowRemove={false} />
+
+        <Pressable onPress={handlePress}>
+          <VideoThumnails uri={item.video.url} />
+        </Pressable>
+        <PostFooter data={item} />
+      </View>
+    );
+  },
+  (prevProps, nextProps) => {
+    return prevProps.item.video.url === nextProps.item.video.url;
+  },
+);
 
 const WatchScreen = () => {
-  const userLogged = useSelector(state => state.userInfo.user);
   const [posts, setPosts] = React.useState([]);
-  const [lastId, setLastId] = React.useState('1');
-  const reload = () => {
-    if (refreshing) return;
-    setRefreshing(true);
-    setParams({
-      in_campaign: '1',
-      campaign_id: '1',
-      latitude: '1.0',
-      longitude: '1.0',
-      last_id: '1',
-      index: '0',
-      count: '10',
-    });
-    setLastId('1');
+  const [lastId, setLastId] = React.useState('19999');
+
+  const {params, refreshing, reload, isLoadMore, handleScroll, getNewItems} =
+    useLoadOnScroll(getListVideosApi);
+
+  const onReload = () => {
+    setLastId('99999');
+    reload();
   };
-  const loadMore = () => {
-    if (isLoadMore) return;
-    setIsLoadMore(true);
-    setParams(prev => ({
-      ...prev,
-      index: (Number(prev.index) + 1).toString(),
-    }));
-  };
-  const [params, setParams] = React.useState({
-    in_campaign: '1',
-    campaign_id: '1',
-    latitude: '1.0',
-    longitude: '1.0',
-    index: '0',
-    count: '10',
-  });
-  const getListVideosApi = async () => {
+  async function getListVideosApi() {
     try {
-      console.log('params videos: ', params, lastId);
       const {data} = await getListVideos({
         ...params,
-        user_id: userLogged.id,
+        // user_id: userLogged.id,
+        in_campaign: '1',
+        campaign_id: '1',
+        latitude: '1.0',
+        longitude: '1.0',
         last_id: lastId,
       });
-      console.log('video res:', data);
+
       store.dispatch(
         notificationInfoActions.setNotification({
           name: TabName.WATCH,
@@ -66,61 +82,40 @@ const WatchScreen = () => {
       }
       if (params.index == '0') setPosts(data.data.post);
       else {
-        const newItems = data.data.post.filter(
-          p => !posts.find(op => op.id === p.id),
-        );
+        const newItems = getNewItems(data.data.post, posts);
         setPosts(prev => [...prev, ...newItems]);
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      setIsLoadMore(false);
-      setRefreshing(false);
     }
-  };
-  React.useEffect(() => {
-    getListVideosApi();
-  }, [params]);
-  const {refreshing, handleScroll, setRefreshing, isLoadMore, setIsLoadMore} =
-    useScrollHanler(reload, loadMore);
+  }
+
   return (
-    <ScrollView
-      style={styles.container}
-      showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={false}
-      onScroll={handleScroll}
-      refreshControl={
-        <RefreshControl
-          colors={[Colors.primaryColor]}
-          refreshing={refreshing}
-          onRefresh={reload}
-        />
-      }>
-      {posts.map(po => (
-        <View
-          style={{backgroundColor: Colors.white, marginBottom: 12}}
-          key={po.id}>
-          <PostHeader data={po} />
-
-          <PostVideo videoUrl={po.video.url} />
-
-          <PostFooter data={po} />
-        </View>
-      ))}
-    </ScrollView>
+    <View style={{flex: 1, backgroundColor: Colors.background}}>
+      <FlatList
+        data={posts}
+        onScroll={handleScroll}
+        ListHeaderComponent={<HeaderTitle title={'Video'} />}
+        ListFooterComponent={() => isLoadMore && <Loading />}
+        renderItem={({item}) => <VideoItem item={item} />}
+        keyExtractor={item => item.id}
+        horizontal={false}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            colors={[Colors.primaryColor]}
+            refreshing={refreshing}
+            onRefresh={onReload}
+          />
+        }
+        // // onEndReached={loadMore}
+        // onEndReachedThreshold={0.1}
+        viewabilityConfig={{
+          viewAreaCoveragePercentThreshold: 50,
+        }}
+      />
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  title: {
-    fontSize: 22,
-    color: Colors.primaryColor,
-    fontWeight: '500',
-  },
-});
 
 export default WatchScreen;

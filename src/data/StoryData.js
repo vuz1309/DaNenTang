@@ -8,30 +8,6 @@ import FriendStoryImg7 from '../assets/images/img8.jpeg';
 
 export const StoryData = [
   {
-    id: 1,
-    name: 'Vũ ',
-    profileImg: FriendStoryImg1,
-    storyImg: FriendStoryImg1,
-  },
-  {
-    id: 2,
-    name: 'Vũ Nguyễn',
-    profileImg: FriendStoryImg2,
-    storyImg: FriendStoryImg2,
-  },
-  {
-    id: 3,
-    name: 'Quang Trần',
-    profileImg: FriendStoryImg3,
-    storyImg: FriendStoryImg3,
-  },
-  {
-    id: 4,
-    name: 'Hiếu brazor',
-    profileImg: FriendStoryImg4,
-    storyImg: FriendStoryImg4,
-  },
-  {
     id: 5,
     name: 'Cường CuO',
     profileImg: FriendStoryImg5,

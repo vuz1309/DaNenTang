@@ -6,6 +6,7 @@ import persistReducer from 'redux-persist/es/persistReducer';
 
 export interface IPostsState {
   posts: Array<any>;
+  isPosting: boolean;
   paramsConfig: any;
   status?: CommonStatus;
   error?: any;
@@ -17,6 +18,7 @@ type Reducer<A extends Action<any> = AnyAction> = CaseReducer<IPostsState, A>;
 const initialState: IPostsState = {
   status: CommonStatus.IDLE,
   posts: [],
+  isPosting: false,
   paramsConfig: {
     in_campaign: '1',
     campaign_id: '1',
@@ -45,10 +47,17 @@ const removePost: Reducer<PayloadAction<any>> = (state, {payload}) => {
 const shiftPost: Reducer<PayloadAction<any>> = (state, {payload}) => {
   state.posts = [payload, ...state.posts];
 };
+const startPosting: Reducer<PayloadAction<any>> = (state, {}) => {
+  state.isPosting = true;
+};
+const endPosting: Reducer<PayloadAction<any>> = (state, {payload}) => {
+  state.isPosting = false;
+  if (payload.id) state.posts = [payload, ...state.posts];
+};
 const addPosts: Reducer<PayloadAction<any>> = (state, {payload}) => {
   const posts = state.posts;
   const listPosts = payload.filter(
-    (post: any) => !posts.find(p => p.id === post.id),
+    (post: any) => !posts.some(p => p.id === post.id),
   );
   state.posts = [...posts, ...listPosts];
 };
@@ -75,6 +84,8 @@ const postsSlice = createSlice({
     setParams,
     setLastId,
     shiftPost,
+    startPosting,
+    endPosting,
   },
 });
 

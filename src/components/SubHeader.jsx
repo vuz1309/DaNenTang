@@ -13,15 +13,19 @@ import {useSelector} from 'react-redux';
 import VectorIcon from '../utils/VectorIcon';
 import {Themes} from '../assets/themes';
 import {formatNumberSplitBy} from '../helpers/helpers';
+import DialogConfirm from './base/dialog/DialogConfirm';
 
 const nullAvatar = require('../assets/images/avatar_null.jpg');
-const SubHeader = () => {
+const SubHeader = ({onClick, buyCoin}) => {
   const navigation = useNavigation();
   const userLogged = useSelector(state => state.userInfo.user);
   const coins = React.useMemo(
     () => formatNumberSplitBy(Number(userLogged?.coins || '0')),
     [userLogged, [userLogged?.coins]],
   );
+  const handleClickUpPost = () => {
+    onClick();
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -38,20 +42,23 @@ const SubHeader = () => {
         )}
       </TouchableOpacity>
       <View style={styles.inputBox}>
-        <TouchableOpacity onPress={() => navigation.navigate('UploadScreen')}>
+        <TouchableOpacity onPress={handleClickUpPost}>
           <Text style={styles.inputStyle}>Bạn đang nghĩ gì?</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <TouchableOpacity
+        onPress={buyCoin}
+        style={{justifyContent: 'center', alignItems: 'center'}}>
         <VectorIcon
           name="coins"
           type="FontAwesome5"
           color={Themes.COLORS.yellow}
           size={20}
         />
+
         <Text style={{fontWeight: '700', color: Colors.black}}>{coins}</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -1,14 +1,20 @@
 import {useState} from 'react';
 import {TypeLoginRequest, TypeRegisterRequest} from '../../api/interfaces/auth';
-import {loginRequest, registerRequest} from '../../api/modules/authenticate';
+import {
+  loginRequest,
+  registerRequest,
+  setDevToken,
+} from '../../api/modules/authenticate';
 import {getDeviceId} from 'react-native-device-info';
 import AlertMessage from '../../components/base/AlertMessage';
 import {store} from '../../state-management/redux/store';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
 import TokenProvider from './TokenProvider';
-import {logger} from '../helper';
 import {storeStringAsyncData} from './LocalStorage';
+import {useAppTokens} from '../../hooks/useAppToken';
+import {logger} from '../helper';
+import {ToastAndroid} from 'react-native';
 
 interface LoginRequest {
   loading: boolean;
@@ -27,53 +33,56 @@ const AuthenticateService = {
     TokenProvider.clearToken();
     store.dispatch(userInfoActions.logOut());
   },
-  handlerLogin: (token: string, id: string) => {
-    store.dispatch(userInfoActions.updateToken({token, user: {id}}));
-  },
-};
-
-export const useLogin = (): LoginRequest => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  const requestLogin = async (options: any) => {
-    const loginParams = await {
-      ...options,
-      uuid: await getDeviceId(),
-    };
-    try {
-      setLoading(true);
-
-      const response: any = await loginRequest(loginParams);
-
-      handleLoginSuccess(response);
-      store.dispatch(
-        userSavedInfoActions.addUserSaved({
-          email: loginParams.email,
-          password: loginParams.password,
-          username: response.data?.data?.username,
-          avatar: response.data?.data?.avatar,
-          id: response.data?.data?.id,
-        }),
-      );
-    } catch (e) {
-      console.log(String(e));
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleLoginSuccess = ({data}: {data: any}) => {
-    logger('Login Success!');
-    logger(data?.data);
-
+  handlerLogin: (data: any) => {
     store.dispatch(
       userInfoActions.loginSuccess({
         token: data?.data?.token,
         user: data?.data,
       }),
     );
+  },
+};
 
-    AuthenticateService.handlerLogin(data?.data?.token, data?.data?.id);
+export const useLogin = (): LoginRequest => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>();
+
+  const requestLogin = async (options: any) => {
+    const loginParams = await {
+      ...options,
+      uuid: getDeviceId(),
+    };
+    try {
+      setLoading(true);
+      storeStringAsyncData('email', loginParams.email);
+      storeStringAsyncData('password', loginParams.password);
+      const response: any = await loginRequest(loginParams);
+
+      await handleLoginSuccess(response);
+      store.dispatch(
+        userSavedInfoActions.addUserSaved({
+          email: loginParams.email,
+          password: loginParams.password,
+          ...response.data?.data,
+        }),
+      );
+    } catch (e: any) {
+      setError(e);
+      AlertMessage(e?.message || 'Đăng nhập thất bại', 'Thất bại!');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleLoginSuccess = async ({data}: {data: any}) => {
+    const {saveFcmToken, getFcmToken} = useAppTokens(); // save local storage
+    AuthenticateService.handlerLogin(data);
+    try {
+      const fcmToken = (await getFcmToken()) || '';
+      // logger('fcmToken: ', true, fcmToken);
+      await setDevToken({devtype: '1', devtoken: fcmToken});
+    } catch (err) {
+      console.log(err);
+    }
   };
   return {
     loading,

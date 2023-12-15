@@ -1,4 +1,11 @@
-import {View, Text, TouchableHighlight, Image, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  Image,
+  Pressable,
+  ToastAndroid,
+} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
 import Modal from 'react-native-modal';
@@ -15,10 +22,11 @@ const FriendCard = ({fr, reload}) => {
   const {navigate} = useNavigation();
   const blockUser = async () => {
     try {
-      const {data} = await setBlockRequest({
+      await setBlockRequest({
         user_id: fr.id,
       });
-      console.log('block:', data);
+      // console.log('block:', data);
+      ToastAndroid.show('Bạn đã block ' + fr.username, ToastAndroid.SHORT);
       reload();
     } catch (error) {
       console.log(error);
@@ -26,10 +34,11 @@ const FriendCard = ({fr, reload}) => {
   };
   const onUnFriend = async () => {
     try {
-      const {data} = await unFriend({
+      await unFriend({
         user_id: fr.id,
       });
-      console.log('un friend:', data);
+      // console.log('un friend:', data);
+      ToastAndroid.show('Xóa bạn bè thành công!', ToastAndroid.SHORT);
       reload();
     } catch (error) {
       console.log(error);
@@ -66,26 +75,19 @@ const FriendCard = ({fr, reload}) => {
                 borderStyle: 'solid',
                 borderRadius: 25,
               }}>
-              {fr.avatar ? (
-                <Image
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    borderRadius: 25,
-                  }}
-                  source={{uri: fr.avatar}}
-                  defaultSource={require('../../assets/images/avatar_null.jpg')}
-                />
-              ) : (
-                <Image
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    borderRadius: 25,
-                  }}
-                  source={require('../../assets/images/avatar_null.jpg')}
-                />
-              )}
+              <Image
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  borderRadius: 25,
+                }}
+                source={
+                  fr.avatar
+                    ? {uri: fr.avatar}
+                    : require('../../assets/images/avatar_null.jpg')
+                }
+                defaultSource={require('../../assets/images/avatar_null.jpg')}
+              />
             </View>
             <View>
               <Text
@@ -120,6 +122,7 @@ const FriendCard = ({fr, reload}) => {
           }}
           swipeDirection={'down'}
           onSwipeComplete={() => setIsShowModal(0)}
+          onBackButtonPress={() => setIsShowModal(0)}
           onBackdropPress={() => setIsShowModal(0)}>
           <View
             style={{
@@ -152,4 +155,7 @@ const FriendCard = ({fr, reload}) => {
   );
 };
 
-export default FriendCard;
+export default React.memo(
+  FriendCard,
+  (prev, next) => prev.fr.id === next.fr.id,
+);

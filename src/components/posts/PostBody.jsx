@@ -6,100 +6,110 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {Colors} from '../../utils/Colors';
 import PostHeader from './PostHeader';
 import PostFooter from './PostFooter';
-import DetailsPost from './DetailsPost';
-import PostListImage from './PostListImage';
-import PostVideo from './PostVideo';
+import VideoThumnails from './VideoThumnails';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
+
+const PostImg = ({img, onPress, isBanned}) => {
+  const source = React.useMemo(
+    () =>
+      isBanned ? require('../../assets/images/banned.jpg') : {uri: img.url},
+    [isBanned],
+  );
+
+  return (
+    <TouchableOpacity onPress={onPress} style={{flex: 1, ...styles.border}}>
+      <Image
+        style={styles.image}
+        defaultSource={require('../../assets/images/avatar_null.jpg')}
+        source={source}
+      />
+    </TouchableOpacity>
+  );
+};
 
 /**
  *
  * @param {object} props
  * @returns
  */
-const PostBody = ({item}) => {
-  const [isModalVisible, setModalVisible] = useState(false);
-
+const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
+  const isBanned = React.useMemo(() => !!Number(item.banned));
+  const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
+  const {navigate} = useNavigation();
   return (
-    <>
-      <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-        <PostHeader data={item} />
+    <View style={{backgroundColor: Colors.white, marginTop: 8}}>
+      <PostHeader
+        onClickEdit={editPost}
+        data={item}
+        setIsShowDialogCoins={setIsShowDialogCoins}
+      />
 
-        {!item.video && item.image.length > 0 && (
-          <View style={styles.postImg}>
-            <View style={{flex: 3, flexDirection: 'row'}}>
-              {item.image.slice(0, 2).map((img, index) => (
-                <TouchableOpacity
+      {!item.video && item.image.length > 0 && (
+        <View style={styles.postImg}>
+          <View style={{flex: 3, flexDirection: 'row'}}>
+            {item.image.slice(0, 2).map((img, index) => (
+              <PostImg
+                key={img.url}
+                img={img}
+                onPress={() => setModalVisible({index: index + 1, item})}
+                isBanned={isBanned}
+              />
+            ))}
+          </View>
+          {item.image.length > 2 && (
+            <View style={styles.spliter}>
+              {item.image.slice(2, 4).map((img, index) => (
+                <PostImg
                   key={img.url}
-                  onPress={() => setModalVisible(index + 1)}
-                  style={{flex: 1, ...styles.border}}>
-                  <Image
-                    style={styles.image}
-                    defaultSource={require('../../assets/images/avatar_null.jpg')}
-                    source={{uri: img.url}}
-                  />
-                </TouchableOpacity>
+                  img={img}
+                  onPress={() => setModalVisible({index: index + 3, item})}
+                  isBanned={isBanned}
+                />
               ))}
-            </View>
-            {item.image.length > 2 && (
-              <View style={styles.spliter}>
-                {item.image.slice(2, 4).map((img, index) => (
-                  <TouchableOpacity
-                    key={img.url}
-                    onPress={() => setModalVisible(index + 3)}
-                    style={{flex: 1, ...styles.border}}>
+              {item.image.length >= 5 && (
+                <TouchableOpacity
+                  onPress={() => setModalVisible({index: 5, item})}
+                  style={{flex: 1, ...styles.border, position: 'relative'}}>
+                  <>
                     <Image
                       style={styles.image}
-                      defaultSource={require('../../assets/images/avatar_null.jpg')}
-                      source={{uri: img.url}}
-                    />
-                  </TouchableOpacity>
-                ))}
-                {item.image.length >= 5 && (
-                  <View
-                    style={{flex: 1, ...styles.border, position: 'relative'}}>
-                    <Image
-                      style={styles.image}
-                      source={{uri: item.image[4].url}}
+                      source={
+                        isBanned
+                          ? require('../../assets/images/banned.jpg')
+                          : {uri: item.image[4].url}
+                      }
                     />
 
                     {item.image.length > 5 && (
                       <TouchableOpacity
-                        onPress={() => setModalVisible(5)}
+                        onPress={() => setModalVisible({index: 6, item})}
                         style={styles.overlayEndImg}>
                         <Text style={{color: Colors.white}}>
                           {item.image.length - 5}
                         </Text>
                       </TouchableOpacity>
                     )}
-                  </View>
-                )}
-              </View>
-            )}
-          </View>
-        )}
-        {item.video && <PostVideo videoUrl={item.video.url} />}
-        <PostFooter data={item} />
-      </View>
-
-      {!!isModalVisible && item.image.length == 1 && (
-        <DetailsPost
-          isModalVisible={isModalVisible}
-          item={item}
-          onClose={() => setModalVisible(0)}
-        />
+                  </>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
       )}
 
-      {!!isModalVisible && item.image.length > 1 && (
-        <PostListImage
-          data={item}
-          onClose={() => setModalVisible(0)}
-          index={isModalVisible - 1}
-        />
+      {item.video && (
+        <Pressable
+          onPress={() => navigate(APP_ROUTE.WATCH_NIGHT, {post: item})}>
+          <VideoThumnails uri={item.video.url} />
+        </Pressable>
       )}
-    </>
+      <PostFooter data={item} />
+    </View>
   );
 };
 
@@ -134,4 +144,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostBody;
+export default React.memo(
+  PostBody,
+  (prev, next) => JSON.stringify(prev.item) == JSON.stringify(next.item),
+);

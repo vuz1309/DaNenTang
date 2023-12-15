@@ -27,3 +27,6 @@ export const changeProfileAfterSignup = (body: FormData) => {
 export const logout = () => {
   return requestJSONWithAuth('/logout', {});
 };
+export const buyCoin = (param: {code: string; coins: number}) => {
+  return requestJSONWithAuth('/buy_coins', param);
+};

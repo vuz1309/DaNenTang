@@ -12,10 +12,9 @@ import Logo from '../assets/images/logo.png';
 import MetaLogo from '../assets/images/meta-logo.png';
 import {useLogin} from '../utils/authenticate/AuthenticateService';
 import {AUTHENTICATE_ROUTE} from '../navigation/config/routes';
-import {RequestUserPermission} from '../utils/notification/notificationHelper';
 import Loading from '../components/base/Loading';
 import {validateEmail, validatePassword} from '../utils/validater';
-import LoadingOverlay from '../components/base/LoadingOverlay';
+import AlertMessage from '../components/base/AlertMessage';
 import {StyledButton} from '../components/base';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -32,8 +31,6 @@ const LoginScreen = ({navigation}) => {
       AlertMessage('Tài khoản hoặc mật khẩu không chính xác!');
       return;
     }
-
-    await RequestUserPermission();
     requestLogin({email, password});
   };
 
@@ -48,7 +45,7 @@ const LoginScreen = ({navigation}) => {
             fontSize: 28,
             marginBottom: 24,
           }}>
-          FACEBOOK
+          ANTI-FACEBOOK
         </Text>
         <TextInput
           placeholder="Email"

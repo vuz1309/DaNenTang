@@ -36,3 +36,12 @@ export function convertTimeToFacebookStyle(inputTime) {
 export function formatNumberSplitBy(number, splitBy = '.') {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, splitBy);
 }
+
+import {Platform} from 'react-native';
+export function createImageFormData(img) {
+  return {
+    name: img.fileName,
+    type: img.type,
+    uri: Platform.OS === 'ios' ? img.uri.replace('file://', '') : img.uri,
+  };
+}

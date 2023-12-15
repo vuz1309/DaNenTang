@@ -5,143 +5,248 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Animated,
-  Easing,
-  Dimensions,
-  FlatList,
-  PermissionsAndroid,
+  ScrollView,
   Modal,
+  ImageBackground,
+  ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Colors} from '../utils/Colors';
 
 import VectorIcon from '../utils/VectorIcon';
-import FriendStoryImg1 from '../assets/images/img2.jpeg';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {APP_ROUTE} from '../navigation/config/routes';
+import {launchCamera} from 'react-native-image-picker';
 
-import {addPost} from '../api/modules/post.request';
+import {addPost, editPost, getPostRequest} from '../api/modules/post.request';
+import AlertMessage from '../components/base/AlertMessage';
+import {store} from '../state-management/redux/store';
+import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import {useSelector} from 'react-redux';
+import {createImageFormData} from '../helpers/helpers';
+import LoadingOverlay from '../components/base/LoadingOverlay';
+import Enum from '../utils/Enum';
+import {BE_URL} from '../api/config';
+import {openLibraryDevice, requestCameraPermission} from '../utils/helper';
+import EmotionList from '../components/modal/EmotionList';
+import Video from 'react-native-video';
 
-const UploadScreen = ({navigation, route}) => {
-  const [text, setText] = useState('');
+const UploadScreen = ({
+  onClose,
+  mode = Enum.PostMode.Create,
+  postData = {image: [], status: 'OK', described: '', id: '0', video: {}},
+}) => {
+  const user = useSelector(state => state.userInfo.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [images, setImages] = useState([]);
-  const [status, setStatus] = useState('Hyped');
+  const [text, setText] = useState(postData.described);
+  const [images, setImages] = useState(postData.image);
+  const [video, setVideo] = useState(postData.video);
+  const [status, setStatus] = useState(postData.status);
   const [isExit, setIsExit] = useState(false);
-  const [crrIndex, setCrrIndex] = useState(0);
-  const defaultImg = 'https://static.thenounproject.com/png/3752804-200.png';
-  useEffect(() => {
-    setIsModalOpen(false);
-  }, []);
-  const mock = {
-    id: 1,
-    name: 'Quang Tran',
-    profileImg: FriendStoryImg1,
-    storyImg: FriendStoryImg1,
+  const [imageDel, setImageDel] = useState([]);
+
+  const [isAddEmo, setIsAddEmo] = React.useState(false);
+
+  const maxOriginalIndex = React.useMemo(
+    () => postData.image.length,
+    [postData.image.length],
+  );
+
+  const isDisabledPost = useMemo(
+    () => text.trim() === '' && images.length === 0,
+    [text, images],
+  );
+  const title = useMemo(
+    () =>
+      mode === Enum.PostMode.Create ? 'Tạo mới bài viết' : 'Cập nhật bài viết',
+    [mode],
+  );
+  const btnText = useMemo(
+    () => (mode === Enum.PostMode.Create ? 'Đăng' : 'Cập nhật'),
+    [mode],
+  );
+  const [loading, setLoading] = useState(false);
+  const toggleOpenEmo = () => {
+    setIsAddEmo(!isAddEmo);
   };
-  const [post, setPost] = useState({
-    images: [],
-    described: '',
-    status: '',
-    video: '',
-  });
-  const openLibrary = () => {
-    let options = {};
-    launchImageLibrary(options, r => {
-      let tmp = r.assets[0].uri;
-      console.log(tmp);
-      let newImgList = [];
-      if (images.length < 4) {
-        newImgList = [...images, tmp];
+  const openLibrary = async () => {
+    const imgs = (
+      await openLibraryDevice({
+        mediaType: 'mixed',
+        noData: true,
+        selectionLimit: 20 - images.length,
+      })
+    ).assets;
+
+    if (imgs[0].type === 'image/jpeg') {
+      if (images.length < 20) {
+        const newImgList = [...imgs, ...images];
         setImages(newImgList);
-        console.log('after add ', images);
-      } else {
-        console.log('Number of images exceeded');
+        return;
       }
-    })
-      .then(r => console.log('succeed added'))
-      .catch(reject => {
-        console.log('closed');
-      });
-  };
-  const removeImg = index => {
-    let newImgList = [...images];
-    newImgList[index] = '';
-    setImages(newImgList);
-  };
-  const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'App Camera Permission',
-          message: 'App needs access to your camera',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Camera permission given');
-      } else {
-        console.log('Camera permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
+      AlertMessage('Tối đa 20 ảnh');
+    }
+    if (imgs[0].type === 'video/mp4') {
+      //   console.log(imgs[0]);
+      setVideo(imgs[0]);
     }
   };
-  const openCamera = () => {
-    requestCameraPermission().then(() => {
-      let options = {};
-      launchCamera(options).then(r => console.log(r));
-    });
+  const removeImg = index => {
+    const newImgList = [...images];
+    if (images[index].uri.includes(BE_URL)) {
+      setImageDel(prev => [...prev, images[index]]);
+    }
+    newImgList.splice(index, 1);
+
+    setImages(newImgList);
+  };
+
+  const openCamera = async () => {
+    await requestCameraPermission();
+
+    const options = {};
+    launchCamera(options).then(r => console.log(r));
   };
   const handleExit = () => {
-    if (text == '') {
-      navigation.navigate(APP_ROUTE.HOME_TAB);
+    if (isDisabledPost) {
+      onClose();
+    } else if (mode === Enum.PostMode.Edit) {
+      onClose();
     } else {
       setIsExit(true);
     }
   };
-  const onCreateNewPost = async () => {
-    const newPost = {
-      image: images.filter(e => e.uri !== ''),
-      described: text,
-      status,
-      video: null,
-      auto_accept: '1',
-    };
-    setPost(newPost);
-
-    // Tham khảo đoạn thêm image kiểu này nếu có lỗi với kiểu đang làm (CHAT GPT)
-    // formData.append('image', {
-    //     uri: newPost.image[0],
-    //     type: 'image/jpeg', // Thay đổi loại tệp tùy thuộc vào định dạng của hình ảnh bạn đang sử dụng
-    //     name: 'photo.jpg',
-    //   });
-
+  const buildFormData = data => {
     const formData = new FormData();
-    formData.append('image', newPost.image);
-    formData.append('described', newPost.described);
-    formData.append('status', newPost.status);
-    formData.append('video', newPost.video);
-    formData.append('auto_accept', newPost.auto_accept);
 
+    for (const key in data) {
+      if (key === 'image') {
+        data.image.forEach(item => {
+          if (item.uri) {
+            formData.append('image', createImageFormData(item));
+          }
+        });
+      } else if (data[key]) {
+        if (key === 'video') {
+          // formData.delete('image')
+          formData.append('video', createImageFormData(data[key]));
+        } else formData.append(key, data[key]);
+      }
+    }
+    console.log('formdata:', formData);
+    return formData;
+  };
+  const createPostRequest = async item => {
     try {
-      const {data} = await addPost(newPost);
-      console.log(data);
-    } catch (err) {
-      console.log(JSON.stringify(err));
+      setLoading(true);
+      store.dispatch(postInfoActions.startPosting());
+      const formData = buildFormData(item);
+      onClose();
+      const res1 = await addPost(formData);
+
+      const {data} = res1;
+      const res = await getPostRequest({id: data.data.id});
+
+      store.dispatch(postInfoActions.endPosting(res.data.data));
+      ToastAndroid.show('Đăng bài mới thành công: ', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
+      store.dispatch(postInfoActions.endPosting({}));
+    } finally {
+      setLoading(false);
     }
   };
+  const editPostRequest = async item => {
+    try {
+      setLoading(true);
 
-  useEffect(() => {
-    console.log(post);
-  }, [post]);
+      const imgs = item.image.filter(img => !img.uri.includes(BE_URL));
+      const formData = buildFormData({...item, image: imgs, id: postData.id});
+
+      const {data} = await editPost(formData);
+
+      const res = await getPostRequest({id: data.data.id});
+
+      store.dispatch(postInfoActions.updatePost(res.data.data));
+
+      ToastAndroid.show('Cập nhật thành công: ', ToastAndroid.SHORT);
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onCreateNewPost = () => {
+    setLoading(true);
+
+    const newPost = {
+      image: images.filter(img => img.uri),
+      described: text.trim() || '  ',
+      status: status || 'Hihi',
+      video,
+      auto_accept: '1',
+    };
+    if (video?.uri) {
+      delete newPost.image;
+    }
+
+    if (mode === Enum.PostMode.Create) {
+      createPostRequest(newPost);
+      return;
+    }
+
+    const imgsDelStr = imageDel.map(item => item.id).join(',');
+
+    let startNewImgIndex = maxOriginalIndex;
+    const newImgSort = images.map(imgSource => {
+      if (imgSource.uri.includes(BE_URL)) {
+        return imgSource.originalIndex;
+      } else {
+        startNewImgIndex++;
+        return `${startNewImgIndex}`;
+      }
+    });
+    const imgDelSorterStr = newImgSort.join(', ');
+    const editPost = {
+      ...newPost,
+      id: postData.id,
+      image_del: imgsDelStr || null,
+      image_sort: imgDelSorterStr || null,
+    };
+    editPostRequest(editPost);
+  };
+
+  const handleSetStatus = emo => {
+    setStatus(emo.name + ' ' + emo.emo);
+    toggleOpenEmo();
+    setIsModalOpen(false);
+  };
+  const handleUnRemoveImgDel = (imgDel, index) => {
+    const imgDels = [...imageDel];
+    imgDels.splice(index, 1);
+    setImageDel(imgDels);
+    setImages([imgDel, ...images]);
+  };
 
   return (
     <View style={styles.container}>
+      <View
+        style={[
+          {transform: [{scale: 1.5}], zIndex: loading ? 10000 : 0},
+          StyleSheet.absoluteFill,
+        ]}>
+        {<LoadingOverlay isLoading={loading} />}
+      </View>
       <View style={styles.header}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isAddEmo}
+          onBackdropPress={toggleOpenEmo}>
+          <EmotionList
+            close={toggleOpenEmo}
+            setStatus={handleSetStatus}></EmotionList>
+        </Modal>
         {/*header*/}
         <View style={styles.header1}>
           <TouchableOpacity onPress={handleExit}>
@@ -152,29 +257,37 @@ const UploadScreen = ({navigation, route}) => {
               color={Colors.grey}
             />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Tạo bài viết mới</Text>
+
+          <Text style={styles.headerText}>{title}</Text>
         </View>
-        <TouchableOpacity disabled={text == ''} onPress={onCreateNewPost}>
+        <TouchableOpacity disabled={isDisabledPost} onPress={onCreateNewPost}>
           <Text
             style={[
               styles.headerText,
-              text == '' ? {color: 'lightgrey'} : {color: Colors.grey},
+              isDisabledPost ? {color: 'lightgrey'} : {color: Colors.grey},
             ]}>
-            Đăng
+            {btnText}
           </Text>
         </TouchableOpacity>
       </View>
 
       {/*avatar and name*/}
       <View style={styles.avaContainer}>
-        <Image style={styles.ava} source={mock.profileImg} />
+        <Image style={styles.ava} source={{uri: user.avatar}} />
         <View>
-          <Text style={{fontWeight: 'bold', fontSize: 18}}>{mock.name}</Text>
+          <Text
+            style={{fontWeight: 'bold', fontSize: 20, color: Colors.textColor}}>
+            {user.username}
+            <Text style={{fontWeight: '400', fontSize: 15}}>
+              {' '}
+              cảm thấy {status}
+            </Text>
+          </Text>
           <View style={styles.infoStt}>
             <VectorIcon
               name="globe"
               type="FontAwesome"
-              size={22}
+              size={20}
               color={'lightgrey'}
             />
             <Text style={styles.stt}>Công khai</Text>
@@ -185,44 +298,95 @@ const UploadScreen = ({navigation, route}) => {
       {/*input box*/}
       <View style={styles.input}>
         <TextInput
+          autoFocus
           multiline
-          numberOfLines={4}
+          numberOfLines={3}
           onChangeText={e => setText(e)}
           value={text}
           placeholder={'Bạn đang nghĩ gì?'}
-          placeholderTextColor={'lightgrey'}
+          placeholderTextColor={Colors.textGrey}
           fontSize={20}
+          style={{color: Colors.black, fontSize: 18}}
           textAlignVertical="top"
         />
       </View>
-
-      <View style={{flex: 1}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          {images.map((e, index) => {
-            if (index === 0 || index === 1)
-              return (
+      {imageDel.length > 0 && (
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 8,
+            alignItems: 'center',
+            marginBottom: 8,
+            paddingHorizontal: 8,
+            flexWrap: 'wrap',
+          }}>
+          <Text
+            style={{color: Colors.textColor, fontSize: 18, fontWeight: 'bold'}}>
+            Khôi phục:
+          </Text>
+          <View style={{flexDirection: 'row', gap: 8}}>
+            {imageDel.map((img, index) => (
+              <TouchableOpacity
+                key={img.uri}
+                onPress={() => handleUnRemoveImgDel(img, index)}
+                style={{
+                  borderWidth: 1,
+                  borderColor: Colors.borderGrey,
+                  borderStyle: 'solid',
+                }}>
                 <Image
-                  style={styles.image}
-                  source={{uri: e !== '' ? e : defaultImg}}
-                  index={index}
+                  style={{height: 48, width: 48, resizeMode: 'cover'}}
+                  source={img}
+                  defaultSource={require('../assets/images/avatar_null.jpg')}
                 />
-              );
-          })}
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          {images.map((e, index) => {
-            if (index === 2 || index === 3)
+      )}
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={{flex: 1, marginBottom: 100}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 4,
+          }}>
+          {!!video?.uri ? (
+            <Video
+              source={video}
+              style={styles.video}
+              controls={true}
+              resizeMode="contain"
+            />
+          ) : (
+            images.length > 0 &&
+            images.map((e, index) => {
               return (
-                <Image
-                  style={styles.image}
-                  source={{uri: e !== '' ? e : defaultImg}}
-                  index={index}
-                />
+                <View key={index} style={styles.image}>
+                  <ImageBackground
+                    key={index}
+                    style={{width: '100%', aspectRatio: 1}}
+                    source={e}
+                  />
+                  <TouchableOpacity
+                    onPress={() => removeImg(index)}
+                    style={styles.removeImgIcon}>
+                    <VectorIcon
+                      type="AntDesign"
+                      name="close"
+                      color={Colors.black}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                </View>
               );
-          })}
+            })
+          )}
         </View>
-      </View>
+      </ScrollView>
       {/*footer*/}
       {isModalOpen ? (
         <View style={styles.modal}>
@@ -253,13 +417,15 @@ const UploadScreen = ({navigation, route}) => {
               <Text style={styles.headerText}>Mở Camera</Text>
             </View>
           </TouchableOpacity>
-          <View style={styles.option}>
-            <Image
-              style={styles.logoOption}
-              source={require('../assets/images/emoji.png')}
-            />
-            <Text style={styles.headerText}>Cảm xúc/Hành động</Text>
-          </View>
+          <TouchableOpacity onPress={toggleOpenEmo}>
+            <View style={styles.option}>
+              <Image
+                style={styles.logoOption}
+                source={require('../assets/images/emoji.png')}
+              />
+              <Text style={styles.headerText}>Cảm xúc/Hành động</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       ) : (
         <TouchableOpacity
@@ -287,14 +453,14 @@ const UploadScreen = ({navigation, route}) => {
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <View
             style={{
-              backgroundColor: 'white',
+              backgroundColor: Colors.white,
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
               padding: 20,
             }}>
             <View style={{paddingBottom: 10}}>
               <Text style={styles.headerText}>
-                Bạn muốn hoàn thành bài viết của mình sau?
+                Bạn muốn hoàn thành bài viết sau?
               </Text>
             </View>
             <View style={styles.option}>
@@ -306,12 +472,16 @@ const UploadScreen = ({navigation, route}) => {
                 style={{alignItems: 'center'}}
               />
               <Text
-                style={{fontSize: 18, marginBottom: 10, fontWeight: 'bold'}}>
+                style={{
+                  fontSize: 18,
+                  marginBottom: 10,
+                  fontWeight: 'bold',
+                  color: Colors.textColor,
+                }}>
                 Lưu làm bản nháp
               </Text>
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(APP_ROUTE.HOME_TAB)}>
+            <TouchableOpacity onPress={onClose}>
               <View style={styles.option}>
                 <VectorIcon
                   name="trash-2"
@@ -321,7 +491,12 @@ const UploadScreen = ({navigation, route}) => {
                   style={{alignItems: 'center'}}
                 />
                 <Text
-                  style={{fontSize: 18, marginBottom: 10, fontWeight: 'bold'}}>
+                  style={{
+                    fontSize: 18,
+                    marginBottom: 10,
+                    fontWeight: 'bold',
+                    color: Colors.textColor,
+                  }}>
                   Bỏ bài viết
                 </Text>
               </View>
@@ -332,7 +507,7 @@ const UploadScreen = ({navigation, route}) => {
                   name="check"
                   type="Feather"
                   size={22}
-                  color={'#2873d7'}
+                  color={Colors.primaryColor}
                   style={{alignItems: 'center'}}
                 />
                 <Text
@@ -340,7 +515,7 @@ const UploadScreen = ({navigation, route}) => {
                     fontSize: 18,
                     marginBottom: 10,
                     fontWeight: 'bold',
-                    color: '#2873d7',
+                    color: Colors.primaryColor,
                   }}>
                   Tiếp tục chỉnh sửa
                 </Text>
@@ -355,7 +530,7 @@ const UploadScreen = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     position: 'relative',
     flex: 1,
   },
@@ -375,6 +550,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: Colors.textGrey,
   },
   avaContainer: {
     padding: 8,
@@ -394,9 +570,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: 'row',
     gap: 5,
+    width: 100,
   },
   stt: {
-    fontSize: 15,
+    fontSize: 14,
+    color: Colors.textGrey,
   },
   input: {
     padding: 10,
@@ -414,7 +592,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
   },
   logoOption: {
     width: 24,
@@ -425,7 +603,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   modal: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     marginTop: 'auto',
     borderWidth: 1,
     borderTopRightRadius: 5,
@@ -443,15 +621,30 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   image: {
-    width: '50%',
+    width: '49%',
     aspectRatio: 1,
-    margin: 3,
-    objectFit: 'cover',
+    resizeMode: 'cover',
+
+    position: 'relative',
   },
   imageList: {
     flexDirection: 'column',
     gap: 10,
     width: '100%',
+  },
+  removeImgIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 222,
+    padding: 4,
+    backgroundColor: Colors.lightgrey,
+    borderRadius: 20,
+  },
+  video: {
+    flex: 1,
+    width: '100%',
+    height: 250, // Adjust the height as needed
   },
 });
 

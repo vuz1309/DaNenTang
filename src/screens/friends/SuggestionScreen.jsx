@@ -5,6 +5,7 @@ import {
   TouchableHighlight,
   ScrollView,
   RefreshControl,
+  FlatList,
 } from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
@@ -15,110 +16,93 @@ import {
   getSuggestionFriend,
   setRequestFriend,
 } from '../../api/modules/friends.request';
-import AlertMessage from '../../components/base/AlertMessage';
 import {useScrollHanler} from '../../hooks/useScrollHandler';
 import Loading from '../../components/base/Loading';
 import HeaderSearch from '../layouts/HeaderSearch';
+import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
 
 const SuggestionScreen = ({navigation}) => {
   const [allSuggestions, setSuggestions] = React.useState([]);
-  const [params, setParams] = React.useState({
-    index: '0',
-    count: '20',
-  });
 
-  const getAll = async () => {
-    setIsLoadMore(true);
+  const {
+    getNewItems,
+    handleScroll,
+    loadMore,
+    params,
+    reload,
+    refreshing,
+    isLoadMore,
+  } = useLoadOnScroll(getAll);
+
+  const setRequestApi = async user_id => {
     try {
-      console.log(params);
+      setRequestFriend({user_id});
+    } catch (error) {
+      console.log('request: ', error);
+    }
+  };
+  async function getAll() {
+    try {
       const {data} = await getSuggestionFriend(params);
+
       if (params.index == '0') setSuggestions(data.data);
       else {
-        const newItems = data.data.filter(
-          it => !allSuggestions.find(sugg => sugg.id == it.id),
-        );
+        const newItems = getNewItems(data.data, allSuggestions);
+
         setSuggestions(prev => [...prev, ...newItems]);
       }
     } catch (error) {
-      AlertMessage('Vui lòng kiểm tra lại mạng!');
-    } finally {
-      setIsLoadMore(false);
+      console.log(error);
     }
-  };
-  const setRequestApi = async user_id => {
-    try {
-      const {data} = await setRequestFriend({user_id});
-      console.log(data);
-    } catch (error) {
-      console.log('request: ', error);
-      if (error.status !== 400) AlertMessage('Vui lòng kiểm tra lại mạng!');
-    }
-  };
-
-  const reload = () => {
-    if (refreshing) return;
-    setParams({
-      index: '0',
-      count: '20',
-    });
-  };
-  const loadMore = () => {
-    console.log('load more');
-    if (isLoadMore) return;
-    setParams(prev => ({
-      count: '20',
-      index: (Number(prev.index) + 1).toString(),
-    }));
-  };
-
-  const {handleScroll, isLoadMore, setIsLoadMore, refreshing} = useScrollHanler(
-    reload,
-    loadMore,
-  );
-  React.useEffect(() => {
-    getAll();
-  }, [params]);
-
+  }
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
       <HeaderSearch title={'Gợi ý'} onBack={navigation.goBack} />
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
+
+      <FlatList
+        data={allSuggestions}
+        ListHeaderComponent={
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingHorizontal: 12,
+              marginTop: 12,
+            }}>
+            <Text style={styles.titleText}>Những người bạn có thể biết</Text>
+          </View>
+        }
+        ListFooterComponent={() => isLoadMore && <Loading />}
+        renderItem={({item}) => (
+          <AddFriendRequest
+            key={item.id}
+            mainText="Thêm bạn bè"
+            subText="Gỡ"
+            onClickMain={() => setRequestApi(item.id)}
+            onClickSub={() => {}}
+            data={item}
+            textOnReject="Đã gỡ gợi ý"
+            textOnAccept="Đã gửi yêu cầu"
+          />
+        )}
+        keyExtractor={item => item.id}
+        horizontal={false}
         showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
         refreshControl={
           <RefreshControl
             colors={[Colors.primaryColor]}
             refreshing={refreshing}
             onRefresh={reload}
           />
-        }>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: 12,
-            marginTop: 12,
-          }}>
-          <Text style={styles.titleText}>Những người bạn có thể biết</Text>
-        </View>
-        <View style={{paddingBottom: 12}}>
-          {allSuggestions.map(user => (
-            <AddFriendRequest
-              key={user.id}
-              mainText="Thêm bạn bè"
-              subText="Gỡ"
-              onClickMain={() => setRequestApi(user.id)}
-              onClickSub={() => {}}
-              data={user}
-              textOnReject="Đã gỡ gợi ý"
-              textOnAccept="Đã gửi yêu cầu"
-            />
-          ))}
-        </View>
-        {isLoadMore && <Loading color={Colors.primaryColor} />}
-      </ScrollView>
+        }
+        // onEndReached={loadMore}
+        onScroll={handleScroll}
+        onEndReachedThreshold={0.1}
+        viewabilityConfig={{
+          viewAreaCoveragePercentThreshold: 50,
+        }}
+      />
     </View>
   );
 };
