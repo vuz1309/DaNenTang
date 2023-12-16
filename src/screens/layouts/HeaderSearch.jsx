@@ -1,8 +1,11 @@
 import {View, TouchableHighlight, StyleSheet, Text} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 
 const HeaderSearch = ({title, onBack, haveSearch = true}) => {
+  const {navigate} = useNavigation();
   return (
     <View style={styles.header}>
       <View style={{gap: 12, flexDirection: 'row', alignItems: 'center'}}>
@@ -22,7 +25,9 @@ const HeaderSearch = ({title, onBack, haveSearch = true}) => {
         </Text>
       </View>
       {haveSearch && (
-        <TouchableHighlight style={{borderRadius: 48, padding: 8}}>
+        <TouchableHighlight
+          onPress={() => navigate(APP_ROUTE.SEARCH, {})}
+          style={{borderRadius: 48, padding: 8}}>
           <VectorIcon
             name="search1"
             type="AntDesign"

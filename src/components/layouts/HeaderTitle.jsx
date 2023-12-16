@@ -1,12 +1,14 @@
 import {View, StyleSheet, Text, TouchableHighlight} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
-
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
 const HeaderTitle = ({
   title,
   icons = [],
   containerStyle = {backgroundColor: Colors.white},
 }) => {
+  const {navigate} = useNavigation();
   return (
     <View style={[styles.header, containerStyle]}>
       <Text style={styles.menu}>{title}</Text>
@@ -23,7 +25,9 @@ const HeaderTitle = ({
           </TouchableHighlight>
         ))}
 
-        <TouchableHighlight style={styles.searchBg}>
+        <TouchableHighlight
+          onPress={() => navigate(APP_ROUTE.SEARCH)}
+          style={styles.searchBg}>
           <VectorIcon
             name="search"
             type="Ionicons"

@@ -1,3 +1,5 @@
+import {APP_ROUTE} from '../../../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
 const {View, TouchableOpacity, StyleSheet, Text} = require('react-native');
 const {Colors} = require('../../../utils/Colors');
 const {default: VectorIcon} = require('../../../utils/VectorIcon');
@@ -8,6 +10,7 @@ const HeaderCenter = ({
   bgColor = Colors.white,
   textColor = Colors.black,
 }) => {
+  const {navigate} = useNavigation();
   return (
     <View style={[styles.header, {backgroundColor: bgColor}]}>
       <TouchableOpacity onPress={goBack}>
@@ -19,7 +22,7 @@ const HeaderCenter = ({
         />
       </TouchableOpacity>
       <Text style={[styles.headerText, {color: textColor}]}>{text}</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigate(APP_ROUTE.SEARCH)}>
         <VectorIcon
           name="search1"
           type="AntDesign"
