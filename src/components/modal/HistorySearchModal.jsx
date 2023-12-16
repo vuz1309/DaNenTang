@@ -20,7 +20,7 @@ import {
   getSavedSearchRequest,
 } from '../../api/modules/search';
 import {logger} from '../../utils/helper';
-import PostBody from '../posts/PostBody';
+import PostDisplay from '../posts/PostDisplay';
 
 const HistoryItem = ({item, onCompleteDeleteSearch}) => {
   const onDeleteHistorySearch = async () => {

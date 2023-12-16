@@ -14,15 +14,13 @@ import {
 import {Image} from 'react-native';
 import {getMarkComments, setMarkComments} from '../api/modules/comment.request';
 
-import PostHeaderComment from '../components/posts/PostHeaderComment';
-import PostBodyComment from '../components/posts/PostBodyComment';
 import {useNavigation} from '@react-navigation/native';
 import {useGetPostById} from '../hooks/useGetPostById';
 import LoadingOverlay from '../components/base/LoadingOverlay';
 import {convertTimeToFacebookStyle} from '../helpers/helpers';
-import PostHeader from '../components/posts/PostHeader';
-import PostBody from '../components/posts/PostBody';
+import PostDisplay from '../components/posts/PostDisplay';
 import HeaderCenter from '../components/base/headers/HeaderCenter';
+import {store} from '../state-management/redux/store';
 
 const Comment = ({
   id,
@@ -193,13 +191,10 @@ const CommentScreen = ({route, navigation}) => {
   if (!post.id) return <LoadingOverlay isLoading={true} />;
   return (
     <View style={styles.wrapper}>
-      {/* <PostHeaderComment data={post} /> */}
       <HeaderCenter text={post.author.name} goBack={navigation.goBack} />
       <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
       <ScrollView style={styles.subWrapper}>
-        {/* <PostBodyComment key={post.id} item={post} /> */}
-        {/* <PostHeader data={post}  /> */}
-        {/* <PostBody  /> */}
+        <PostDisplay item={post} />
         <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
         <View
           style={{
@@ -239,14 +234,17 @@ const CommentScreen = ({route, navigation}) => {
       </ScrollView>
 
       <View style={styles.addComment}>
-        <VectorIcon
-          name="camera"
-          type="FontAwesome"
-          color={Colors.gray}
-          size={20}
-          style={{paddingRight: 15, paddingBottom: 6}}
-          onPress={onPressSendComment}
-        />
+        <View
+          style={{height: 40, width: 40, borderRadius: 30, overflow: 'hidden'}}>
+          <Image
+            style={{resizeMode: 'cover', height: '100%', width: '100%'}}
+            source={
+              store.getState().userInfo.user.avatar
+                ? {uri: store.getState().userInfo.user.avatar}
+                : require('../assets/images/avatar_null.jpg')
+            }
+          />
+        </View>
         <TextInput
           onPressOut={() => setMarkType(1)}
           ref={inputRef}
@@ -256,14 +254,17 @@ const CommentScreen = ({route, navigation}) => {
           placeholderTextColor={Colors.textGrey}
           onChangeText={value => setTextComment(value)}
         />
-        <VectorIcon
-          name="send"
-          type="Feather"
-          color={Colors.primaryColor}
-          size={20}
-          style={styles.sendButton}
-          onPress={onPressSendComment}
-        />
+        <TouchableHighlight
+          underlayColor={Colors.lightgrey}
+          style={{padding: 8}}
+          onPress={onPressSendComment}>
+          <VectorIcon
+            name="send"
+            type="Feather"
+            color={Colors.primaryColor}
+            size={26}
+          />
+        </TouchableHighlight>
       </View>
     </View>
   );
@@ -339,13 +340,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     bottom: 0,
-    display: 'flex',
+
     flexDirection: 'row',
-    justifyContent: 'center',
+
     borderTopWidth: 1,
     borderTopColor: Colors.borderGrey,
-    padding: 5,
-    paddingTop: 10,
+    gap: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
   },
   inputComment: {
     flex: 1,
@@ -356,9 +358,6 @@ const styles = StyleSheet.create({
     color: Colors.black,
     borderWidth: 1,
     borderColor: Colors.borderGrey,
-  },
-  sendButton: {
-    padding: 10,
   },
 });
 export default CommentScreen;

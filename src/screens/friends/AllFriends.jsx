@@ -1,25 +1,10 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
-  Image,
-  ScrollView,
-  Pressable,
-  RefreshControl,
-  FlatList,
-} from 'react-native';
+import {View, Text, StyleSheet, RefreshControl, FlatList} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
-import {FacebookRootState} from '../../state-management/redux/store';
 
 import {useSelector} from 'react-redux';
-import VectorIcon from '../../utils/VectorIcon';
-import AlertMessage from '../../components/base/AlertMessage';
 import {getAllFriends} from '../../api/modules/friends.request';
-import {useScrollHanler} from '../../hooks/useScrollHandler';
 import {useNavigation} from '@react-navigation/native';
-import {APP_ROUTE} from '../../navigation/config/routes';
 import Loading from '../../components/base/Loading';
 import FriendCard from '../../components/friends/FriendCard';
 import HeaderSearch from '../layouts/HeaderSearch';
@@ -28,14 +13,7 @@ import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
 const AllFriendsScreen = ({route}) => {
   const {goBack} = useNavigation();
   const {user} = route.params;
-  const userLogged = useSelector(
-    /**
-     *
-     * @param {FacebookRootState} state
-     * @returns
-     */
-    state => state.userInfo.user,
-  );
+  const userLogged = useSelector(state => state.userInfo.user);
   const isOwner = React.useMemo(
     () => user.id === userLogged.id,
     [user, userLogged],
@@ -109,9 +87,6 @@ const AllFriendsScreen = ({route}) => {
             onRefresh={reload}
           />
         }
-        viewabilityConfig={{
-          viewAreaCoveragePercentThreshold: 50,
-        }}
       />
     </View>
   );

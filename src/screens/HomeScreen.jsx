@@ -14,9 +14,11 @@ import Loading from '../components/base/Loading';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
 import BuyCoins from './coins/BuyCoins';
-import PostBody from '../components/posts/PostBody';
 import LoadingPosting from '../components/posts/LoadingPosting';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
+import PostHeader from '../components/posts/PostHeader';
+import FilePost from '../components/posts/FilePost';
+import PostFooter from '../components/posts/PostFooter';
 const HomeScreen = () => {
   // const userLogged = useSelector(state => state.userInfo.user);
 
@@ -34,7 +36,7 @@ const HomeScreen = () => {
   const getListPostsApi = async () => {
     try {
       console.log('home post param:', params);
-      const {data} = await getListPost({...params});
+      const {data} = await getListPost(params);
       // console.log(data);
       if (data.data.last_id != 'undefined') {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
@@ -52,7 +54,7 @@ const HomeScreen = () => {
         store.dispatch(postInfoActions.addPosts(data.data.post));
       }
     } catch (error) {
-      // console.log('load data error', error);
+      console.log('load data error', error);
     } finally {
       setRefreshing(false);
       setIsLoadMore(false);
@@ -97,7 +99,13 @@ const HomeScreen = () => {
 
   const postRenderItem = React.useCallback(
     ({item}) => (
-      <PostBody item={item} setIsShowDialogCoins={setIsShowDialogCoins} />
+      <View style={{backgroundColor: Colors.white, marginTop: 8}}>
+        <PostHeader data={item} setIsShowDialogCoins={setIsShowDialogCoins} />
+
+        <FilePost item={item} />
+
+        <PostFooter data={item} />
+      </View>
     ),
     [],
   );
