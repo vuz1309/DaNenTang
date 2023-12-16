@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
 import {
-  Modal,
-  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -20,8 +18,10 @@ import {getSavedSearchRequest} from '../../api/modules/search';
 import {logger} from '../../utils/helper';
 import PostDisplay from '../posts/PostDisplay';
 import HistorySearchModal from './HistorySearchModal';
+import { APP_ROUTE } from '../../navigation/config/routes';
 
-export default function SearchModal({onCloseModal, initialKeyword = ''}) {
+const SearchScreen = ({route, navigation}) => {
+  const initialKeyword = route?.params?.initialKeyword || '';
   const [keyword, setKeyword] = useState(initialKeyword);
   const [savedData, setSavedData] = useState([]);
   const [searchData, setSearchData] = useState([]);
@@ -59,15 +59,6 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
     useSearch({onComplete: onCompleteSearch, keyword: keyword});
   };
   return (
-    <Modal
-      animationType="fade"
-      transparent={false}
-      visible={true}
-      presentationStyle="fullScreen"
-      onRequestClose={() => {
-        onCloseModal();
-        AlertMessage('Modal has been closed.');
-      }}>
       <View>
         <View style={styles.searchHeader}>
           <TouchableHighlight
@@ -75,7 +66,7 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
             style={{padding: 4, borderRadius: 20}}
             onPress={() => {
               setKeyword('');
-              onCloseModal();
+              navigation.navigate(APP_ROUTE.HOME_TAB);
             }}>
             <VectorIcon
               name="arrowleft"
@@ -157,7 +148,6 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
           </View>
         )}
       </View>
-    </Modal>
   );
 }
 const styles = StyleSheet.create({
@@ -246,3 +236,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+export default SearchScreen;

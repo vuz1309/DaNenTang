@@ -37,6 +37,7 @@ import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
 import {Colors} from './src/utils/Colors';
 
 import UploadScreen from './src/screens/UploadScreen';
+import SearchScreen from './src/components/modal/SearchScreen';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -93,6 +94,7 @@ const AppChild = () => {
               name={APP_ROUTE.WATCH_NIGHT}
             />
             <Stack.Screen component={UploadScreen} name={APP_ROUTE.UPLOAD} />
+            <Stack.Screen name={APP_ROUTE.SEARCH} component={SearchScreen} />
           </>
         );
       }
@@ -130,6 +132,7 @@ const AppChild = () => {
             name={ONBOARDING_ROUTE.CREATE_PASSWORD}
             component={CreatePassword}
           />
+          
         </>
       );
     }

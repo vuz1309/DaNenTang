@@ -8,6 +8,8 @@ import {useAppTokens} from '../../hooks/useAppToken';
 import {AppStateContext} from './AppStateProvider';
 import AlertMessage from '../../components/base/AlertMessage';
 import Enum from '../Enum';
+import { useNavigation } from '@react-navigation/native';
+import { APP_ROUTE } from '../../navigation/config/routes';
 
 export const NotificationContext = createContext({});
 export const notiContents = {
@@ -50,13 +52,12 @@ export const notiContents = {
 };
 const DEFINE_SAVE_TOKEN = false;
 
-export const NotificationProvider = (props: any) => {
+export const NotificationProvider = (props : any) => {
   const {children} = props;
   const [enableNotify, setEnableNotify] = React.useState(false);
   const [firebaseToken, setFirebaseToken] = useState<any>('');
   const {appState} = React.useContext<any>(AppStateContext);
   const {saveFcmToken, getFcmToken} = useAppTokens(); // save local storage
-
   const createDefaultChannel = () => {
     if (Platform.OS === 'android') {
       PushNotification.createChannel(
@@ -76,13 +77,17 @@ export const NotificationProvider = (props: any) => {
   React.useEffect(() => {
     createDefaultChannel();
   }, []);
-
   const handleClickMessage = (
     type: string,
     message: string,
     data?: Record<string, unknown>,
   ) => {
     //TODO :HANDLE LOGIC CLICK MESSAGE HERE: NAVIGATE SCREEN
+    if (Platform.OS === 'android') {
+      setTimeout(() => {
+        // navigation.navigate(APP_ROUTE.COMMENT_PAGE as never);
+      }, 1000);
+    }
   };
 
   const handleOnMessageCome = (messageId: any, type: string, data: any) => {
@@ -130,6 +135,7 @@ export const NotificationProvider = (props: any) => {
         response?.data,
       );
     }
+    
   };
 
   const onMessageError = (data: any) => {};
