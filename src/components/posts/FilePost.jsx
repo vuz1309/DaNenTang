@@ -30,8 +30,8 @@ const PostImg = ({img, isBanned}) => {
 };
 
 const FilePost = ({item}) => {
-  const isBanned = React.useMemo(() => !!Number(item.banned));
-  const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
+  const isBanned = React.useMemo(() => !!Number(item.banned), []);
+  const isBlocked = React.useMemo(() => !!Number(item.is_blocked), []);
   const {navigate} = useNavigation();
   const [isModalVisible, setModalVisible] = React.useState(0);
   return (
@@ -53,6 +53,7 @@ const FilePost = ({item}) => {
               {item.image.slice(2, 4).map((img, index) => (
                 <TouchableOpacity
                   key={img.url}
+                  style={{flex: 1, ...styles.border}}
                   onPress={() => setModalVisible(index + 3)}>
                   <PostImg img={img} isBanned={isBanned} />
                 </TouchableOpacity>
@@ -140,6 +141,16 @@ const styles = StyleSheet.create({
 export default React.memo(
   FilePost,
   (prev, next) =>
-    JSON.stringify({image: prev.item.image, video: prev.item.video}) ===
-    JSON.stringify({image: next.item.image, video: next.item.video}),
+    JSON.stringify({
+      image: prev.item.image,
+      video: prev.item.video,
+      banned: prev.item.banned,
+      blocked: prev.item.is_blocked,
+    }) ===
+    JSON.stringify({
+      image: next.item.image,
+      video: next.item.video,
+      banned: next.item.banned,
+      blocked: next.item.is_blocked,
+    }),
 );

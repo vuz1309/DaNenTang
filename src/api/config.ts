@@ -4,12 +4,7 @@ import axios from 'axios';
 
 import {store} from '../state-management/redux/store';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
-import {
-  BUG_SERVER,
-  INVALID_TOKEN,
-  USER_INVALID,
-  errors,
-} from '../utils/constants';
+import {INVALID_TOKEN, errors} from '../utils/constants';
 import AlertMessage from '../components/base/AlertMessage';
 import {ToastAndroid} from 'react-native';
 import {formatNumberSplitBy} from '../helpers/helpers';
@@ -57,15 +52,32 @@ export const createApiInstance = (
             store.getState().userInfo?.user?.id?.toString()
         )
           return response;
-        store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
 
-        ToastAndroid.showWithGravity(
-          `Số coins còn lại: ${formatNumberSplitBy(
-            Number(response.data.data.coins),
-          )}`,
-          ToastAndroid.LONG,
-          ToastAndroid.TOP,
-        );
+        const currentCoins = Number(store.getState().userInfo.user?.coins);
+        const updatedCoins = Number(response.data.data.coins);
+        if (currentCoins < updatedCoins) {
+          // case nạp coins
+          ToastAndroid.showWithGravity(
+            `Nạp thành công ${formatNumberSplitBy(
+              updatedCoins - currentCoins,
+            )} coins, số coins hiện tại: ${formatNumberSplitBy(
+              Number(response.data.data.coins),
+            )}`,
+            ToastAndroid.LONG,
+            ToastAndroid.TOP,
+          );
+        } else if (currentCoins > updatedCoins) {
+          ToastAndroid.showWithGravity(
+            `Bạn vừa bị trừ ${formatNumberSplitBy(
+              -updatedCoins + currentCoins,
+            )} coins, số coins hiện tại: ${formatNumberSplitBy(
+              Number(response.data.data.coins),
+            )}`,
+            ToastAndroid.LONG,
+            ToastAndroid.TOP,
+          );
+        }
+        store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
       }
       return response;
     },

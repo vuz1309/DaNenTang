@@ -18,11 +18,23 @@ export interface IUser {
   coins: string;
   active?: string;
 }
-
+export interface IPushSettings {
+  like_comment?: string;
+  from_friends?: string;
+  requested_friend?: string;
+  suggested_friend?: string;
+  birthday?: string;
+  video?: string;
+  report?: string;
+  sound_on?: string;
+  notification_on?: string;
+  vibrant_on?: string;
+  led_on?: string;
+}
 export interface IUserInfoState {
   token?: string;
   user?: IUser;
-
+  pushSettings?: IPushSettings;
   status: CommonStatus;
   error?: any;
 }
@@ -83,6 +95,7 @@ const updateToken: Reducer<
 const logOut: Reducer = state => {
   delete state.token;
   delete state.user;
+  delete state.pushSettings;
 };
 const updateCoin: Reducer<PayloadAction<string>> = (state, {payload}) => {
   // console.log('update coins:', payload);
@@ -90,6 +103,17 @@ const updateCoin: Reducer<PayloadAction<string>> = (state, {payload}) => {
   if (state.user) {
     // Cập nhật số coin trong state
     state.user.coins = payload;
+  }
+};
+const savePushSettings: Reducer<PayloadAction<IPushSettings>> = (
+  state,
+  {payload},
+) => {
+  console.log('update push:', payload);
+  // Kiểm tra xem người dùng đã đăng nhập hay chưa
+  if (state.user) {
+    // Cập nhật số coin trong state
+    state.pushSettings = payload;
   }
 };
 const userInfoSlice = createSlice({
@@ -105,10 +129,15 @@ const userInfoSlice = createSlice({
     loginSuccess,
     updateUserInfo,
     updateCoin,
+    savePushSettings,
   },
 });
 
-const persistConfig = generatePersistConfig('userInfo', ['token', 'user']);
+const persistConfig = generatePersistConfig('userInfo', [
+  'token',
+  'user',
+  'pushSettings',
+]);
 
 export const userInfoActions = userInfoSlice.actions;
 

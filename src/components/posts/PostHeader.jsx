@@ -73,7 +73,7 @@ const PostHeader = ({
           postId,
         }),
       );
-      await deletePostRequest({id: postId});
+      deletePostRequest({id: postId});
       ToastAndroid.show('Xóa bài đăng thành công!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
