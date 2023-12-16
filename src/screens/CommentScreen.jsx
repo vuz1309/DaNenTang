@@ -55,7 +55,6 @@ const Comment = ({
             display: 'flex',
             flexDirection: 'row',
           }}
-          // style={styles.row}
         >
           <Image
             source={{
@@ -103,7 +102,6 @@ const Comment = ({
             />
           ))}
       </ScrollView>
-      {/* </View> */}
     </View>
   );
 };
@@ -160,7 +158,6 @@ const CommentScreen = ({route, navigation}) => {
       }
     };
     await fetchMarkComments();
-    // logger('response set mark comment: ', false, response.data.data);
   };
   React.useEffect(() => {
     const fetchMarkComments = async () => {

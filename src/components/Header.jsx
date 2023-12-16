@@ -3,16 +3,13 @@ import React, {useRef} from 'react';
 import FacebookLogo from '../assets/images/fblogo.png';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
-import {useState} from 'react';
-import SearchModal from './modal/SearchModal';
+import { useNavigation } from '@react-navigation/native';
+import { APP_ROUTE } from '../navigation/config/routes';
 
 const Header = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
   const onPressSearch = async () => {
-    setModalVisible(true);
-  };
-  const onCloseSearchModal = () => {
-    setModalVisible(false);
+    navigation.navigate(APP_ROUTE.SEARCH);
   };
   return (
     <View style={styles.container}>
@@ -27,16 +24,7 @@ const Header = () => {
             onPress={onPressSearch}
           />
         </View>
-        {/* <View style={styles.searchBg}>
-          <VectorIcon
-            name="messenger"
-            type="Fontisto"
-            size={22}
-            color={Colors.grey}
-          />
-        </View> */}
       </View>
-      {modalVisible && <SearchModal onCloseModal={onCloseSearchModal} />}
     </View>
   );
 };
