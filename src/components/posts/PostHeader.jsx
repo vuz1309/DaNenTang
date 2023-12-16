@@ -29,7 +29,7 @@ const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({
   data,
   isShowRemove = true,
-  onClickEdit,
+
   setIsShowDialogCoins,
   textStyles = {color: Colors.textColor},
 }) => {
@@ -47,11 +47,7 @@ const PostHeader = ({
     setShowModalReport(!isShowModalReport);
   };
   const [isModalVisible, setModalVisible] = React.useState(false);
-  // const handleCopyToClipboard = () => {
-  //   Clipboard.setString(data.described);
-  //   // AlertMessage('Copy thành công.');
-  //   ToastAndroid.show('Copy thành công!', ToastAndroid.SHORT);
-  // };
+
   const toggleModalDelPost = () => {
     if (Number(data.can_edit) > 0) setModalVisible(!isModalVisible);
     else {
@@ -83,7 +79,24 @@ const PostHeader = ({
       console.log(error);
     }
   };
-
+  const handleEditPost = () => {
+    const postTmp = {
+      image: data.image.map((item, index) => ({
+        id: item.id,
+        uri: item.url,
+        originalIndex: index + 1,
+      })),
+      status: data.state,
+      described: data.described,
+      id: data.id,
+    };
+    navigate(APP_ROUTE.UPLOAD, {
+      postData: postTmp,
+      mode: Enum.PostMode.Edit,
+    });
+    setModalVisible(false);
+    setShowModalReport(false);
+  };
   if (!data) return <Loading />;
   return (
     <View style={styles.postHeaderContainer}>
@@ -177,10 +190,7 @@ const PostHeader = ({
         mainBtn={{text: 'Xóa', onPress: removePost}}
         subBtn={{
           text: 'Chỉnh sửa',
-          onPress: () => {
-            onClickEdit(Enum.PostMode.Edit, data);
-            toggleModalDelPost();
-          },
+          onPress: handleEditPost,
         }}
         closeBtn={{
           text: 'Hủy',
@@ -203,10 +213,7 @@ const PostHeader = ({
           <View style={styles.modalContent}>
             {Number(data.can_edit) > 0 && (
               <StyledTouchableHighlight
-                onPress={() => {
-                  onClickEdit(Enum.PostMode.Edit, data);
-                  toggleModalReport();
-                }}
+                onPress={handleEditPost}
                 text={'Chỉnh sửa bài viết'}
                 emojiConfig={{
                   name: 'edit',

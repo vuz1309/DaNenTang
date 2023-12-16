@@ -110,6 +110,7 @@ const PostListImage = ({data, onClose, index = 0}) => {
   const isBanned = React.useMemo(() => !!Number(data.banned));
 
   if (!data) return <LoadingOverlay isLoading={true} />;
+
   return (
     <>
       <Modal
@@ -238,4 +239,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostListImage;
+export default React.memo(
+  PostListImage,
+  (prev, next) => JSON.stringify(prev.data) === JSON.stringify(next.data),
+);

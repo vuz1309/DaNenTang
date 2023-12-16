@@ -1,13 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  RefreshControl,
-  ScrollView,
-  Modal,
-  FlatList,
-  Image,
-  Text,
-} from 'react-native';
+import {View, RefreshControl, Modal, FlatList} from 'react-native';
 import React, {useState} from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
@@ -20,68 +11,32 @@ import {useScrollHanler} from '../hooks/useScrollHandler';
 import {store} from '../state-management/redux/store';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
-import UploadScreen from './UploadScreen';
-import AlertMessage from '../components/base/AlertMessage';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
 import BuyCoins from './coins/BuyCoins';
-import Enum from '../utils/Enum';
-import PostBody from '../components/posts/PostBody';
 import LoadingPosting from '../components/posts/LoadingPosting';
-import {hasGms} from 'react-native-device-info';
-import DetailsPost from '../components/posts/DetailsPost';
-import PostListImage from '../components/posts/PostListImage';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
-import {emotionList} from '../components/modal/EmotionList';
+import PostHeader from '../components/posts/PostHeader';
+import FilePost from '../components/posts/FilePost';
+import PostFooter from '../components/posts/PostFooter';
 const HomeScreen = () => {
-  const userLogged = useSelector(state => state.userInfo.user);
-  const [detailsPostMode, setDetailsPostMode] = useState(0);
+  // const userLogged = useSelector(state => state.userInfo.user);
+
   const [isBuyCoin, setIsBuyCoin] = useState(false);
   const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
 
-  const [postEdited, setPostEdited] = useState({});
   const toggleBuyCoinModal = () => {
     setIsBuyCoin(!isBuyCoin);
   };
-  const openPostModal = (
-    postMode = Enum.PostMode.Create,
-    post = {
-      image: [],
-      status: `${emotionList[0].name} ${emotionList[0].emo}`,
-      described: '',
-      id: '0',
-    },
-  ) => {
-    if (Number(store.getState().userInfo.user.coins) < 50) {
-      setIsShowDialogCoins(true);
-      return;
-    }
-    setDetailsPostMode(postMode);
 
-    const postTmp = {
-      image: post.image.map((item, index) => ({
-        id: item.id,
-        uri: item.url,
-        originalIndex: index + 1,
-      })),
-      status: post.state,
-      described: post.described,
-      id: post.id,
-    };
-
-    setPostEdited(postTmp);
-  };
-  const closePostModal = () => {
-    setDetailsPostMode(0);
-  };
   const listPosts = useSelector(state => state.postInfo.posts);
   const isPosting = useSelector(state => state.postInfo.isPosting);
   const params = useSelector(state => state.postInfo.paramsConfig);
 
   const getListPostsApi = async () => {
     try {
-      // console.log('home post param:', params);
-      const {data} = await getListPost({...params});
+      console.log('home post param:', params);
+      const {data} = await getListPost(params);
       // console.log(data);
       if (data.data.last_id != 'undefined') {
         store.dispatch(postInfoActions.setLastId(data.data.last_id));
@@ -99,7 +54,7 @@ const HomeScreen = () => {
         store.dispatch(postInfoActions.addPosts(data.data.post));
       }
     } catch (error) {
-      // console.log('load data error', error);
+      console.log('load data error', error);
     } finally {
       setRefreshing(false);
       setIsLoadMore(false);
@@ -141,16 +96,16 @@ const HomeScreen = () => {
   React.useEffect(() => {
     getListPostsApi();
   }, [params]);
-  const [isModalVisible, setModalVisible] = useState({index: 0, item: {}});
 
   const postRenderItem = React.useCallback(
     ({item}) => (
-      <PostBody
-        setModalVisible={setModalVisible}
-        editPost={openPostModal}
-        item={item}
-        setIsShowDialogCoins={setIsShowDialogCoins}
-      />
+      <View style={{backgroundColor: Colors.white, marginTop: 8}}>
+        <PostHeader data={item} setIsShowDialogCoins={setIsShowDialogCoins} />
+
+        <FilePost item={item} />
+
+        <PostFooter data={item} />
+      </View>
     ),
     [],
   );
@@ -162,7 +117,7 @@ const HomeScreen = () => {
         onScroll={handleScroll}
         ListHeaderComponent={
           <>
-            <SubHeader onClick={openPostModal} buyCoin={toggleBuyCoinModal} />
+            <SubHeader buyCoin={toggleBuyCoinModal} />
             <Stories />
             <LoadingPosting isLoading={isPosting} />
           </>
@@ -184,17 +139,7 @@ const HomeScreen = () => {
           viewAreaCoveragePercentThreshold: 50,
         }}
       />
-      <Modal
-        animationType="slide"
-        transparent={false}
-        onRequestClose={closePostModal}
-        visible={!!detailsPostMode}>
-        <UploadScreen
-          onClose={closePostModal}
-          postData={postEdited}
-          mode={detailsPostMode}
-        />
-      </Modal>
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -202,21 +147,7 @@ const HomeScreen = () => {
         onRequestClose={toggleBuyCoinModal}>
         <BuyCoins closeModal={toggleBuyCoinModal} />
       </Modal>
-      {!!isModalVisible.index && isModalVisible.item.image.length == 1 && (
-        <DetailsPost
-          isModalVisible={isModalVisible.index}
-          item={isModalVisible.item}
-          onClose={() => setModalVisible({})}
-        />
-      )}
 
-      {!!isModalVisible.index && isModalVisible.item.image.length > 1 && (
-        <PostListImage
-          data={isModalVisible.item}
-          onClose={() => setModalVisible({})}
-          index={isModalVisible.index - 1}
-        />
-      )}
       <DialogConfirm
         isVisible={isShowDialogCoins}
         closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}

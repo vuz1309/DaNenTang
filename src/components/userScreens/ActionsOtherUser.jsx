@@ -1,4 +1,4 @@
-import {View, TouchableHighlight, Text, ToastAndroid} from 'react-native';
+import {View, ToastAndroid} from 'react-native';
 import React from 'react';
 import {StyledButton} from '../base';
 import {Colors} from '../../utils/Colors';
@@ -10,7 +10,6 @@ import {
   unFriend,
 } from '../../api/modules/friends.request';
 import Modal from 'react-native-modal';
-import VectorIcon from '../../utils/VectorIcon';
 import {FriendActions} from './FriendActions';
 import {setBlockRequest} from '../../api/modules/block.request';
 

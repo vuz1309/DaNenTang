@@ -6,7 +6,7 @@ import {
   Pressable,
   ToastAndroid,
 } from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import {Colors} from '../../utils/Colors';
 import Modal from 'react-native-modal';
 
@@ -26,7 +26,7 @@ const FriendCard = ({fr, reload}) => {
         user_id: fr.id,
       });
       // console.log('block:', data);
-      ToastAndroid.show('Bạn đã block ' + fr.username, ToastAndroid.SHORT);
+      ToastAndroid.show(`Bạn đã block ${fr.username}`, ToastAndroid.SHORT);
       reload();
     } catch (error) {
       console.log(error);
@@ -82,7 +82,7 @@ const FriendCard = ({fr, reload}) => {
                   borderRadius: 25,
                 }}
                 source={
-                  fr.avatar
+                  fr?.avatar
                     ? {uri: fr.avatar}
                     : require('../../assets/images/avatar_null.jpg')
                 }
@@ -155,7 +155,4 @@ const FriendCard = ({fr, reload}) => {
   );
 };
 
-export default React.memo(
-  FriendCard,
-  (prev, next) => prev.fr.id === next.fr.id,
-);
+export default memo(FriendCard, (prev, next) => prev.fr.id === next.fr.id);

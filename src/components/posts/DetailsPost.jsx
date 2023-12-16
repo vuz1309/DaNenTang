@@ -1,31 +1,22 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  Dimensions,
-  Modal,
-  TouchableOpacity,
-} from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import {View, StyleSheet, Text, Modal, TouchableOpacity} from 'react-native';
 
-import React, {useState} from 'react';
+import React from 'react';
 import {Colors} from '../../utils/Colors';
 
 import PostFooter from './PostFooter';
 import VectorIcon from '../../utils/VectorIcon';
 import PostDescription from './PostDescription';
 import ZoomableImage from '../base/ZoomableImage';
+import LoadingOverlay from '../base/LoadingOverlay';
 
 const DetailsPost = ({item, onClose, firstItem = 0}) => {
-  const [opacity, setOpacity] = useState(1);
-  if (!item) return <Text>Loading...</Text>;
+  if (!item) return <LoadingOverlay />;
   return (
     <Modal isModalVisible={true} onRequestClose={onClose}>
       <View
         style={{
           ...styles.postContainer,
-          backgroundColor: `rgba(0, 0, 0, ${opacity})`,
+          backgroundColor: Colors.black,
         }}>
         <View
           style={{
@@ -50,7 +41,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
           onClose={onClose}
           index={firstItem}
         />
-        {opacity == 1 && (
+        {
           <View style={styles.postInfo}>
             <View style={{paddingHorizontal: 14}}>
               <Text
@@ -75,7 +66,7 @@ const DetailsPost = ({item, onClose, firstItem = 0}) => {
               textStyles={{color: Colors.white, fontWeight: '500'}}
             />
           </View>
-        )}
+        }
       </View>
     </Modal>
   );

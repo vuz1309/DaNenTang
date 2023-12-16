@@ -7,7 +7,6 @@ export const USER_INVALID = 9995;
 export const POST_NOT_EXIST = 9992;
 export const USER_NOT_REQUEST_FRIEND = 9994;
 export const USER_IS_BLOCKED = 3001;
-export const DB_EXCEPTION = 5001;
 export const NETWORK_ERROR = 9999;
 export const errors: any = {
   [USER_NOT_REQUEST_FRIEND]: 'Không thấy dữ liệu!',
@@ -20,5 +19,4 @@ export const errors: any = {
   [INVALID_TOKEN]: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.',
   [USER_IS_BLOCKED]: 'Người dùng đã bị chặn bởi bạn.',
   [NETWORK_ERROR]: 'Vui lòng kiểm tra lại mạng!',
-  [DB_EXCEPTION]: 'Lỗi database query!',
 };

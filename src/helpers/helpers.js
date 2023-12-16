@@ -45,3 +45,8 @@ export function createImageFormData(img) {
     uri: Platform.OS === 'ios' ? img.uri.replace('file://', '') : img.uri,
   };
 }
+
+import {store} from '../state-management/redux/store';
+export function checkCoinsIsSmallerThan50() {
+  return Number(store.getState().userInfo.user.coins) < 50;
+}

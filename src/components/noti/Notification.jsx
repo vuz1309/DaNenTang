@@ -1,22 +1,12 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  TouchableHighlight,
-} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import tempImage from '../../assets/images/img1.jpeg';
+import {Image, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
+import React from 'react';
 import {Colors} from '../../utils/Colors';
-import more from '../../assets/images/more.png';
-import VectorIcon from '../../utils/VectorIcon';
-import NotificationAddition from './NotificationAddition';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import {notiContents} from '../../utils/notification/NotificationProvider';
 import Enum from '../../utils/Enum';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import VectorIcon from '../../utils/VectorIcon';
 
 const actionsNoti = {
   [Enum.NotiType.FriendRequest]: data => ({
@@ -55,10 +45,22 @@ const actionsNoti = {
     route: APP_ROUTE.COMMENT_PAGE,
     param: {item: data.post},
   }),
-  [Enum.NotiType.MarkCommented]: data => ({
+  [Enum.NotiType.POstCommented]: data => ({
     route: APP_ROUTE.COMMENT_PAGE,
     param: {item: data.post},
   }),
+};
+
+const notiIcons = {
+  [Enum.NotiType.FriendRequest]: require('../../assets/images/user.png'),
+  [Enum.NotiType.FriendAccepted]: require('../../assets/images/user.png'),
+  [Enum.NotiType.MarkCommented]: require('../../assets/images/userGroup.jpg'),
+  [Enum.NotiType.PostAdded]: require('../../assets/images/postIcon.jpg'),
+  [Enum.NotiType.PostUpdated]: require('../../assets/images/postIcon.jpg'),
+  [Enum.NotiType.PostMarked]: require('../../assets/images/messageIcon.png'),
+  [Enum.NotiType.PostFelt]: require('../../assets/images/postIcon.jpg'),
+  [Enum.NotiType.VideoAdded]: require('../../assets/images/videoNull.png'),
+  [Enum.NotiType.POstCommented]: require('../../assets/images/messageIcon.png'),
 };
 
 const Notification = ({noti}) => {
@@ -74,13 +76,7 @@ const Notification = ({noti}) => {
         : require('../../assets/images/avatar_null.jpg'),
     [noti.avatar],
   );
-  const userAvatar = React.useMemo(
-    () =>
-      noti.user?.avatar
-        ? {uri: noti.user?.avatar}
-        : require('../../assets/images/avatar_null.jpg'),
-    [noti.user?.avatar],
-  );
+
   const handleClickNoti = () => {
     const target = actionsNoti[Number(noti.type)](noti);
 
@@ -93,7 +89,16 @@ const Notification = ({noti}) => {
       <View style={[styles.container, noti.read == 0 && styles.unread]}>
         <View style={styles.imageContainer}>
           <Image source={avatarSource} style={styles.avatar} />
-          <Image source={userAvatar} style={styles.notiType} />
+          <View
+            style={[
+              styles.notiType,
+              {backgroundColor: Colors.white, overflow: 'hidden'},
+            ]}>
+            <Image
+              source={notiIcons[Number(noti.type)]}
+              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+            />
+          </View>
         </View>
         <View style={styles.notificationContainer}>
           <View>
@@ -108,23 +113,21 @@ const Notification = ({noti}) => {
             </View>
           </View>
         </View>
-        {/* <View>
+        <View>
           <VectorIcon
-          
             name="dots-three-horizontal"
             type="Entypo"
-            size={14}
+            size={18}
             color={Colors.headerIconGrey}
             style={styles.headerIcons}
           />
-        </View> */}
+        </View>
       </View>
     </TouchableHighlight>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... (previous styles
   container: {
     flexDirection: 'row',
     paddingVertical: 12,
@@ -132,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   unread: {
-    backgroundColor: Colors.lightPrimarColor,
+    backgroundColor: Colors.lightPrimaryColor,
   },
   imageContainer: {
     flex: 2,
@@ -164,8 +167,8 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     borderRadius: 50,
-    marginLeft: 30,
-    marginTop: 30,
+    left: 30,
+    top: 30,
     position: 'absolute',
   },
   more: {
@@ -174,4 +177,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
-export default Notification;
+export default React.memo(
+  Notification,
+  (prev, next) =>
+    `${prev.noti.id}${prev.noti.read}` === `${next.noti.id}${next.noti.read}`,
+);

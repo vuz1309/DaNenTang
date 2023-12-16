@@ -18,7 +18,7 @@ import {Colors} from '../../utils/Colors';
 import useSearch from '../../hooks/useSearch';
 import {getSavedSearchRequest} from '../../api/modules/search';
 import {logger} from '../../utils/helper';
-import PostBody from '../posts/PostBody';
+import PostDisplay from '../posts/PostDisplay';
 import HistorySearchModal from './HistorySearchModal';
 
 export default function SearchModal({onCloseModal, initialKeyword = ''}) {
@@ -88,9 +88,11 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
             value={keyword}
             style={styles.searchInput}
             placeholder={'Tìm kiếm trên Facebook'}
+            placeholderTextColor={Colors.textGrey}
             onFocus={() => setSearchData([])}
             onChangeText={text => setKeyword(text)}
-            onSubmitEditing={fetchSearchData}></TextInput>
+            onSubmitEditing={fetchSearchData}
+          />
         </View>
 
         <View
@@ -148,7 +150,7 @@ export default function SearchModal({onCloseModal, initialKeyword = ''}) {
                   gap: 4,
                 }}>
                 {searchData.map(item => (
-                  <PostBody key={item.id} item={item} />
+                  <PostDisplay key={item.id} item={item} />
                 ))}
               </View>
             </ScrollView>

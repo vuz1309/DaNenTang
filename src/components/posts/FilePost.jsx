@@ -8,13 +8,12 @@ import {
 } from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
-import PostHeader from './PostHeader';
-import PostFooter from './PostFooter';
 import VideoThumnails from './VideoThumnails';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
-
-const PostImg = ({img, onPress, isBanned}) => {
+import DetailsPost from './DetailsPost';
+import PostListImage from './PostListImage';
+const PostImg = ({img, isBanned}) => {
   const source = React.useMemo(
     () =>
       isBanned ? require('../../assets/images/banned.jpg') : {uri: img.url},
@@ -22,72 +21,52 @@ const PostImg = ({img, onPress, isBanned}) => {
   );
 
   return (
-    <TouchableOpacity onPress={onPress} style={{flex: 1, ...styles.border}}>
-      <Image
-        style={styles.image}
-        defaultSource={require('../../assets/images/avatar_null.jpg')}
-        source={source}
-      />
-    </TouchableOpacity>
+    <Image
+      style={styles.image}
+      defaultSource={require('../../assets/images/avatar_null.jpg')}
+      source={source}
+    />
   );
 };
 
-/**
- *
- * @param {object} props
- * @returns
- */
-const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
+const FilePost = ({item}) => {
   const isBanned = React.useMemo(() => !!Number(item.banned));
   const isBlocked = React.useMemo(() => !!Number(item.is_blocked));
   const {navigate} = useNavigation();
+  const [isModalVisible, setModalVisible] = React.useState(0);
   return (
-    <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-      <PostHeader
-        onClickEdit={editPost}
-        data={item}
-        setIsShowDialogCoins={setIsShowDialogCoins}
-      />
-
+    <>
       {!item.video && item.image.length > 0 && (
         <View style={styles.postImg}>
           <View style={{flex: 3, flexDirection: 'row'}}>
             {item.image.slice(0, 2).map((img, index) => (
-              <PostImg
+              <TouchableOpacity
                 key={img.url}
-                img={img}
-                onPress={() => setModalVisible({index: index + 1, item})}
-                isBanned={isBanned}
-              />
+                onPress={() => setModalVisible(index + 1)}
+                style={{flex: 1, ...styles.border}}>
+                <PostImg img={img} isBanned={isBanned} />
+              </TouchableOpacity>
             ))}
           </View>
           {item.image.length > 2 && (
             <View style={styles.spliter}>
               {item.image.slice(2, 4).map((img, index) => (
-                <PostImg
+                <TouchableOpacity
                   key={img.url}
-                  img={img}
-                  onPress={() => setModalVisible({index: index + 3, item})}
-                  isBanned={isBanned}
-                />
+                  onPress={() => setModalVisible(index + 3)}>
+                  <PostImg img={img} isBanned={isBanned} />
+                </TouchableOpacity>
               ))}
               {item.image.length >= 5 && (
                 <TouchableOpacity
-                  onPress={() => setModalVisible({index: 5, item})}
+                  onPress={() => setModalVisible(5)}
                   style={{flex: 1, ...styles.border, position: 'relative'}}>
                   <>
-                    <Image
-                      style={styles.image}
-                      source={
-                        isBanned
-                          ? require('../../assets/images/banned.jpg')
-                          : {uri: item.image[4].url}
-                      }
-                    />
+                    <PostImg img={item.image[4]} isBanned={isBanned} />
 
                     {item.image.length > 5 && (
                       <TouchableOpacity
-                        onPress={() => setModalVisible({index: 6, item})}
+                        onPress={() => setModalVisible(6)}
                         style={styles.overlayEndImg}>
                         <Text style={{color: Colors.white}}>
                           {item.image.length - 5}
@@ -108,8 +87,23 @@ const PostBody = ({item, editPost, setModalVisible, setIsShowDialogCoins}) => {
           <VideoThumnails uri={item.video.url} />
         </Pressable>
       )}
-      <PostFooter data={item} />
-    </View>
+
+      {!!isModalVisible && item.image.length == 1 && (
+        <DetailsPost
+          isModalVisible={isModalVisible}
+          item={item}
+          onClose={() => setModalVisible(0)}
+        />
+      )}
+
+      {!!isModalVisible && item.image.length > 1 && (
+        <PostListImage
+          data={item}
+          onClose={() => setModalVisible(0)}
+          index={isModalVisible.index - 1}
+        />
+      )}
+    </>
   );
 };
 
@@ -143,8 +137,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
 export default React.memo(
-  PostBody,
-  (prev, next) => JSON.stringify(prev.item) == JSON.stringify(next.item),
+  FilePost,
+  (prev, next) =>
+    JSON.stringify({image: prev.item.image, video: prev.item.video}) ===
+    JSON.stringify({image: next.item.image, video: next.item.video}),
 );
