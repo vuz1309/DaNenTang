@@ -26,6 +26,7 @@ const HeaderTitle = ({
         ))}
 
         <TouchableHighlight
+          underlayColor={Colors.lightgray}
           onPress={() => navigate(APP_ROUTE.SEARCH)}
           style={styles.searchBg}>
           <VectorIcon

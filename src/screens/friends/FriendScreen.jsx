@@ -65,12 +65,12 @@ const FriendScreen = () => {
         setRequestFriends(prev => [...prev, ...newItems]);
       }
       setTotal(data.data.total);
-      // store.dispatch(
-      //   notificationInfoActions.setNotification({
-      //     name: TabName.FRIENDS,
-      //     number: Number(data.data.total),
-      //   }),
-      // );
+      store.dispatch(
+        notificationInfoActions.setNotification({
+          name: TabName.FRIENDS,
+          number: Number(data.data.total),
+        }),
+      );
     } catch (error) {
       console.log(error);
       //   ToastAndroid.show(
@@ -107,30 +107,29 @@ const FriendScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {total != 0 && (
-        <>
-          <View style={styles.requestTitle}>
-            <Text style={styles.requestText}>
-              Lời mời kết bạn <Text style={styles.numOfRequests}>{total}</Text>
-            </Text>
-          </View>
-          <View style={{paddingBottom: 12}}>
-            {requestFriends.map(fr => (
-              <AddFriendRequest
-                data={fr}
-                key={fr.id}
-                onClickMain={() => setAcceptFriendApi(fr.id)}
-                onClickSub={() => {
-                  setAcceptFriendApi(fr.id, '0');
-                }}
-                isShowTime={true}
-                textOnReject="Đã gỡ lời mời"
-                textOnAccept="Các bạn đã là bạn bè"
-              />
-            ))}
-          </View>
-        </>
-      )}
+      <>
+        <View style={styles.requestTitle}>
+          <Text style={styles.requestText}>
+            Lời mời kết bạn <Text style={styles.numOfRequests}>{total}</Text>
+          </Text>
+        </View>
+        <View style={{paddingBottom: 12}}>
+          {requestFriends.map(fr => (
+            <AddFriendRequest
+              data={fr}
+              key={fr.id}
+              onClickMain={() => setAcceptFriendApi(fr.id)}
+              onClickSub={() => {
+                setAcceptFriendApi(fr.id, '0');
+              }}
+              isShowTime={true}
+              textOnReject="Đã gỡ lời mời"
+              textOnAccept="Các bạn đã là bạn bè"
+            />
+          ))}
+        </View>
+      </>
+
       {isLoadMore && <Loading />}
     </ScrollView>
   );

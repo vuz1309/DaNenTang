@@ -3,6 +3,7 @@ import FacebookLogo from '../assets/images/fblogo.png';
 import {Colors} from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../navigation/config/routes';
+import VectorIcon from '../utils/VectorIcon';
 
 const Header = () => {
   const {navigate} = useNavigation();
