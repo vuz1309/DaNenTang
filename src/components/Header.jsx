@@ -1,15 +1,14 @@
 import {Image, StyleSheet, View} from 'react-native';
-import React, {useRef} from 'react';
 import FacebookLogo from '../assets/images/fblogo.png';
-import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
-import { useNavigation } from '@react-navigation/native';
-import { APP_ROUTE } from '../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../navigation/config/routes';
+import VectorIcon from '../utils/VectorIcon';
 
 const Header = () => {
-  const navigation = useNavigation();
-  const onPressSearch = async () => {
-    navigation.navigate(APP_ROUTE.SEARCH);
+  const {navigate} = useNavigation();
+  const onPressSearch = () => {
+    navigate(APP_ROUTE.SEARCH);
   };
   return (
     <View style={styles.container}>

@@ -9,9 +9,10 @@ import Loading from '../../components/base/Loading';
 import FriendCard from '../../components/friends/FriendCard';
 import HeaderSearch from '../layouts/HeaderSearch';
 import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
+import {APP_ROUTE} from '../../navigation/config/routes';
 
 const AllFriendsScreen = ({route}) => {
-  const {goBack} = useNavigation();
+  const {goBack, navigate} = useNavigation();
   const {user} = route.params;
   const userLogged = useSelector(state => state.userInfo.user);
   const isOwner = React.useMemo(
@@ -68,8 +69,27 @@ const AllFriendsScreen = ({route}) => {
               paddingHorizontal: 12,
               marginTop: 12,
             }}>
-            {allFriends.length > 0 && (
+            {allFriends.length > 0 ? (
               <Text style={styles.titleText}>{total} bạn bè</Text>
+            ) : (
+              <Text
+                style={{
+                  color: Colors.textColor,
+                  fontSize: 16,
+                  textAlign: 'center',
+                }}>
+                Không có bạn bè, thật cô độc!{' '}
+                <Text
+                  onPress={() => navigate(APP_ROUTE.FRIEND_SUGGESTION)}
+                  style={{
+                    color: Colors.primaryColor,
+                    fontWeight: 'bold',
+                    display: isOwner ? 'flex' : 'none',
+                  }}>
+                  {' '}
+                  Tìm bạn bè.
+                </Text>
+              </Text>
             )}
           </View>
         }

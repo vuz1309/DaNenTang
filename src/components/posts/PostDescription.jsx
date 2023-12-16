@@ -87,8 +87,9 @@ const PostDescription = ({described, color = Colors.textColor}) => {
       </>
     );
   }, [isExpanded]);
-  const handleHashtagPress = keyWord => {
-    console.log('hastag press:', keyWord);
+  const handleHashtagPress = initialKeyword => {
+    console.log('hastag press:', initialKeyword);
+    navigate(APP_ROUTE.SEARCH, {initialKeyword});
   };
   const handleLinkPress = url => {
     navigate(APP_ROUTE.WEBVIEW, {url});

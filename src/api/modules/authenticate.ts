@@ -19,3 +19,7 @@ export const changePassword = (param: {
 export const setDevToken = (params: TypeSetDevToken) => {
   return requestJSONWithAuth('/set_devtoken', params);
 };
+
+export const checkEmailRequest = (params: {email: string}) => {
+  return requestJSONWithAuth('/check_email', params);
+};
