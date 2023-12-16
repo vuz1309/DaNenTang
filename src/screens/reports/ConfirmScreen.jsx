@@ -4,7 +4,7 @@ import {StyledButton} from '../../components/base';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import React from 'react';
-import {View, StyleSheet, Text, TouchableHighlight} from 'react-native';
+import {View, StyleSheet, Text, ToastAndroid} from 'react-native';
 import {reportPostRequest} from '../../api/modules/post.request';
 import {SUCCESS_CODE} from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
@@ -30,6 +30,7 @@ const ConfirmScreen = ({items, postId}) => {
 
         store.dispatch(postInfoActions.removePost({postId}));
       }
+      ToastAndroid.show('Báo cáo bài viết thành công!', ToastAndroid.SHORT);
     } catch (error) {
       console.log('error report api:', JSON.stringify(error));
     } finally {

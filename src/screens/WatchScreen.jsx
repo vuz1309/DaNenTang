@@ -1,18 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  RefreshControl,
-  ScrollView,
-  FlatList,
-  Pressable,
-} from 'react-native';
-import React, {useRef} from 'react';
+import {View, RefreshControl, FlatList, Pressable} from 'react-native';
+import React from 'react';
 import {Colors} from '../utils/Colors';
-import {useScrollHanler} from '../hooks/useScrollHandler';
 import {getListVideos} from '../api/modules/post.request';
-import {useSelector} from 'react-redux';
-import PostVideo from '../components/posts/PostVideo';
 import PostHeader from '../components/posts/PostHeader';
 import PostFooter from '../components/posts/PostFooter';
 import {store} from '../state-management/redux/store';
@@ -108,8 +97,6 @@ const WatchScreen = () => {
             onRefresh={onReload}
           />
         }
-        // // onEndReached={loadMore}
-        // onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}

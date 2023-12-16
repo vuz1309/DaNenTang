@@ -239,4 +239,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostListImage;
+export default React.memo(
+  PostListImage,
+  (prev, next) => JSON.stringify(prev.data) === JSON.stringify(next.data),
+);
