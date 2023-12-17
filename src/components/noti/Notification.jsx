@@ -54,20 +54,21 @@ const actionsNoti = {
 const notiIcons = {
   [Enum.NotiType.FriendRequest]: require('../../assets/images/user.png'),
   [Enum.NotiType.FriendAccepted]: require('../../assets/images/user.png'),
-  [Enum.NotiType.MarkCommented]: require('../../assets/images/userGroup.jpg'),
+  [Enum.NotiType.MarkCommented]: require('../../assets/images/userGroup.png'),
   [Enum.NotiType.PostAdded]: require('../../assets/images/postIcon.jpg'),
   [Enum.NotiType.PostUpdated]: require('../../assets/images/postIcon.jpg'),
   [Enum.NotiType.PostMarked]: require('../../assets/images/messageIcon.png'),
   [Enum.NotiType.PostFelt]: require('../../assets/images/postIcon.jpg'),
-  [Enum.NotiType.VideoAdded]: require('../../assets/images/videoNull.png'),
+  [Enum.NotiType.VideoAdded]: require('../../assets/images/watchIcon.webp'),
   [Enum.NotiType.POstCommented]: require('../../assets/images/messageIcon.png'),
 };
 
 const Notification = ({noti}) => {
   const {navigate} = useNavigation();
 
-  const createdTime = React.useMemo(() =>
-    convertTimeToFacebookStyle(noti.created),
+  const createdTime = React.useMemo(
+    () => convertTimeToFacebookStyle(noti.created),
+    [noti.created],
   );
   const avatarSource = React.useMemo(
     () =>
