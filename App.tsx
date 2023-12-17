@@ -38,6 +38,9 @@ import {Colors} from './src/utils/Colors';
 
 import UploadScreen from './src/screens/UploadScreen';
 import SearchScreen from './src/components/modal/SearchScreen';
+import ListReactions from './src/components/comments/ListReactions';
+import PostListImage from './src/components/posts/PostListImage';
+import DetailsPost from './src/components/posts/DetailsPost';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -95,6 +98,18 @@ const AppChild = () => {
             />
             <Stack.Screen component={UploadScreen} name={APP_ROUTE.UPLOAD} />
             <Stack.Screen name={APP_ROUTE.SEARCH} component={SearchScreen} />
+            <Stack.Screen
+              name={APP_ROUTE.LIST_REACTERS}
+              component={ListReactions}
+            />
+            <Stack.Screen
+              name={APP_ROUTE.POST_LIST_IMAGES}
+              component={PostListImage}
+            />
+            <Stack.Screen
+              name={APP_ROUTE.POST_DETAILS}
+              component={DetailsPost}
+            />
           </>
         );
       }
@@ -132,7 +147,6 @@ const AppChild = () => {
             name={ONBOARDING_ROUTE.CREATE_PASSWORD}
             component={CreatePassword}
           />
-          
         </>
       );
     }

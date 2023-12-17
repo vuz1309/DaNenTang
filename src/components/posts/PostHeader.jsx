@@ -43,6 +43,7 @@ const PostHeader = ({
   const showRemoveBtn = useMemo(() => {
     return isShowRemove || Number(data.can_edit) > 0;
   }, []);
+
   const toggleModalReport = () => {
     setShowModalReport(!isShowModalReport);
   };
@@ -180,12 +181,9 @@ const PostHeader = ({
           )}
         </View>
       </View>
-      <TouchableHighlight
-        underlayColor={Colors.lightgrey}
-        style={{marginTop: 8}}
-        onLongPress={copyToClipboard}>
-        <PostDescription color={textStyles.color} described={data.described} />
-      </TouchableHighlight>
+      <View style={{marginTop: 8}} />
+      <PostDescription color={textStyles.color} described={data.described} />
+
       <DialogConfirm
         mainBtn={{text: 'Xóa', onPress: removePost}}
         subBtn={{

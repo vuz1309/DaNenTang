@@ -88,7 +88,6 @@ const SuggestionScreen = ({navigation}) => {
         }
         // onEndReached={loadMore}
         onScroll={handleScroll}
-        onEndReachedThreshold={0.1}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}

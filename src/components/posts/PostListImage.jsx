@@ -13,10 +13,10 @@ import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
 import Modal from 'react-native-modal';
 import PostFooter from './PostFooter';
-import DetailsPost from './DetailsPost';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import LoadingOverlay from '../base/LoadingOverlay';
-const MAX_CAPTION_LENGTH = 50;
+import PostDescription from './PostDescription';
+import {APP_ROUTE} from '../../navigation/config/routes';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 
 const Img = ({url, isBanned = false, onPress}) => {
@@ -58,26 +58,8 @@ const Img = ({url, isBanned = false, onPress}) => {
   );
 };
 
-const PostListImage = ({data, onClose, index = 0}) => {
-  const [isShowDetails, setDetailsPost] = React.useState(0);
-  const [isExpanded, setIsExpanded] = React.useState(false);
-
-  // Hàm kiểm tra độ dài của caption và trả về nội dung hiển thị
-  const renderCaption = React.useMemo(() => {
-    if (data.described.length <= MAX_CAPTION_LENGTH || isExpanded) {
-      return <Text style={styles.caption}>{data.described}</Text>;
-    } else {
-      const truncatedCaption = data.described.slice(0, MAX_CAPTION_LENGTH);
-      return (
-        <>
-          <Text style={styles.caption}>{truncatedCaption}</Text>
-          <StyledTouchable onPress={() => setIsExpanded(true)}>
-            <Text style={{color: Colors.textGrey}}> Xem thêm</Text>
-          </StyledTouchable>
-        </>
-      );
-    }
-  }, [isExpanded]);
+const PostListImage = ({navigation, route}) => {
+  const {data, index} = route.params;
 
   const avatarImg = React.useMemo(() => {
     return data.author.avatar ? (
@@ -112,69 +94,68 @@ const PostListImage = ({data, onClose, index = 0}) => {
   if (!data) return <LoadingOverlay isLoading={true} />;
 
   return (
-    <>
-      <Modal
-        isVisible={true}
-        style={{
-          margin: 0,
-          justifyContent: 'flex-end',
-        }}
-        swipeDirection={'right'}
-        animationIn={'slideInRight'}
-        onBackButtonPress={onClose}
-        onSwipeComplete={onClose}>
-        <View style={styles.postHeaderContainer}>
-          <StatusBar
-            backgroundColor={'rgba(0,0,0,0.2)'}
-            barStyle="light-content"
-          />
-          <ScrollView ref={scrollViewRef}>
-            <View>
-              <View style={styles.postTopSec}>
-                <View style={styles.row}>
-                  <StyledTouchable>{avatarImg}</StyledTouchable>
+    <Modal
+      isVisible={true}
+      style={{
+        margin: 0,
+        justifyContent: 'flex-end',
+      }}
+      swipeDirection={'right'}
+      animationIn={'slideInRight'}
+      onBackButtonPress={navigation.goBack}
+      onSwipeCancel={navigation.goBack}
+      onSwipeComplete={navigation.goBack}>
+      <View style={styles.postHeaderContainer}>
+        <StatusBar
+          backgroundColor={'rgba(0,0,0,0.2)'}
+          barStyle="light-content"
+        />
+        <ScrollView ref={scrollViewRef}>
+          <View>
+            <View style={styles.postTopSec}>
+              <View style={styles.row}>
+                <StyledTouchable>{avatarImg}</StyledTouchable>
 
-                  <View style={styles.userSection}>
-                    <Text style={styles.username}>{data.author.name}</Text>
-                    <View style={styles.row}>
-                      <Text style={styles.days}>{createTime}</Text>
-                      <Text style={styles.dot}>•</Text>
-                      <VectorIcon
-                        name="user-friends"
-                        type="FontAwesome5"
-                        size={13}
-                        color={Colors.headerIconGrey}
-                        style={styles.userIcon}
-                      />
-                    </View>
+                <View style={styles.userSection}>
+                  <Text style={styles.username}>{data.author.name}</Text>
+                  <View style={styles.row}>
+                    <Text style={styles.days}>{createTime}</Text>
+                    <Text style={styles.dot}>•</Text>
+                    <VectorIcon
+                      name="user-friends"
+                      type="FontAwesome5"
+                      size={13}
+                      color={Colors.headerIconGrey}
+                      style={styles.userIcon}
+                    />
                   </View>
                 </View>
               </View>
-              <View>{renderCaption}</View>
-              <PostFooter data={data} />
             </View>
+            <View style={{paddingHorizontal: 16, paddingVertical: 8}}>
+              <PostDescription described={data.described} />
+            </View>
+            <PostFooter data={data} />
+          </View>
 
-            <View style={{backgroundColor: Colors.white}}>
-              {data.image.map(({url}, index) => (
-                <Img
-                  key={url}
-                  url={url}
-                  onPress={() => setDetailsPost(index + 1)}
-                  isBanned={isBanned}
-                />
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-      </Modal>
-      {!!isShowDetails && (
-        <DetailsPost
-          item={data}
-          firstItem={isShowDetails - 1}
-          onClose={() => setDetailsPost(0)}
-        />
-      )}
-    </>
+          <View style={{backgroundColor: Colors.white}}>
+            {data.image.map(({url}, index) => (
+              <Img
+                key={url}
+                url={url}
+                onPress={() =>
+                  navigation.navigate(APP_ROUTE.POST_DETAILS, {
+                    firstItem: index,
+                    item: data,
+                  })
+                }
+                isBanned={isBanned}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </Modal>
   );
 };
 
@@ -239,7 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(
-  PostListImage,
-  (prev, next) => JSON.stringify(prev.data) === JSON.stringify(next.data),
-);
+export default PostListImage;
