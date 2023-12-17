@@ -33,7 +33,16 @@ const FilePost = ({item}) => {
   const isBanned = React.useMemo(() => !!Number(item.banned), []);
   const isBlocked = React.useMemo(() => !!Number(item.is_blocked), []);
   const {navigate} = useNavigation();
-  const [isModalVisible, setModalVisible] = React.useState(0);
+
+  const handleClickImage =
+    item.image.length > 1
+      ? index => {
+          navigate(APP_ROUTE.POST_LIST_IMAGES, {data: item, index: index - 1});
+        }
+      : _ => {
+          navigate(APP_ROUTE.POST_DETAILS, {item, firstItem: 0});
+        };
+
   return (
     <>
       {!item.video && item.image.length > 0 && (
@@ -42,7 +51,7 @@ const FilePost = ({item}) => {
             {item.image.slice(0, 2).map((img, index) => (
               <TouchableOpacity
                 key={img.url}
-                onPress={() => setModalVisible(index + 1)}
+                onPress={() => handleClickImage(index + 1)}
                 style={{flex: 1, ...styles.border}}>
                 <PostImg img={img} isBanned={isBanned} />
               </TouchableOpacity>
@@ -54,20 +63,20 @@ const FilePost = ({item}) => {
                 <TouchableOpacity
                   key={img.url}
                   style={{flex: 1, ...styles.border}}
-                  onPress={() => setModalVisible(index + 3)}>
+                  onPress={() => handleClickImage(index + 3)}>
                   <PostImg img={img} isBanned={isBanned} />
                 </TouchableOpacity>
               ))}
               {item.image.length >= 5 && (
                 <TouchableOpacity
-                  onPress={() => setModalVisible(5)}
+                  onPress={() => handleClickImage(5)}
                   style={{flex: 1, ...styles.border, position: 'relative'}}>
                   <>
                     <PostImg img={item.image[4]} isBanned={isBanned} />
 
                     {item.image.length > 5 && (
                       <TouchableOpacity
-                        onPress={() => setModalVisible(6)}
+                        onPress={() => handleClickImage(6)}
                         style={styles.overlayEndImg}>
                         <Text style={{color: Colors.white}}>
                           {item.image.length - 5}
@@ -89,21 +98,21 @@ const FilePost = ({item}) => {
         </Pressable>
       )}
 
-      {!!isModalVisible && item.image.length == 1 && (
+      {/* {!!isModalVisible && item.image.length == 1 && (
         <DetailsPost
           isModalVisible={isModalVisible}
           item={item}
           onClose={() => setModalVisible(0)}
         />
-      )}
+      )} */}
 
-      {!!isModalVisible && item.image.length > 1 && (
+      {/* {!!isModalVisible && item.image.length > 1 && (
         <PostListImage
           data={item}
           onClose={() => setModalVisible(0)}
           index={isModalVisible.index - 1}
         />
-      )}
+      )} */}
     </>
   );
 };

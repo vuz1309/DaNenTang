@@ -12,6 +12,8 @@ import {FriendActions} from '../userScreens/FriendActions';
 import {Colors} from '../../utils/Colors';
 import RNFetchBlob from 'rn-fetch-blob';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import Loading from './Loading';
+import LoadingOverlay from './LoadingOverlay';
 
 async function hasAndroidPermission() {
   const getCheckPermissionPromise = () => {
@@ -151,6 +153,8 @@ const ZoomableImage = ({urls, onClose, index = 0}) => {
         menus={MenuImage}
         onSave={handleSaveImage}
         index={index}
+        failImageSource={require('../../assets/images/avatar_null.jpg')}
+        loadingRender={() => <LoadingOverlay />}
       />
     </View>
   );

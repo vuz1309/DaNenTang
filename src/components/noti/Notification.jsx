@@ -93,7 +93,7 @@ const Notification = ({noti}) => {
           <View
             style={[
               styles.notiType,
-              {backgroundColor: Colors.white, overflow: 'hidden'},
+              {backgroundColor: Colors.transparent, overflow: 'hidden'},
             ]}>
             <Image
               source={notiIcons[Number(noti.type)]}
@@ -120,7 +120,6 @@ const Notification = ({noti}) => {
             type="Entypo"
             size={18}
             color={Colors.headerIconGrey}
-            style={styles.headerIcons}
           />
         </View>
       </View>
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
   notiType: {
     height: 30,
     width: 30,
-    borderRadius: 50,
+    borderRadius: 30,
     left: 30,
     top: 30,
     position: 'absolute',

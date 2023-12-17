@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useMemo} from 'react';
 import {View, Text, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import {copyToClipboard} from '../../utils/helper';
 const {Colors} = require('../../utils/Colors');
 const MAX_CAPTION_LENGTH = 50;
 
@@ -71,30 +72,42 @@ const PostDescription = ({described, color = Colors.textColor}) => {
 
     return elements;
   };
+
+  const handlePressDescribed = () => {
+    setIsExpanded(!isExpanded);
+  };
   // Hàm kiểm tra độ dài của caption và trả về nội dung hiển thị
   const htmlContent = useMemo(() => {
-    return described.length <= MAX_CAPTION_LENGTH || isExpanded ? (
-      <>{extractLinks(described)}</>
-    ) : (
+    return (
       <>
-        {extractLinks(described.slice(0, MAX_CAPTION_LENGTH))}
-        <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-          <Text style={{color: Colors.textGrey}}>
-            {' '}
-            {isExpanded ? 'Ẩn bớt' : '...Xem thêm'}
-          </Text>
-        </TouchableOpacity>
+        {extractLinks(
+          isExpanded ? described : described.slice(0, MAX_CAPTION_LENGTH),
+        )}
+        {described.length > MAX_CAPTION_LENGTH && (
+          <TouchableOpacity onPress={handlePressDescribed}>
+            <Text style={{color: Colors.textGrey}}>
+              {isExpanded ? ' Ẩn bớt' : ' ...Xem thêm'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </>
     );
   }, [isExpanded]);
+
   const handleHashtagPress = initialKeyword => {
-    console.log('hastag press:', initialKeyword);
     navigate(APP_ROUTE.SEARCH, {initialKeyword});
   };
   const handleLinkPress = url => {
     navigate(APP_ROUTE.WEBVIEW, {url});
   };
-  return <View>{htmlContent}</View>;
+  return (
+    <TouchableHighlight
+      underlayColor={Colors.lightgrey}
+      onLongPress={() => copyToClipboard(described)}
+      onPress={handlePressDescribed}>
+      {htmlContent}
+    </TouchableHighlight>
+  );
 };
 
 export default PostDescription;

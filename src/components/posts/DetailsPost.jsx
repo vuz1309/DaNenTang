@@ -8,67 +8,65 @@ import VectorIcon from '../../utils/VectorIcon';
 import PostDescription from './PostDescription';
 import ZoomableImage from '../base/ZoomableImage';
 import LoadingOverlay from '../base/LoadingOverlay';
+import {useNavigation} from '@react-navigation/native';
 
-const DetailsPost = ({item, onClose, firstItem = 0}) => {
+const DetailsPost = ({route, navigation}) => {
+  const {goBack} = useNavigation();
+  const {item, firstItem} = route.params;
   if (!item) return <LoadingOverlay />;
   return (
-    <Modal isModalVisible={true} onRequestClose={onClose}>
+    <View
+      style={{
+        ...styles.postContainer,
+        backgroundColor: Colors.black,
+      }}>
       <View
         style={{
-          ...styles.postContainer,
-          backgroundColor: Colors.black,
+          flexDirection: 'row-reverse',
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          zIndex: 12,
         }}>
-        <View
-          style={{
-            flexDirection: 'row-reverse',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            zIndex: 12,
-          }}>
-          <TouchableOpacity style={{padding: 16}} onPress={onClose}>
-            <VectorIcon
-              name="close"
-              type="AntDesign"
-              size={24}
-              color={Colors.white}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <ZoomableImage
-          urls={item.image.map(i => ({url: i.url}))}
-          onClose={onClose}
-          index={firstItem}
-        />
-        {
-          <View style={styles.postInfo}>
-            <View style={{paddingHorizontal: 14}}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontWeight: '700',
-                  fontSize: 16,
-                }}>
-                {item.author.name}
-              </Text>
-
-              <PostDescription
-                described={item.described}
-                color={Colors.white}
-              />
-              <Text style={{color: Colors.white, marginTop: 12}}>
-                {item.author.created}
-              </Text>
-            </View>
-            <PostFooter
-              data={item}
-              textStyles={{color: Colors.white, fontWeight: '500'}}
-            />
-          </View>
-        }
+        <TouchableOpacity style={{padding: 16}} onPress={goBack}>
+          <VectorIcon
+            name="close"
+            type="AntDesign"
+            size={24}
+            color={Colors.white}
+          />
+        </TouchableOpacity>
       </View>
-    </Modal>
+
+      <ZoomableImage
+        urls={item.image.map(i => ({url: i.url}))}
+        onClose={goBack}
+        index={firstItem}
+      />
+      {
+        <View style={styles.postInfo}>
+          <View style={{paddingHorizontal: 14}}>
+            <Text
+              style={{
+                color: Colors.white,
+                fontWeight: '700',
+                fontSize: 16,
+              }}>
+              {item.author.name}
+            </Text>
+
+            <PostDescription described={item.described} color={Colors.white} />
+            <Text style={{color: Colors.white, marginTop: 12}}>
+              {item.author.created}
+            </Text>
+          </View>
+          <PostFooter
+            data={item}
+            textStyles={{color: Colors.white, fontWeight: '500'}}
+          />
+        </View>
+      }
+    </View>
   );
 };
 
