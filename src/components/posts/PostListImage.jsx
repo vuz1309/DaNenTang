@@ -6,12 +6,14 @@ import {
   StatusBar,
   ScrollView,
   Pressable,
+  PanResponder,
+  Animated,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
-import Modal from 'react-native-modal';
+
 import PostFooter from './PostFooter';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import LoadingOverlay from '../base/LoadingOverlay';
@@ -46,13 +48,23 @@ const Img = ({url, isBanned = false, onPress}) => {
           source={source}
           defaultSource={avatarNullImage}
         />
-        {!isViewed && (
-          <StyledTouchable
-            onPress={handlePress}
-            style={{position: 'absolute', left: '48%', top: '48%'}}>
-            <Text style={{color: Colors.white, fontSize: 20}}>Xem</Text>
-          </StyledTouchable>
-        )}
+        {
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: isViewed ? 'none' : 'flex',
+              },
+            ]}>
+            <StyledTouchable
+              onPress={handlePress}
+              style={{padding: 8, backgroundColor: 'rgba(0,0,0,0.2)'}}>
+              <Text style={{color: Colors.white, fontSize: 20}}>Xem</Text>
+            </StyledTouchable>
+          </View>
+        }
       </>
     </Pressable>
   );
@@ -93,18 +105,56 @@ const PostListImage = ({navigation, route}) => {
 
   if (!data) return <LoadingOverlay isLoading={true} />;
 
+  const onDragEnd = navigation.goBack;
+  const scrollX = useRef(new Animated.Value(0));
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: (evt, gestureState) => {
+          // Check if the user is dragging horizontally
+          return Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+        },
+        onPanResponderMove: Animated.event(
+          [
+            null,
+            {dx: scrollX.current}, // Update the animated value with the gesture state
+          ],
+          {useNativeDriver: false}, // Ensure native driver is disabled
+        ),
+        onPanResponderRelease: (evt, gestureState) => {
+          // Check if the drag distance is enough to trigger the action
+          if (gestureState.dx > 100) {
+            // Replace 100 with your desired drag distance threshold
+            // Call your onDragEnd function here
+            onDragEnd();
+          }
+          // Reset the animated value
+          Animated.spring(scrollX.current, {
+            toValue: 0,
+            useNativeDriver: false,
+          }).start();
+        },
+      }),
+    [onDragEnd],
+  );
+
   return (
-    <Modal
-      isVisible={true}
-      style={{
-        margin: 0,
-        justifyContent: 'flex-end',
-      }}
-      swipeDirection={'right'}
-      animationIn={'slideInRight'}
-      onBackButtonPress={navigation.goBack}
-      onSwipeCancel={navigation.goBack}
-      onSwipeComplete={navigation.goBack}>
+    <Animated.View
+      {...panResponder.panHandlers}
+      style={[
+        styles.postHeaderContainer,
+        {
+          transform: [
+            {
+              translateX: scrollX.current.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1], // You can customize the output range as needed
+              }),
+            },
+          ],
+        },
+      ]}>
       <View style={styles.postHeaderContainer}>
         <StatusBar
           backgroundColor={'rgba(0,0,0,0.2)'}
@@ -155,7 +205,7 @@ const PostListImage = ({navigation, route}) => {
           </View>
         </ScrollView>
       </View>
-    </Modal>
+    </Animated.View>
   );
 };
 
@@ -164,6 +214,7 @@ const styles = StyleSheet.create({
     padding: 0,
     backgroundColor: Colors.white,
     flex: 1,
+    width: '100%',
   },
   userProfile: {
     height: 40,

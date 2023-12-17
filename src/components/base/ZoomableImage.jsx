@@ -155,6 +155,7 @@ const ZoomableImage = ({urls, onClose, index = 0}) => {
         index={index}
         failImageSource={require('../../assets/images/avatar_null.jpg')}
         loadingRender={() => <LoadingOverlay />}
+        renderIndicator={() => null}
       />
     </View>
   );
