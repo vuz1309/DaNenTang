@@ -7,6 +7,7 @@ import Enum from '../../utils/Enum';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
 import VectorIcon from '../../utils/VectorIcon';
+import ImageView from '../base/images/ImageView';
 
 const actionsNoti = {
   [Enum.NotiType.FriendRequest]: data => ({
@@ -70,13 +71,6 @@ const Notification = ({noti}) => {
     () => convertTimeToFacebookStyle(noti.created),
     [noti.created],
   );
-  const avatarSource = React.useMemo(
-    () =>
-      noti.avatar
-        ? {uri: noti.avatar}
-        : require('../../assets/images/avatar_null.jpg'),
-    [noti.avatar],
-  );
 
   const handleClickNoti = () => {
     const target = actionsNoti[Number(noti.type)](noti);
@@ -89,7 +83,7 @@ const Notification = ({noti}) => {
       underlayColor={Colors.lightgrey}>
       <View style={[styles.container, noti.read == 0 && styles.unread]}>
         <View style={styles.imageContainer}>
-          <Image source={avatarSource} style={styles.avatar} />
+          <ImageView uri={noti?.avatar} imageStyles={styles.avatar} />
           <View
             style={[
               styles.notiType,

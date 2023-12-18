@@ -19,6 +19,7 @@ import {store} from '../../state-management/redux/store';
 import {createImageFormData} from '../../helpers/helpers';
 import {SUCCESS_CODE} from '../../utils/constants';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
+import ImageView from '../base/images/ImageView';
 const HeaderOption = ({name}) => {
   return (
     <View style={styles.headerOption}>
@@ -148,16 +149,7 @@ const EditUserInfo = ({userInfo, closeModal}) => {
             alignItems: 'center',
           }}>
           <TouchableOpacity onPress={() => openLibrary('avatar')}>
-            {userData.avatar.uri ? (
-              <Image
-                style={styles.ava}
-                source={{
-                  uri: userData.avatar.uri,
-                }}
-              />
-            ) : (
-              <Image style={styles.ava} source={nullImage} />
-            )}
+            <ImageView uri={userData?.avatar?.uri} imageStyles={styles.ava} />
           </TouchableOpacity>
         </View>
       </View>
@@ -167,17 +159,17 @@ const EditUserInfo = ({userInfo, closeModal}) => {
           style={{
             alignItems: 'center',
           }}>
-          <TouchableOpacity onPress={() => openLibrary('cover_image')}>
-            {userData.cover_image.uri ? (
-              <Image
-                style={styles.ava}
-                source={{
-                  uri: userData.cover_image.uri,
-                }}
-              />
-            ) : (
-              <Image style={styles.ava} source={nullImage} />
-            )}
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              height: 200,
+              borderRadius: 18,
+              overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: Colors.borderGrey,
+            }}
+            onPress={() => openLibrary('cover_image')}>
+            <ImageView uri={userData?.cover_image?.uri} />
           </TouchableOpacity>
         </View>
       </View>

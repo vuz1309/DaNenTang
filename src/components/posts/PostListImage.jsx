@@ -8,6 +8,7 @@ import {
   Pressable,
   PanResponder,
   Animated,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useRef, useState, useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
@@ -19,6 +20,7 @@ import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import LoadingOverlay from '../base/LoadingOverlay';
 import PostDescription from './PostDescription';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import ImageView from '../base/images/ImageView';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 
 const Img = ({url, isBanned = false, onPress}) => {
@@ -43,11 +45,12 @@ const Img = ({url, isBanned = false, onPress}) => {
       key={url}
       onPress={handlePress}>
       <>
-        <Image
+        {/* <Image
           style={styles.img}
           source={source}
           defaultSource={avatarNullImage}
-        />
+        /> */}
+        <ImageView uri={source.uri} imageStyles={styles.img} />
         {
           <View
             style={[
@@ -73,17 +76,17 @@ const Img = ({url, isBanned = false, onPress}) => {
 const PostListImage = ({navigation, route}) => {
   const {data, index} = route.params;
 
-  const avatarImg = React.useMemo(() => {
-    return data.author.avatar ? (
-      <Image
-        style={styles.userProfile}
-        source={{uri: data.author.avatar}}
-        defaultSource={avatarNullImage}
-      />
-    ) : (
-      <Image style={styles.userProfile} source={avatarNullImage} />
-    );
-  }, [data.author.avatar]);
+  // const avatarImg = React.useMemo(() => {
+  //   return data.author.avatar ? (
+  //     <Image
+  //       style={styles.userProfile}
+  //       source={{uri: data.author.avatar}}
+  //       defaultSource={avatarNullImage}
+  //     />
+  //   ) : (
+  //     <Image style={styles.userProfile} source={avatarNullImage} />
+  //   );
+  // }, [data.author.avatar]);
 
   const createTime = React.useMemo(
     () => convertTimeToFacebookStyle(data.created),
@@ -164,7 +167,17 @@ const PostListImage = ({navigation, route}) => {
           <View>
             <View style={styles.postTopSec}>
               <View style={styles.row}>
-                <StyledTouchable>{avatarImg}</StyledTouchable>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(APP_ROUTE.USER_SCREEN, {
+                      userId: data?.author?.id,
+                    })
+                  }>
+                  <ImageView
+                    imageStyles={styles.userProfile}
+                    uri={data?.author?.avatar}
+                  />
+                </TouchableOpacity>
 
                 <View style={styles.userSection}>
                   <Text style={styles.username}>{data.author.name}</Text>
@@ -266,7 +279,7 @@ const styles = StyleSheet.create({
   img: {
     width: '100%',
     height: 300,
-    resizeMode: 'contain',
+    resizeMode: 'stretch',
     marginBottom: 8,
   },
 });

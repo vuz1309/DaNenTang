@@ -11,8 +11,8 @@ import {Colors} from '../../utils/Colors';
 import VideoThumnails from './VideoThumnails';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
-import DetailsPost from './DetailsPost';
-import PostListImage from './PostListImage';
+import ImageView from '../base/images/ImageView';
+
 const PostImg = ({img, isBanned}) => {
   const source = React.useMemo(
     () =>
@@ -21,11 +21,12 @@ const PostImg = ({img, isBanned}) => {
   );
 
   return (
-    <Image
-      style={styles.image}
-      defaultSource={require('../../assets/images/avatar_null.jpg')}
-      source={source}
-    />
+    // <Image
+    //   style={styles.image}
+    //   defaultSource={require('../../assets/images/avatar_null.jpg')}
+    //   source={source}
+    // />
+    <ImageView uri={source.uri} />
   );
 };
 
@@ -79,7 +80,7 @@ const FilePost = ({item}) => {
                         onPress={() => handleClickImage(6)}
                         style={styles.overlayEndImg}>
                         <Text style={{color: Colors.white}}>
-                          {item.image.length - 5}
+                          +{item.image.length - 5}
                         </Text>
                       </TouchableOpacity>
                     )}
@@ -97,22 +98,6 @@ const FilePost = ({item}) => {
           <VideoThumnails uri={item.video.url} />
         </Pressable>
       )}
-
-      {/* {!!isModalVisible && item.image.length == 1 && (
-        <DetailsPost
-          isModalVisible={isModalVisible}
-          item={item}
-          onClose={() => setModalVisible(0)}
-        />
-      )} */}
-
-      {/* {!!isModalVisible && item.image.length > 1 && (
-        <PostListImage
-          data={item}
-          onClose={() => setModalVisible(0)}
-          index={isModalVisible.index - 1}
-        />
-      )} */}
     </>
   );
 };

@@ -3,6 +3,7 @@ import React from 'react';
 import {createThumbnail} from 'react-native-create-thumbnail';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
+import ImageView from '../base/images/ImageView';
 
 const VideoThumnails = ({uri}) => {
   const [url, setUrl] = React.useState('');
@@ -22,11 +23,12 @@ const VideoThumnails = ({uri}) => {
   return (
     <View style={{position: 'relative'}}>
       <>
-        <Image
-          style={{height: 250, resizeMode: 'cover'}}
-          source={imgSource}
-          defaultSource={require('../../assets/images/defaultVideo.jpg')}
-        />
+        <View style={{height: 250}}>
+          <ImageView
+            uri={imgSource.uri}
+            defaultSource={require('../../assets/images/videoNull.png')}
+          />
+        </View>
         <View
           style={[
             StyleSheet.absoluteFill,

@@ -1,8 +1,14 @@
-import {View, StyleSheet} from 'react-native';
-import Loading from './Loading';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
+
 import {Colors} from '../../utils/Colors';
 
-const LoadingOverlay = ({isLoading = true}) => {
+const LoadingOverlay = ({
+  isLoading = true,
+  color = Colors.primaryColor,
+  size = 'large',
+  backgroundColor = 'rgba(255,255,255,0.5)',
+  style,
+}) => {
   return (
     <View
       style={[
@@ -10,12 +16,13 @@ const LoadingOverlay = ({isLoading = true}) => {
         {
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'rgba(255,255,255,0.5)',
+          backgroundColor,
           display: isLoading ? 'flex' : 'none',
-          zIndex: 10000,
+          zIndex: 10_000,
         },
+        style,
       ]}>
-      <Loading color={Colors.primaryColor} />
+      <ActivityIndicator animating={true} size={size} color={color} />
     </View>
   );
 };
