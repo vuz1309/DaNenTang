@@ -13,18 +13,9 @@ import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
 
 import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
-import auth from '@react-native-firebase/auth';
-import fireStore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
-import {store} from '../state-management/redux/store';
-import {APP_ROUTE} from '../navigation/config/routes'
+import {APP_ROUTE} from '../navigation/config/routes';
 
-import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
-import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
-import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
-import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
-import {StyledTouchable} from '../components/base';
-import {Themes} from '../assets/themes';
 import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
@@ -33,8 +24,6 @@ import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useNavigation} from '@react-navigation/native';
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
 
   const {navigate} = useNavigation();
@@ -46,8 +35,8 @@ const ProfileScreen = () => {
     setIsChangePass(!isChangePass);
   };
 
-  const [help,setHelp]=useState(false);
-  const [setting,setSetting]=useState(false);
+  const [help, setHelp] = useState(false);
+  const [setting, setSetting] = useState(false);
 
   const userLogged = useSelector(
     /**
@@ -86,21 +75,27 @@ const ProfileScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <HeaderTitle title={'Menu'} />
-        <View style={styles.profile}>
+        <Pressable
+          onPress={() =>
+            navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged?.id})
+          }
+          style={styles.profile}>
           <Image
             style={[styles.profileImage, {marginLeft: 10}]}
             source={tempImage}
           />
           <View style={styles.profileUser}>
-            <Text style={styles.userName}>Ngo Duc Cuong</Text>
-            <Text>Xem trang cá nhân của bạn</Text>
+            <Text style={styles.userName}>{userLogged?.username}</Text>
+            <Text style={{color: Colors.textGrey}}>
+              Xem trang cá nhân của bạn
+            </Text>
           </View>
-          <View style={styles.OtherProfile}>
+          {/* <View style={styles.OtherProfile}>
             <Image style={styles.profileImage} source={tempImage} />
             <Image style={styles.profileImage} source={tempImage} />
             <Image style={styles.profileImage} source={tempImage} />
-          </View>
-        </View>
+          </View> */}
+        </Pressable>
         <Pressable onPress={ToggleHelp} style={styles.option}>
           <VectorIcon
             style={styles.optionIcon}
@@ -266,7 +261,6 @@ const ProfileScreen = () => {
                 </Pressable>
               </View>
 
-              
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
                 <Pressable
@@ -279,11 +273,9 @@ const ProfileScreen = () => {
                     color={Colors.black}
                     style={styles.expandOptionIcon}
                   />
-                  <Text style={styles.expandText}>Danh sách Block</Text>
+                  <Text style={styles.expandText}>Danh sách chặn</Text>
                 </Pressable>
               </View>
-
-
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
@@ -328,7 +320,6 @@ const ProfileScreen = () => {
                   <Text style={styles.expandText}>Trình tiết kiệm dữ liệu</Text>
                 </View>
               </View>
-
             </View>
           ) : null}
         </Animated.View>

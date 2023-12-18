@@ -1,26 +1,18 @@
-import {View, Text, TouchableHighlight, Image, Pressable, StyleSheet} from 'react-native';
+import {View, Text, TouchableHighlight, Image, Pressable} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/Colors';
 import Modal from 'react-native-modal';
 
 import VectorIcon from '../../utils/VectorIcon';
 import {useNavigation} from '@react-navigation/native';
-import {APP_ROUTE} from '../../navigation/config/routes';
-import {FriendActions} from '../userScreens/FriendActions';
-import {Themes} from '../../assets/themes';
-import { unBlockRequest } from '../../api/modules/block.request';
-const BlockCard = ({fr,UnBlock}) => {
+const BlockCard = ({fr, UnBlock}) => {
   const [isShowModal, setIsShowModal] = React.useState();
   const {navigate} = useNavigation();
   return (
     <View key={fr.id} style={{paddingBottom: 12}}>
       <TouchableHighlight
         underlayColor={Colors.lightgrey}
-        onPress={() =>
-          navigate(APP_ROUTE.USER_SCREEN, {
-            userId: fr.id,
-          })
-        }>
+        onPress={() => setIsShowModal(1)}>
         <View
           style={{
             flexDirection: 'row',
@@ -95,36 +87,35 @@ const BlockCard = ({fr,UnBlock}) => {
           swipeDirection={'down'}
           onSwipeComplete={() => setIsShowModal(0)}
           onBackdropPress={() => setIsShowModal(0)}>
-          <Pressable 
-          onPress={UnBlock}
+          <Pressable
+            onPress={UnBlock}
             style={{
               backgroundColor: Colors.white,
               borderRadius: 4,
               overflow: 'hidden',
-              flexDirection:'row',
-              padding:5
+              flexDirection: 'row',
+              padding: 16,
             }}>
-             <VectorIcon
-              type='Octicons'
-              name = 'blocked'
+            <VectorIcon
+              type="Octicons"
+              name="blocked"
               size={30}
               color={Colors.black}
-              />
+            />
             <Text
-            style={
-              {
-                fontSize:18,
-                fontWeight:500,
-                color:Colors.black,
-                marginLeft:10
-              }
-            }>Bỏ chặn</Text>
+              style={{
+                fontSize: 18,
+                fontWeight: 500,
+                color: Colors.black,
+                marginLeft: 10,
+              }}>
+              Bỏ chặn
+            </Text>
           </Pressable>
         </Modal>
       )}
     </View>
   );
-
 };
 
 export default BlockCard;

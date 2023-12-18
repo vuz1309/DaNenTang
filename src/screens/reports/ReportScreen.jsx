@@ -14,6 +14,7 @@ import {setBlockRequest} from '../../api/modules/block.request';
 import {useNavigation} from '@react-navigation/native';
 import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
+import {APP_ROUTE} from '../../navigation/config/routes';
 
 const reportOptions = [
   'Ảnh khỏa thân',
@@ -73,9 +74,17 @@ const ReportScreen = ({navigation, route}) => {
   const handleBlock = async () => {
     try {
       await setBlockRequest({user_id: author.id});
-      // console.log(data);
+
       ToastAndroid.show('Block thành công ' + author.name, ToastAndroid.SHORT);
       store.dispatch(postInfoActions.removePost({postId}));
+      store.dispatch(
+        postInfoActions.setParams({
+          ...store.getState().postInfo.paramsConfig,
+          count: (
+            Number(store.getState().postInfo.paramsConfig.count) + 1
+          ).toString(),
+        }),
+      );
       navigation.goBack();
     } catch (error) {
       console.log(error);
