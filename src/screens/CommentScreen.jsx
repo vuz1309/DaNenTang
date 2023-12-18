@@ -54,8 +54,7 @@ const Comment = ({
             width: 40,
             display: 'flex',
             flexDirection: 'row',
-          }}
-        >
+          }}>
           <Image
             source={{
               uri: authorAvatar,
@@ -91,6 +90,7 @@ const Comment = ({
         {Array.isArray(replies) &&
           replies.map(reply => (
             <Comment
+              key={reply.id}
               content={reply.content}
               authorId={reply.poster.id}
               authorName={reply.poster.name}
