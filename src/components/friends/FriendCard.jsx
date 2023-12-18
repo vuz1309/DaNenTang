@@ -17,6 +17,7 @@ import {FriendActions} from '../userScreens/FriendActions';
 import {Themes} from '../../assets/themes';
 import {unFriend} from '../../api/modules/friends.request';
 import {setBlockRequest} from '../../api/modules/block.request';
+import ImageView from '../base/images/ImageView';
 const FriendCard = ({fr, reload}) => {
   const [isShowModal, setIsShowModal] = React.useState();
   const {navigate} = useNavigation();
@@ -75,18 +76,11 @@ const FriendCard = ({fr, reload}) => {
                 borderStyle: 'solid',
                 borderRadius: 25,
               }}>
-              <Image
-                style={{
-                  height: '100%',
-                  width: '100%',
+              <ImageView
+                uri={fr?.avatar}
+                imageStyles={{
                   borderRadius: 25,
                 }}
-                source={
-                  fr?.avatar
-                    ? {uri: fr.avatar}
-                    : require('../../assets/images/avatar_null.jpg')
-                }
-                defaultSource={require('../../assets/images/avatar_null.jpg')}
               />
             </View>
             <View>

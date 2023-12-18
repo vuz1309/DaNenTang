@@ -55,7 +55,6 @@ const PostVideo = ({videoUrl, isFullScreen = false, autoPlay = false}) => {
     setLoading(true);
   };
   const onVideoLoad = data => {
-    console.log('init:', isInitial);
     if (data?.duration && data.duration > 0) {
       setConfig(prev => ({
         ...prev,
@@ -156,74 +155,80 @@ const PostVideo = ({videoUrl, isFullScreen = false, autoPlay = false}) => {
           </View>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              width: '100%',
-              transform: [{translateY: -10}],
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              paddingTop: 16,
             }}>
-            <Text
+            <View
               style={{
-                ...styles.timer,
-                display: isShowControl ? 'flex' : 'none',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
+                width: '100%',
+                transform: [{translateY: -10}],
               }}>
-              {formatTime(config.currentTime)} / {totalTime}
-            </Text>
-            <View style={{flexDirection: 'row', gap: 8}}>
-              <StyledTouchable
-                onPress={() =>
-                  setConfig(prev => ({...prev, muted: !prev.muted}))
-                }
+              <Text
                 style={{
-                  elevation: 4,
+                  ...styles.timer,
                   display: isShowControl ? 'flex' : 'none',
                 }}>
-                <VectorIcon
-                  name={iconMute}
-                  type="Octicons"
-                  color={Colors.white}
-                  size={24}
-                />
-              </StyledTouchable>
-              <StyledTouchable
-                onPress={() => {
-                  if (isFullScreen) {
-                    goBack();
-                  } else {
-                    navigate(APP_ROUTE.FULL_VIDEO, {url: videoUrl});
+                {formatTime(config.currentTime)} / {totalTime}
+              </Text>
+              <View style={{flexDirection: 'row', gap: 8}}>
+                <StyledTouchable
+                  onPress={() =>
+                    setConfig(prev => ({...prev, muted: !prev.muted}))
                   }
-                }}
-                style={{
-                  elevation: 4,
-                  display: isShowControl ? 'flex' : 'none',
-                }}>
-                <VectorIcon
-                  name={expandIcon}
-                  type="FontAwesome5"
-                  color={Colors.white}
-                  size={20}
-                />
-              </StyledTouchable>
+                  style={{
+                    elevation: 4,
+                    display: isShowControl ? 'flex' : 'none',
+                  }}>
+                  <VectorIcon
+                    name={iconMute}
+                    type="Octicons"
+                    color={Colors.white}
+                    size={24}
+                  />
+                </StyledTouchable>
+                <StyledTouchable
+                  onPress={() => {
+                    if (isFullScreen) {
+                      goBack();
+                    } else {
+                      navigate(APP_ROUTE.FULL_VIDEO, {url: videoUrl});
+                    }
+                  }}
+                  style={{
+                    elevation: 4,
+                    display: isShowControl ? 'flex' : 'none',
+                  }}>
+                  <VectorIcon
+                    name={expandIcon}
+                    type="FontAwesome5"
+                    color={Colors.white}
+                    size={20}
+                  />
+                </StyledTouchable>
+              </View>
             </View>
+            <Slider
+              style={{
+                height: 4,
+                backgroundColor: 'transparent',
+                zIndex: 1000,
+                width: '100%',
+                borderRadius: 12,
+                padding: 0,
+                margin: 0,
+              }}
+              thumbTintColor={Colors.primaryColor}
+              minimumTrackTintColor={Colors.primaryColor}
+              maximumTrackTintColor={Colors.white}
+              minimumValue={0}
+              maximumValue={config.totalTime}
+              value={config.currentTime}
+              onSlidingComplete={onSliderSlidingComplete}
+            />
           </View>
-          <Slider
-            style={{
-              height: 4,
-              backgroundColor: 'transparent',
-              zIndex: 1000,
-              width: '100%',
-              borderRadius: 12,
-              padding: 0,
-              margin: 0,
-            }}
-            thumbTintColor={Colors.primaryColor}
-            minimumTrackTintColor={Colors.primaryColor}
-            maximumTrackTintColor={Colors.white}
-            minimumValue={0}
-            maximumValue={config.totalTime}
-            value={config.currentTime}
-            onSlidingComplete={onSliderSlidingComplete}
-          />
         </>
       </Pressable>
     </View>

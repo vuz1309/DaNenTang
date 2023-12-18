@@ -6,6 +6,7 @@ import {Themes} from '../../assets/themes';
 import {convertTimeToFacebookStyle} from '../../helpers/helpers';
 import {useNavigation} from '@react-navigation/native';
 import {APP_ROUTE} from '../../navigation/config/routes';
+import ImageView from '../base/images/ImageView';
 const nullAvatar = require('../../assets/images/avatar_null.jpg');
 const AddFriendRequest = ({
   mainText = 'Chấp nhận',
@@ -46,21 +47,7 @@ const AddFriendRequest = ({
         }}>
         {isShowTime && <Text style={styles.time}>{createTime}</Text>}
         <View style={styles.avatar}>
-          {data?.avatar ? (
-            <Image
-              style={styles.avatarImg}
-              source={{
-                uri: data.avatar,
-              }}
-              defaultSource={nullAvatar}
-            />
-          ) : (
-            <Image
-              style={styles.avatarImg}
-              source={nullAvatar}
-              defaultSource={nullAvatar}
-            />
-          )}
+          <ImageView uri={data?.avatar} imageStyles={styles.avatarImg} />
         </View>
         <View style={{flex: 1}}>
           <Text style={styles.userName}>

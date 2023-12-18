@@ -21,6 +21,7 @@ import DialogConfirm from './base/dialog/DialogConfirm';
 import {APP_ROUTE} from '../navigation/config/routes';
 import Enum from '../utils/Enum';
 import {emotionList} from './modal/EmotionList';
+import ImageView from './base/images/ImageView';
 const nullAvatar = require('../assets/images/avatar_null.jpg');
 const SubHeader = ({buyCoin}) => {
   const navigation = useNavigation();
@@ -52,16 +53,9 @@ const SubHeader = ({buyCoin}) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('UserScreen', {userId: userLogged.id})
+          navigation.navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged.id})
         }>
-        {userLogged?.avatar ? (
-          <Image
-            source={{uri: userLogged.avatar}}
-            style={styles.profileStyle}
-          />
-        ) : (
-          <Image source={nullAvatar} style={styles.profileStyle} />
-        )}
+        <ImageView uri={userLogged?.avatar} imageStyles={styles.profileStyle} />
       </TouchableOpacity>
       <View style={styles.inputBox}>
         <TouchableOpacity onPress={handleClickUpPost}>

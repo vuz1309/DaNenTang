@@ -9,20 +9,20 @@ import {
 } from 'react-native';
 import {logger} from '../../utils/helper';
 import {Colors} from '../../utils/Colors';
+import ImageView from '../base/images/ImageView';
 
-export const SingleSearchItem = ({id, item} : any) => {
+export const SingleSearchItem = ({id, item}: any) => {
   return (
-    <TouchableHighlight
-      underlayColor={Colors.lightgrey}
-      onPress={() => {
-      }}>
+    <TouchableHighlight underlayColor={Colors.lightgrey} onPress={() => {}}>
       <View style={{flexDirection: 'row', padding: 16}}>
-        <TouchableOpacity
-          style={styles.row}
-          onPress={() => {}}>
-          <Image
+        <TouchableOpacity style={styles.row} onPress={() => {}}>
+          {/* <Image
             source={{uri: item.author.avatar}}
             style={styles.userProfile}
+          /> */}
+          <ImageView
+            uri={item?.author?.avatar}
+            imageStyles={styles.userProfile}
           />
           <View style={styles.userSection}>
             <Text style={[styles.title]}>{item.author.name}</Text>

@@ -7,7 +7,6 @@ import {
   TextInput,
   ScrollView,
   Modal,
-  ImageBackground,
   ToastAndroid,
 } from 'react-native';
 import React, {useMemo, useState} from 'react';
@@ -27,7 +26,9 @@ import Enum from '../utils/Enum';
 import {BE_URL} from '../api/config';
 import {openLibraryDevice, requestCameraPermission} from '../utils/helper';
 import EmotionList from '../components/modal/EmotionList';
-import Video from 'react-native-video';
+
+import ImageView from '../components/base/images/ImageView';
+import PostVideo from '../components/posts/PostVideo';
 
 const UploadScreen = ({navigation, route}) => {
   const {postData, mode, onClose} = route.params;
@@ -49,8 +50,8 @@ const UploadScreen = ({navigation, route}) => {
   );
 
   const isDisabledPost = useMemo(
-    () => text.trim() === '' && images.length === 0,
-    [text, images],
+    () => text.trim() === '' && images.length === 0 && !video?.uri,
+    [text, images, video],
   );
   const title = useMemo(
     () =>
@@ -274,7 +275,8 @@ const UploadScreen = ({navigation, route}) => {
 
       {/*avatar and name*/}
       <View style={styles.avaContainer}>
-        <Image style={styles.ava} source={{uri: user.avatar}} />
+        {/* <Image style={styles.ava} source={{uri: user.avatar}} /> */}
+        <ImageView imageStyles={styles.ava} uri={user?.avatar} />
         <View>
           <Text
             style={{fontWeight: 'bold', fontSize: 20, color: Colors.textColor}}>
@@ -356,21 +358,27 @@ const UploadScreen = ({navigation, route}) => {
             gap: 4,
           }}>
           {!!video?.uri ? (
-            <Video
-              source={video}
-              style={styles.video}
-              controls={true}
-              resizeMode="contain"
-            />
+            <View style={styles.video}>
+              <PostVideo autoPlay={true} videoUrl={video.uri} />
+              <TouchableOpacity
+                onPress={() => setVideo(null)}
+                style={styles.removeImgIcon}>
+                <VectorIcon
+                  type="AntDesign"
+                  name="close"
+                  color={Colors.black}
+                  size={20}
+                />
+              </TouchableOpacity>
+            </View>
           ) : (
             images.length > 0 &&
             images.map((e, index) => {
               return (
                 <View key={index} style={styles.image}>
-                  <ImageBackground
-                    key={index}
-                    style={{width: '100%', aspectRatio: 1}}
-                    source={e}
+                  <ImageView
+                    uri={e.uri}
+                    imageStyles={{width: '100%', aspectRatio: 1}}
                   />
                   <TouchableOpacity
                     onPress={() => removeImg(index)}
@@ -646,6 +654,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: 250, // Adjust the height as needed
+    position: 'relative',
   },
 });
 

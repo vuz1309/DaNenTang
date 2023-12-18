@@ -16,6 +16,7 @@ import {APP_ROUTE} from '../../navigation/config/routes';
 import {feelConfigs} from '../posts/PostFooter';
 import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
 import Loading from '../base/Loading';
+import ImageView from '../base/images/ImageView';
 const nullAvatar = require('../../assets/images/avatar_null.jpg');
 const ListReactions = ({route}) => {
   const {navigate, goBack} = useNavigation();
@@ -74,26 +75,7 @@ const ListReactions = ({route}) => {
                   borderRadius: 30,
                   overflow: 'hidden',
                 }}>
-                {fe.feel.user.avatar ? (
-                  <Image
-                    style={{
-                      resizeMode: 'cover',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    source={{uri: fe.feel.user.avatar}}
-                    defaultSource={nullAvatar}
-                  />
-                ) : (
-                  <Image
-                    style={{
-                      resizeMode: 'cover',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    source={nullAvatar}
-                  />
-                )}
+                <ImageView uri={fe.feel.user.avatar} />
               </View>
               <Text
                 style={{
