@@ -62,6 +62,7 @@ const SettingsScreen = ({navigation}) => {
       <ScrollView style={{flex: 1}}>
         {Object.keys(settingConfig).map(key => (
           <View
+            key={key}
             style={{
               flexDirection: 'row',
               alignItems: 'center',

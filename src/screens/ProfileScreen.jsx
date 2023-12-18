@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
   Pressable,
   Animated,
   ScrollView,
@@ -11,17 +10,17 @@ import {
 import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
-
-import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
+import {useLogout} from '../hooks/useLogout';
 import Modal from 'react-native-modal';
 import {APP_ROUTE} from '../navigation/config/routes';
 
 import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
-import tempImage from '../assets/images/img1.jpeg';
+
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useNavigation} from '@react-navigation/native';
+import ImageView from '../components/base/images/ImageView';
 
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
@@ -80,10 +79,18 @@ const ProfileScreen = () => {
             navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged?.id})
           }
           style={styles.profile}>
-          <Image
+          {/* <Image
             style={[styles.profileImage, {marginLeft: 10}]}
             source={tempImage}
-          />
+          /> */}
+          <View
+            style={{
+              ...styles.profileImage,
+              marginLeft: 10,
+              overflow: 'hidden',
+            }}>
+            <ImageView uri={userLogged?.avatar} />
+          </View>
           <View style={styles.profileUser}>
             <Text style={styles.userName}>{userLogged?.username}</Text>
             <Text style={{color: Colors.textGrey}}>
@@ -333,7 +340,13 @@ const ProfileScreen = () => {
         <DialogConfirm
           isVisible={!!isShowModalLogout}
           closeBtn={{text: 'Không', onPress: () => setIsShowModalLogout(false)}}
-          mainBtn={{text: 'Đăng xuất', onPress: onLogout}}
+          mainBtn={{
+            text: 'Đăng xuất',
+            onPress: () => {
+              setIsShowModalLogout(false);
+              onLogout();
+            },
+          }}
           content={'Bạn có chắc chắn muốn đăng xuất?'}
           title={'Đăng xuất?'}
         />
@@ -381,8 +394,8 @@ const styles = StyleSheet.create({
   },
   profileImage: {
     borderRadius: 50,
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderColor: Colors.white,
     borderWidth: 1,
     marginRight: -20,
@@ -470,11 +483,11 @@ const styles = StyleSheet.create({
   },
   logout: {
     fontSize: 15,
-    color: Colors.white,
+    color: Colors.black,
     fontWeight: '500',
   },
   logoutButton: {
-    backgroundColor: Colors.primaryColor,
+    backgroundColor: Colors.lightgrey,
     padding: 12,
     borderRadius: 20,
     width: '90%',
