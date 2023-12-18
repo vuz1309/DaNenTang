@@ -41,6 +41,7 @@ import SearchScreen from './src/components/modal/SearchScreen';
 import ListReactions from './src/components/comments/ListReactions';
 import PostListImage from './src/components/posts/PostListImage';
 import DetailsPost from './src/components/posts/DetailsPost';
+import SettingsScreen from './src/screens/settings/SettingsScreen';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -109,6 +110,10 @@ const AppChild = () => {
             <Stack.Screen
               name={APP_ROUTE.POST_DETAILS}
               component={DetailsPost}
+            />
+            <Stack.Screen
+              name={APP_ROUTE.PUSH_SETTINGS}
+              component={SettingsScreen}
             />
           </>
         );

@@ -17,9 +17,13 @@ import tempImage from '../assets/images/img1.jpeg';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useLogout} from '../hooks/useLogout';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../navigation/config/routes';
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
-  // const {requestLogout} = useLogout(auth(), fireStore());
+
+  const {navigate} = useNavigation();
+
   const [isChangePass, setIsChangePass] = React.useState(false);
   const {onLogout} = useLogout();
 
@@ -195,20 +199,22 @@ const ProfileScreen = () => {
           style={{flex: 1}}>
           <ChangePassword closeModal={toggleModalChangePass} />
         </Modal>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={toggleModalChangePass}
           style={styles.changePassBtn}>
           <Text style={{...styles.logout, color: Colors.primaryColor}}>
             Đổi mật khẩu
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Animated.View
           style={[styles.expandContainer, {height: animatedHeightSetting}]}>
           {true ? (
             <View>
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
-                <View style={styles.expandOptionMain}>
+                <Pressable
+                  onPress={toggleModalChangePass}
+                  style={styles.expandOptionMain}>
                   <VectorIcon
                     type="FontAwesome"
                     name="user"
@@ -216,13 +222,15 @@ const ProfileScreen = () => {
                     color={Colors.black}
                     style={styles.expandOptionIcon}
                   />
-                  <Text style={styles.expandText}>Cài đặt</Text>
-                </View>
+                  <Text style={styles.expandText}> Đổi mật khẩu</Text>
+                </Pressable>
               </View>
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
-                <View style={styles.expandOptionMain}>
+                <Pressable
+                  onPress={() => navigate(APP_ROUTE.PUSH_SETTINGS)}
+                  style={styles.expandOptionMain}>
                   <VectorIcon
                     type="FontAwesome"
                     name="reply"
@@ -230,8 +238,8 @@ const ProfileScreen = () => {
                     color={Colors.black}
                     style={styles.expandOptionIcon}
                   />
-                  <Text style={styles.expandText}>Lối tắt quyền riêng tư</Text>
-                </View>
+                  <Text style={styles.expandText}>Thông báo đẩy</Text>
+                </Pressable>
               </View>
 
               <View style={styles.expandOption}>
@@ -451,6 +459,7 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     marginBottom: 30,
+    marginTop: 16,
   },
   modalWrapper: {
     backgroundColor: Colors.white,
