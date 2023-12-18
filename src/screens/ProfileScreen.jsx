@@ -10,16 +10,31 @@ import {
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
+import {useSelector} from 'react-redux';
+
+import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
+import auth from '@react-native-firebase/auth';
+import fireStore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
+import {store} from '../state-management/redux/store';
+import {APP_ROUTE} from '../navigation/config/routes'
+
+import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
+import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
+import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
+import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import {StyledTouchable} from '../components/base';
+import {Themes} from '../assets/themes';
 import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
-import {useLogout} from '../hooks/useLogout';
 import {useNavigation} from '@react-navigation/native';
-import {APP_ROUTE} from '../navigation/config/routes';
+
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
 
   const {navigate} = useNavigation();
@@ -31,8 +46,17 @@ const ProfileScreen = () => {
     setIsChangePass(!isChangePass);
   };
 
-  const [help, setHelp] = useState(false);
-  const [setting, setSetting] = useState(false);
+  const [help,setHelp]=useState(false);
+  const [setting,setSetting]=useState(false);
+
+  const userLogged = useSelector(
+    /**
+     *
+     * @param {FacebookRootState} state
+     * @returns
+     */
+    state => state.userInfo.user,
+  );
 
   const animatedHeightHelp = useRef(new Animated.Value(0)).current;
   const animatedHeightSetting = useRef(new Animated.Value(0)).current;
@@ -242,6 +266,25 @@ const ProfileScreen = () => {
                 </Pressable>
               </View>
 
+              
+              <View style={styles.expandOption}>
+                <View style={styles.expandOptionShadow}></View>
+                <Pressable
+                  onPress={() => navigate(APP_ROUTE.BLOCK)}
+                  style={styles.expandOptionMain}>
+                  <VectorIcon
+                    type="Entypo"
+                    name="key"
+                    size={30}
+                    color={Colors.black}
+                    style={styles.expandOptionIcon}
+                  />
+                  <Text style={styles.expandText}>Danh sách Block</Text>
+                </Pressable>
+              </View>
+
+
+
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
                 <View style={styles.expandOptionMain}>
@@ -286,19 +329,6 @@ const ProfileScreen = () => {
                 </View>
               </View>
 
-              <View style={styles.expandOption}>
-                <View style={styles.expandOptionShadow}></View>
-                <View style={styles.expandOptionMain}>
-                  <VectorIcon
-                    type="Entypo"
-                    name="key"
-                    size={30}
-                    color={Colors.black}
-                    style={styles.expandOptionIcon}
-                  />
-                  <Text style={styles.expandText}>Trình tạo mã</Text>
-                </View>
-              </View>
             </View>
           ) : null}
         </Animated.View>

@@ -35,7 +35,7 @@ import Enum from './src/utils/Enum';
 import WatchNightScreen from './src/screens/WatchNightScreen';
 import StatusBarHandler from './src/components/statusBar/StatusBarHandler';
 import {Colors} from './src/utils/Colors';
-
+import BlockScreen from './src/screens/blocks/BlockScreen';
 import UploadScreen from './src/screens/UploadScreen';
 import SearchScreen from './src/components/modal/SearchScreen';
 import ListReactions from './src/components/comments/ListReactions';
@@ -115,6 +115,7 @@ const AppChild = () => {
               name={APP_ROUTE.PUSH_SETTINGS}
               component={SettingsScreen}
             />
+            <Stack.Screen name={APP_ROUTE.BLOCK} component={BlockScreen} />
           </>
         );
       }
@@ -166,7 +167,9 @@ const AppChild = () => {
   );
 };
 
+
 const App = () => {
+  
   return (
     <Provider store={store}>
       <AppStateProvider>
