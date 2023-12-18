@@ -90,7 +90,7 @@ const FriendCard = ({fr, reload}) => {
                   fontSize: 20,
                   color: Colors.black,
                 }}>
-                {fr.username}
+                {fr.name}
               </Text>
               <Text style={{color: Colors.grey}}>
                 {fr.same_friends} bạn chung

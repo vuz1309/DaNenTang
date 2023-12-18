@@ -10,15 +10,19 @@ import {
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
+import {useSelector} from 'react-redux';
+
+import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
 import Modal from 'react-native-modal';
+import {APP_ROUTE} from '../navigation/config/routes';
+
 import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
 import tempImage from '../assets/images/img1.jpeg';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
-import {useLogout} from '../hooks/useLogout';
 import {useNavigation} from '@react-navigation/native';
-import {APP_ROUTE} from '../navigation/config/routes';
+
 const ProfileScreen = () => {
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
 
@@ -33,6 +37,15 @@ const ProfileScreen = () => {
 
   const [help, setHelp] = useState(false);
   const [setting, setSetting] = useState(false);
+
+  const userLogged = useSelector(
+    /**
+     *
+     * @param {FacebookRootState} state
+     * @returns
+     */
+    state => state.userInfo.user,
+  );
 
   const animatedHeightHelp = useRef(new Animated.Value(0)).current;
   const animatedHeightSetting = useRef(new Animated.Value(0)).current;
@@ -62,21 +75,27 @@ const ProfileScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <HeaderTitle title={'Menu'} />
-        <View style={styles.profile}>
+        <Pressable
+          onPress={() =>
+            navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged?.id})
+          }
+          style={styles.profile}>
           <Image
             style={[styles.profileImage, {marginLeft: 10}]}
             source={tempImage}
           />
           <View style={styles.profileUser}>
-            <Text style={styles.userName}>Ngo Duc Cuong</Text>
-            <Text>Xem trang cá nhân của bạn</Text>
+            <Text style={styles.userName}>{userLogged?.username}</Text>
+            <Text style={{color: Colors.textGrey}}>
+              Xem trang cá nhân của bạn
+            </Text>
           </View>
-          <View style={styles.OtherProfile}>
+          {/* <View style={styles.OtherProfile}>
             <Image style={styles.profileImage} source={tempImage} />
             <Image style={styles.profileImage} source={tempImage} />
             <Image style={styles.profileImage} source={tempImage} />
-          </View>
-        </View>
+          </View> */}
+        </Pressable>
         <Pressable onPress={ToggleHelp} style={styles.option}>
           <VectorIcon
             style={styles.optionIcon}
@@ -244,6 +263,22 @@ const ProfileScreen = () => {
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
+                <Pressable
+                  onPress={() => navigate(APP_ROUTE.BLOCK)}
+                  style={styles.expandOptionMain}>
+                  <VectorIcon
+                    type="Entypo"
+                    name="key"
+                    size={30}
+                    color={Colors.black}
+                    style={styles.expandOptionIcon}
+                  />
+                  <Text style={styles.expandText}>Danh sách chặn</Text>
+                </Pressable>
+              </View>
+
+              <View style={styles.expandOption}>
+                <View style={styles.expandOptionShadow}></View>
                 <View style={styles.expandOptionMain}>
                   <VectorIcon
                     type="AntDesign"
@@ -283,20 +318,6 @@ const ProfileScreen = () => {
                     style={styles.expandOptionIcon}
                   />
                   <Text style={styles.expandText}>Trình tiết kiệm dữ liệu</Text>
-                </View>
-              </View>
-
-              <View style={styles.expandOption}>
-                <View style={styles.expandOptionShadow}></View>
-                <View style={styles.expandOptionMain}>
-                  <VectorIcon
-                    type="Entypo"
-                    name="key"
-                    size={30}
-                    color={Colors.black}
-                    style={styles.expandOptionIcon}
-                  />
-                  <Text style={styles.expandText}>Trình tạo mã</Text>
                 </View>
               </View>
             </View>

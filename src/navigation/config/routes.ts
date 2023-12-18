@@ -20,6 +20,7 @@ const APP_ROUTE = {
   USER_SCREEN: 'UserScreen',
   WEBVIEW: 'WebView',
   UPLOAD: 'UploadScreen',
+  BLOCK:'Block',
   COMMENT_PAGE: '@APP_ROUTE/COMMENT_PAGE',
   FULL_VIDEO: 'FullVideo',
   CHANGE_AFTER_SIGNUP: 'CHANGE_AFTER_SIGNUP',
