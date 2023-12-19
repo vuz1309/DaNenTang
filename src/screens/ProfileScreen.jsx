@@ -12,12 +12,13 @@ import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
 
-import {useLogout} from '../utils/authenticateFirebase/AuthenticateFirebase';
+
+import {useLogout} from '../hooks/useLogout';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
 import {store} from '../state-management/redux/store';
-import {APP_ROUTE} from '../navigation/config/routes'
+import {APP_ROUTE, AUTHENTICATE_ROUTE} from '../navigation/config/routes'
 
 import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
@@ -94,7 +95,7 @@ const ProfileScreen = () => {
           <Pressable style={styles.profileUser}
             onPress={()=>navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged.id})}
           >
-            <Text style={styles.userName}>Ngo Duc Cuong</Text>
+            <Text style={styles.userName}>{userLogged?.username}</Text>
             <Text>Xem trang cá nhân của bạn</Text>
           </Pressable>
           <View style={styles.OtherProfile}>
@@ -319,7 +320,9 @@ const ProfileScreen = () => {
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
-                <View style={styles.expandOptionMain}>
+                  <Pressable style={styles.expandOptionMain}
+                  onPress={()=>navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}
+                >
                   <VectorIcon
                     type="Feather"
                     name="smartphone"
@@ -328,7 +331,7 @@ const ProfileScreen = () => {
                     style={styles.expandOptionIcon}
                   />
                   <Text style={styles.expandText}>Trình tiết kiệm dữ liệu</Text>
-                </View>
+                </Pressable>
               </View>
 
             </View>
