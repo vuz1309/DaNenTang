@@ -89,16 +89,18 @@ const ProfileScreen = () => {
         <View style={styles.profile}>
           <Image
             style={[styles.profileImage, {marginLeft: 10}]}
-            source={tempImage}
+            source={userLogged?{uri:userLogged.avatar}:null}
           />
-          <View style={styles.profileUser}>
+          <Pressable style={styles.profileUser}
+            onPress={()=>navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged.id})}
+          >
             <Text style={styles.userName}>Ngo Duc Cuong</Text>
             <Text>Xem trang cá nhân của bạn</Text>
-          </View>
+          </Pressable>
           <View style={styles.OtherProfile}>
-            <Image style={styles.profileImage} source={tempImage} />
-            <Image style={styles.profileImage} source={tempImage} />
-            <Image style={styles.profileImage} source={tempImage} />
+            {/* <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} />
+            <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} />
+            <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} /> */}
           </View>
         </View>
         <Pressable onPress={ToggleHelp} style={styles.option}>
