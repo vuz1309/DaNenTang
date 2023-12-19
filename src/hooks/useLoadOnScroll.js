@@ -2,11 +2,14 @@ import React from 'react';
 import {useScrollHanler} from './useScrollHandler';
 
 export const useLoadOnScroll = (loadFunc, dependencies = []) => {
+  const [searchText, setSearchText] = React.useState('');
   const [params, setParams] = React.useState({
     index: '0',
     count: '20',
   });
-
+  const handleSubmitSearch = () => {
+    setParams({index: '0', count: '20'});
+  };
   const {isLoadMore, refreshing, handleScroll, setIsLoadMore, setRefreshing} =
     useScrollHanler(reload, loadMore);
   function reload() {
@@ -58,5 +61,8 @@ export const useLoadOnScroll = (loadFunc, dependencies = []) => {
     handleScroll,
     setIsLoadMore,
     setRefreshing,
+    handleSubmitSearch,
+    searchText,
+    setSearchText,
   };
 };

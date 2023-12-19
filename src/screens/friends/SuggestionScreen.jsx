@@ -5,15 +5,17 @@ import {Colors} from '../../utils/Colors';
 import AddFriendRequest from '../../components/friends/AddFriendRequest';
 import {
   getSuggestionFriend,
+  searchUsersRequest,
   setRequestFriend,
 } from '../../api/modules/friends.request';
 import Loading from '../../components/base/Loading';
 import HeaderSearch from '../layouts/HeaderSearch';
 import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
+import {TextInput} from 'react-native-gesture-handler';
 
 const SuggestionScreen = ({navigation}) => {
   const [allSuggestions, setSuggestions] = React.useState([]);
-  const [searchText, setSearchText] = React.useState('');
+
   const {
     getNewItems,
     handleScroll,
@@ -22,6 +24,9 @@ const SuggestionScreen = ({navigation}) => {
     reload,
     refreshing,
     isLoadMore,
+    searchText,
+    setSearchText,
+    handleSubmitSearch,
   } = useLoadOnScroll(getAll, [searchText]);
 
   const setRequestApi = async user_id => {
@@ -33,7 +38,10 @@ const SuggestionScreen = ({navigation}) => {
   };
   async function getAll() {
     try {
-      const {data} = await getSuggestionFriend(params);
+      const {data} = await searchUsersRequest({
+        ...params,
+        keyword: searchText || ' ',
+      });
 
       if (params.index == '0') setSuggestions(data.data);
       else {
@@ -48,7 +56,22 @@ const SuggestionScreen = ({navigation}) => {
   return (
     <View style={{backgroundColor: Colors.white, flex: 1}}>
       <HeaderSearch title={'Gợi ý'} onBack={navigation.goBack} />
-
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 16,
+          paddingBottom: 8,
+        }}>
+        <TextInput
+          value={searchText}
+          onChangeText={text => setSearchText(text)}
+          style={styles.searchInput}
+          placeholderTextColor={Colors.textGrey}
+          placeholder={'Tìm kiếm bạn bè'}
+          onSubmitEditing={handleSubmitSearch}
+        />
+      </View>
       <FlatList
         data={allSuggestions}
         ListHeaderComponent={
@@ -109,6 +132,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 20,
     color: Colors.black,
+  },
+  searchInput: {
+    backgroundColor: Colors.lightgrey,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    fontSize: 14,
+    width: '90%',
+    color: Colors.black,
+    alignItems: 'center',
+    height: 40,
   },
 });
 

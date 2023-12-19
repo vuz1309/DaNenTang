@@ -266,7 +266,9 @@ const UserScreen = ({navigation, route}) => {
               />
             )}
           </TouchableOpacity>
-          <Modal visible={!!imageViewed}>
+          <Modal
+            onRequestClose={() => setImageViewed('')}
+            visible={!!imageViewed}>
             <ZoomableImage
               onClose={() => setImageViewed('')}
               urls={[{url: imageViewed}]}

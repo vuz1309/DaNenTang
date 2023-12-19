@@ -47,3 +47,11 @@ export const deleteFriendRequest = (params: {user_id: string}) => {
 export const unFriend = (params: {user_id: string}) => {
   return requestJSONWithAuth('/unfriend', params);
 };
+
+export const searchUsersRequest = (params: {
+  keyword?: string;
+  index: string;
+  count: string;
+}) => {
+  return requestJSONWithAuth('/search_user', params);
+};
