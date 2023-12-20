@@ -13,41 +13,39 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import VectorIcon from '../utils/VectorIcon';
 import {Themes} from '../assets/themes';
-import {
-  checkCoinsIsSmallerThan50,
-  formatNumberSplitBy,
-} from '../helpers/helpers';
+import {checkCoinsNotEnough, formatNumberSplitBy} from '../helpers/helpers';
 import DialogConfirm from './base/dialog/DialogConfirm';
 import {APP_ROUTE} from '../navigation/config/routes';
 import Enum from '../utils/Enum';
 import {emotionList} from './modal/EmotionList';
 import ImageView from './base/images/ImageView';
-const nullAvatar = require('../assets/images/avatar_null.jpg');
-const SubHeader = ({buyCoin}) => {
+import {MIN_COINS} from '../utils/constants';
+const SubHeader = ({}) => {
   const navigation = useNavigation();
   const userLogged = useSelector(state => state.userInfo.user);
+  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
+
   const coins = React.useMemo(
     () => formatNumberSplitBy(Number(userLogged?.coins || '0')),
     [userLogged, [userLogged?.coins]],
   );
+  const buyCoin = () => {
+    navigation.navigate(APP_ROUTE.BUY_COINS);
+  };
   const handleClickUpPost = () => {
-    if (checkCoinsIsSmallerThan50()) {
-      ToastAndroid.show(
-        'Cần ít nhất 50 coins để tiếp tục, vui lòng nạp thêm',
-        ToastAndroid.SHORT,
-      );
-      buyCoin();
-      return;
+    if (checkCoinsNotEnough()) {
+      setIsShowDialogCoins(true);
+    } else {
+      navigation.navigate(APP_ROUTE.UPLOAD, {
+        mode: Enum.PostMode.Create,
+        postData: {
+          image: [],
+          status: `${emotionList[0].name} ${emotionList[0].emo}`,
+          described: '',
+          id: '0',
+        },
+      });
     }
-    navigation.navigate(APP_ROUTE.UPLOAD, {
-      mode: Enum.PostMode.Create,
-      postData: {
-        image: [],
-        status: `${emotionList[0].name} ${emotionList[0].emo}`,
-        described: '',
-        id: '0',
-      },
-    });
   };
   return (
     <View style={styles.container}>
@@ -75,6 +73,20 @@ const SubHeader = ({buyCoin}) => {
 
         <Text style={{fontWeight: '700', color: Colors.black}}>{coins}</Text>
       </TouchableOpacity>
+
+      <DialogConfirm
+        isVisible={isShowDialogCoins}
+        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
+        title={'Thiếu coins'}
+        content={`Cần ít nhất ${MIN_COINS} coins để tiếp tục, bạn có muốn mua thêm coins?`}
+        mainBtn={{
+          text: 'Mua',
+          onPress: () => {
+            setIsShowDialogCoins(false);
+            buyCoin();
+          },
+        }}
+      />
     </View>
   );
 };
