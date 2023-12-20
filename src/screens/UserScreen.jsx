@@ -5,10 +5,10 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ScrollView,
   RefreshControl,
   Modal,
   PermissionsAndroid,
+  FlatList,
 } from 'react-native';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
@@ -31,6 +31,12 @@ import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {userSavedInfoActions} from '../state-management/redux/slices/UserSavedSlice';
 import HeaderCenter from '../components/base/headers/HeaderCenter';
 import {formatNumberSplitBy} from '../helpers/helpers';
+import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
+import {getListPost} from '../api/modules/post.request';
+import LoadingOverlay from '../components/base/LoadingOverlay';
+import PostHeader from '../components/posts/PostHeader';
+import FilePost from '../components/posts/FilePost';
+import PostFooter from '../components/posts/PostFooter';
 
 const nullImage = require('../assets/images/avatar_null.jpg');
 const Detail = ({iconName, iconType, type, info}) => {
@@ -73,13 +79,7 @@ const UserScreen = ({navigation, route}) => {
   const toggleChangeImg = () => {
     setIsChangeImg(!isChangeImg);
   };
-  const reload = () => {
-    getUserInfoApi();
-  };
-  const {handleScroll, onRefresh, refreshing} = useScrollHanler(
-    reload,
-    () => {},
-  );
+
   const isOwner = React.useMemo(() => userLogged.id == userId, [userId]);
   const getUserInfoApi = async () => {
     try {
@@ -141,29 +141,60 @@ const UserScreen = ({navigation, route}) => {
   React.useEffect(() => {
     getUserInfoApi();
   }, [userId]);
-  if (!userInfo.id)
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Loading color={Colors.primaryColor} />
-      </View>
-    );
 
   const toggleEditModal = async () => {
     if (isEdit) await getUserInfoApi();
     setIsEdit(!isEdit);
   };
+  const [userPosts, setUserPosts] = React.useState([]);
+  const {
+    handleScroll: scrollPost,
+    reload: reloadPost,
+    getNewItems,
+    params,
+    searchText,
+    setSearchText,
+    refreshing: refreshingPost,
+    isLoadMore,
+  } = useLoadOnScroll(getUserPosts, [userId]);
 
-  return (
-    <ScrollView
-      onScroll={handleScroll}
-      refreshControl={
-        <RefreshControl
-          colors={[Colors.primaryColor]}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
+  const reload = () => {
+    getUserInfoApi();
+    reloadPost();
+  };
+  const removePost = id => {
+    const index = userPosts.findIndex(item => item.id === id);
+    if (index >= 0) {
+      const posts = [...userPosts];
+      posts.splice(index, 1);
+      setUserPosts(posts);
+    }
+  };
+  async function getUserPosts() {
+    try {
+      const {data} = await getListPost({
+        ...params,
+        user_id: userId,
+        last_id: searchText,
+      });
+
+      if (data.data.last_id != 'undefined') {
+        setSearchText(data.data.last_id);
       }
-      style={styles.container}>
+
+      if (params.index == '0') setUserPosts(data.data.post);
+      else {
+        const newItems = getNewItems(data.data.post, userPosts);
+
+        setUserPosts(prev => [...prev, ...newItems]);
+      }
+    } catch (error) {
+      console.log('user posts:', error);
+    }
+  }
+  if (!userInfo.id) return <LoadingOverlay />;
+  return (
+    <View style={styles.container}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -219,152 +250,210 @@ const UserScreen = ({navigation, route}) => {
           closeModal={() => toggleEditModal()}
         />
       </Modal>
-      <HeaderCenter text={userInfo.username} goBack={navigation.goBack} />
-      <TouchableOpacity
-        onPress={() => setImageViewed(userInfo.cover_image)}
-        style={styles.avaContainer}>
-        <>
-          <Image
-            style={styles.background}
-            source={
-              userInfo.cover_image
-                ? {
-                    uri: userInfo.cover_image,
+
+      <FlatList
+        data={userPosts}
+        onScroll={scrollPost}
+        ListHeaderComponent={() => (
+          <>
+            <HeaderCenter text={userInfo.username} goBack={navigation.goBack} />
+            <TouchableOpacity
+              onPress={() => setImageViewed(userInfo.cover_image)}
+              style={styles.avaContainer}>
+              <>
+                <Image
+                  style={styles.background}
+                  source={
+                    userInfo.cover_image
+                      ? {
+                          uri: userInfo.cover_image,
+                        }
+                      : nullImage
                   }
-                : nullImage
-            }
-            defaultSource={nullImage}
-          />
+                  defaultSource={nullImage}
+                />
 
-          {isOwner && (
-            <TouchableOpacity
-              style={styles.changeCover}
-              onPress={toggleChangeImg}>
-              <VectorIcon
-                name="camera"
-                type="FontAwesome5"
-                color={Themes.COLORS.grey}
-                size={20}
-              />
+                {isOwner && (
+                  <TouchableOpacity
+                    style={styles.changeCover}
+                    onPress={toggleChangeImg}>
+                    <VectorIcon
+                      name="camera"
+                      type="FontAwesome5"
+                      color={Themes.COLORS.grey}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={styles.ava}
+                  onPress={() => setImageViewed(userInfo.avatar)}>
+                  {userInfo.avatar ? (
+                    <Image
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        resizeMode: 'cover',
+                      }}
+                      source={{
+                        uri: userInfo.avatar,
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        resizeMode: 'cover',
+                      }}
+                      source={nullImage}
+                    />
+                  )}
+                </TouchableOpacity>
+                <Modal
+                  onRequestClose={() => setImageViewed('')}
+                  visible={!!imageViewed}>
+                  <ZoomableImage
+                    onClose={() => setImageViewed('')}
+                    urls={[{url: imageViewed}]}
+                  />
+                </Modal>
+                {isOwner && (
+                  <TouchableOpacity
+                    style={styles.changeImg}
+                    onPress={toggleChangeImg}>
+                    <VectorIcon
+                      name="camera"
+                      type="FontAwesome5"
+                      color={Themes.COLORS.grey}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                )}
+                {Number(userInfo.online) && !isOwner && (
+                  <View style={styles.isOnline} />
+                )}
+              </>
             </TouchableOpacity>
-          )}
+            <View style={styles.info}>
+              <Text
+                style={{fontWeight: 'bold', color: Colors.black, fontSize: 25}}>
+                {userInfo.username}
+              </Text>
+              <Text
+                style={{fontSize: 18, paddingTop: 12, color: Colors.textGrey}}>
+                <Text style={{fontWeight: '700', color: Colors.black}}>
+                  {userInfo.listing}{' '}
+                </Text>
+                bạn bè
+              </Text>
+              {userInfo?.description?.trim() && (
+                <Text
+                  style={{
+                    color: Colors.textColor,
+                    fontSize: 18,
+                    paddingVertical: 4,
+                  }}>
+                  {userInfo.description}
+                </Text>
+              )}
+              {isOwner ? (
+                <ActionsOwner
+                  userId={userId}
+                  action={() => toggleEditModal()}
+                />
+              ) : (
+                <ActionsOtherUser
+                  firstMode={Number(userInfo.is_friend)}
+                  user={userInfo}
+                />
+              )}
+            </View>
+            <View style={styles.detail}>
+              <View
+                style={{
+                  color: Colors.textGrey,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  paddingBottom: 25,
+                }}>
+                <Text
+                  style={{
+                    fontWeight: '700',
+                    color: Colors.black,
+                    fontSize: 22,
+                  }}>
+                  Thông tin
+                </Text>
+              </View>
+              <View
+                style={{
+                  color: Colors.textGrey,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                <VectorIcon
+                  name="coins"
+                  type="FontAwesome5"
+                  color={Colors.grey}
+                  size={20}
+                />
+                <Text
+                  style={{
+                    fontWeight: '700',
+                    color: Colors.black,
+                    fontSize: 18,
+                  }}>
+                  {coins}
+                </Text>
+              </View>
 
-          <TouchableOpacity
-            style={styles.ava}
-            onPress={() => setImageViewed(userInfo.avatar)}>
-            {userInfo.avatar ? (
-              <Image
-                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-                source={{
-                  uri: userInfo.avatar,
-                }}
-              />
-            ) : (
-              <Image
-                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
-                source={nullImage}
-              />
-            )}
-          </TouchableOpacity>
-          <Modal
-            onRequestClose={() => setImageViewed('')}
-            visible={!!imageViewed}>
-            <ZoomableImage
-              onClose={() => setImageViewed('')}
-              urls={[{url: imageViewed}]}
+              {userInfo.city !== '' && userInfo.country !== '' && (
+                <Detail
+                  iconName={'location-sharp'}
+                  iconType={'Ionicons'}
+                  type={'Sống tại'}
+                  info={`${userInfo.city}, ${userInfo.country}`}
+                />
+              )}
+              {userInfo.address !== '' && (
+                <Detail
+                  iconName={'home'}
+                  iconType={'Entypo'}
+                  type={'Địa chỉ'}
+                  info={`${userInfo.address}`}
+                />
+              )}
+            </View>
+          </>
+        )}
+        ListFooterComponent={() => isLoadMore && <Loading />}
+        renderItem={({item}) => (
+          <View style={{backgroundColor: Colors.white, marginTop: 8}}>
+            <PostHeader
+              reload={() => removePost(item.id)}
+              data={item}
+              isShowRemove={false}
             />
-          </Modal>
-          {isOwner && (
-            <TouchableOpacity
-              style={styles.changeImg}
-              onPress={toggleChangeImg}>
-              <VectorIcon
-                name="camera"
-                type="FontAwesome5"
-                color={Themes.COLORS.grey}
-                size={20}
-              />
-            </TouchableOpacity>
-          )}
-          {Number(userInfo.online) && !isOwner && (
-            <View style={styles.isOnline} />
-          )}
-        </>
-      </TouchableOpacity>
 
-      <View style={styles.info}>
-        <Text style={{fontWeight: 'bold', color: Colors.black, fontSize: 25}}>
-          {userInfo.username}
-        </Text>
-        <Text style={{fontSize: 18, paddingTop: 12, color: Colors.textGrey}}>
-          <Text style={{fontWeight: '700', color: Colors.black}}>
-            {userInfo.listing}{' '}
-          </Text>
-          bạn bè
-        </Text>
-        {userInfo?.description?.trim() && (
-          <Text
-            style={{color: Colors.textColor, fontSize: 18, paddingVertical: 4}}>
-            {userInfo.description}
-          </Text>
-        )}
-        {isOwner ? (
-          <ActionsOwner userId={userId} action={() => toggleEditModal()} />
-        ) : (
-          <ActionsOtherUser
-            firstMode={Number(userInfo.is_friend)}
-            user={userInfo}
-          />
-        )}
-      </View>
+            <FilePost item={item} />
 
-      <View style={styles.detail}>
-        <View
-          style={{
-            color: Colors.textGrey,
-            alignItems: 'center',
-            flexDirection: 'row',
-            paddingBottom: 25,
-          }}>
-          <Text style={{fontWeight: '700', color: Colors.black, fontSize: 22}}>
-            Thông tin
-          </Text>
-        </View>
-        <View
-          style={{
-            color: Colors.textGrey,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <VectorIcon
-            name="coins"
-            type="FontAwesome5"
-            color={Colors.grey}
-            size={20}
-          />
-          <Text style={{fontWeight: '700', color: Colors.black, fontSize: 18}}>
-            {coins}
-          </Text>
-        </View>
-
-        {userInfo.city !== '' && userInfo.country !== '' && (
-          <Detail
-            iconName={'location-sharp'}
-            iconType={'Ionicons'}
-            type={'Sống tại'}
-            info={`${userInfo.city}, ${userInfo.country}`}
-          />
+            <PostFooter data={item} />
+          </View>
         )}
-        {userInfo.address !== '' && (
-          <Detail
-            iconName={'home'}
-            iconType={'Entypo'}
-            type={'Địa chỉ'}
-            info={`${userInfo.address}`}
+        keyExtractor={item => item.id}
+        horizontal={false}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            colors={[Colors.primaryColor]}
+            refreshing={refreshingPost}
+            onRefresh={reload}
           />
-        )}
-      </View>
-    </ScrollView>
+        }
+      />
+    </View>
   );
 };
 const styles = StyleSheet.create({

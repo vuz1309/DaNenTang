@@ -29,7 +29,7 @@ const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({
   data,
   isShowRemove = true,
-
+  reload = null,
   setIsShowDialogCoins,
   textStyles = {color: Colors.textColor},
 }) => {
@@ -75,6 +75,7 @@ const PostHeader = ({
         }),
       );
       deletePostRequest({id: postId});
+      reload?.();
       ToastAndroid.show('Xóa bài đăng thành công!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);

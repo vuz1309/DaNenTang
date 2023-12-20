@@ -1,4 +1,5 @@
 import StyledButton from '../../components/base/StyledButton';
+import ImageView from '../../components/base/images/ImageView';
 const {
   View,
   Image,
@@ -9,15 +10,12 @@ const {
 } = require('react-native');
 const {Colors} = require('../../utils/Colors');
 const React = require('react');
-const nullImage = require('../../assets/images/avatar_null.jpg');
+
 import VectorIcon from '../../utils/VectorIcon';
 import {useLogin} from '../../utils/authenticate/AuthenticateService';
 const LoginByPassword = ({user, onClose}) => {
   const [password, setPassword] = React.useState('');
-  const image = React.useMemo(
-    () => (user.avatar ? {uri: user.avatar} : nullImage),
-    [user.avatar],
-  );
+
   const {requestLogin, loading} = useLogin();
   const onSubmit = async () => {
     await requestLogin({
@@ -62,10 +60,11 @@ const LoginByPassword = ({user, onClose}) => {
               borderRadius: 100,
               overflow: 'hidden',
             }}>
-            <Image
+            {/* <Image
               source={image}
               style={{height: '100%', width: '100%', resizeMode: 'cover'}}
-            />
+            /> */}
+            <ImageView uri={user?.avatar} />
           </View>
           <Text
             numberOfLines={1}
