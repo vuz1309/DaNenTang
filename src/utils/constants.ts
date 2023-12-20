@@ -20,3 +20,6 @@ export const errors: any = {
   [USER_IS_BLOCKED]: 'Người dùng đã bị chặn bởi bạn.',
   [NETWORK_ERROR]: 'Vui lòng kiểm tra lại mạng!',
 };
+
+// COINS:
+export const MIN_COINS = 50;

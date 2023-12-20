@@ -2,27 +2,25 @@ import {
   StyleSheet,
   Text,
   View,
-  RefreshControl,
-  ScrollView,
   TouchableOpacity,
   TextInput,
   ToastAndroid,
 } from 'react-native';
 import {Colors} from '../../utils/Colors';
 import React from 'react';
-import {set} from 'lodash';
+
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledButton} from '../../components/base';
 import {useSelector} from 'react-redux';
 import {formatNumberSplitBy} from '../../helpers/helpers';
 import {buyCoin} from '../../api/modules/userProfile.request';
-import {store} from '../../state-management/redux/store';
-import UserInfoSlice, {
-  userInfoActions,
-} from '../../state-management/redux/slices/UserInfoSlice';
-import AlertMessage from '../../components/base/AlertMessage';
 
-const BuyCoins = ({closeModal}) => {
+import AlertMessage from '../../components/base/AlertMessage';
+import {useNavigation} from '@react-navigation/native';
+import HeaderSearch from '../layouts/HeaderSearch';
+
+const BuyCoins = ({}) => {
+  const {goBack} = useNavigation();
   const [coin, setCoin] = React.useState('');
   const [code, setCode] = React.useState('');
 
@@ -43,10 +41,10 @@ const BuyCoins = ({closeModal}) => {
         };
         await buyCoin(data);
 
-        // store.dispatch(userInfoActions.updateCoin(rq.data.data.coins));
         setCoin('');
         setCode('');
-        ToastAndroid.show('Mua coins thành công!', ToastAndroid.SHORT);
+        goBack();
+        // ToastAndroid.show('Mua coins thành công!', ToastAndroid.SHORT);
       } else {
         AlertMessage('Vui lòng nhập đầy đủ thông tin');
       }
@@ -59,29 +57,24 @@ const BuyCoins = ({closeModal}) => {
 
   return (
     <View style={styles.modalContainer}>
+      <HeaderSearch title={'Coins'} onBack={goBack} haveSearch={false} />
       <View style={styles.modalContent}>
-        <TouchableOpacity onPress={closeModal} style={styles.closeIcon}>
-          <VectorIcon
-            name="close"
-            type="AntDesign"
-            size={24}
-            color={Colors.grey}
-          />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Mua thêm coin</Text>
-        <View style={styles.input}>
-          <VectorIcon
-            name="coins"
-            type="FontAwesome5"
-            size={22}
-            color={'gold'}
-          />
-          <TextInput
-            placeholderTextColor={Colors.grey}
-            value={crrCoins}
-            style={{color: Colors.black, fontSize: 20, fontWeight: 'bold'}}
-            readonly
-          />
+        <View style={{flexDirection: 'row', gap: 12, alignItems: 'center'}}>
+          <Text style={styles.headerText}>Coin hiện tại:</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <VectorIcon
+              name="coins"
+              type="FontAwesome5"
+              size={22}
+              color={'gold'}
+            />
+            <TextInput
+              placeholderTextColor={Colors.grey}
+              value={crrCoins}
+              style={{color: Colors.black, fontSize: 20, fontWeight: 'bold'}}
+              readonly
+            />
+          </View>
         </View>
         <View style={styles.input}>
           <Text style={{flex: 0.4, color: Colors.textColor}}>Số coin: </Text>
@@ -127,10 +120,8 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: Colors.white,
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    position: 'relative',
   },
   modalContent: {
     width: 300,

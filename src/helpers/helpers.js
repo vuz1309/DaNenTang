@@ -47,6 +47,7 @@ export function createImageFormData(img) {
 }
 
 import {store} from '../state-management/redux/store';
-export function checkCoinsIsSmallerThan50() {
-  return Number(store.getState().userInfo.user.coins) < 50;
+import {MIN_COINS} from '../utils/constants';
+export function checkCoinsNotEnough() {
+  return Number(store.getState().userInfo.user.coins) < MIN_COINS;
 }
