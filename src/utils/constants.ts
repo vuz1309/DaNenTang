@@ -22,4 +22,4 @@ export const errors: any = {
 };
 
 // COINS:
-export const MIN_COINS = 50;
+export const MIN_COINS = 10;
