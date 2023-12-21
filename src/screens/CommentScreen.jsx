@@ -6,6 +6,7 @@ import React from 'react';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
 import {
+  RefreshControl,
   ScrollView,
   TextInput,
   TouchableHighlight,
@@ -21,6 +22,7 @@ import {convertTimeToFacebookStyle} from '../helpers/helpers';
 import PostDisplay from '../components/posts/PostDisplay';
 import HeaderCenter from '../components/base/headers/HeaderCenter';
 import {store} from '../state-management/redux/store';
+import { useLoadOnScroll } from '../hooks/useLoadOnScroll';
 
 const Comment = ({
   id,
@@ -116,16 +118,56 @@ const CommentScreen = ({route, navigation}) => {
   const [post, setPost] = React.useState({});
   const {isLoading, call, error} = useGetPostById(item.id);
   const inputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+
+  const [params, setParams] = useState({
+    index: '0',
+    count: '1',
+  });
+  function reload(){
+    setParams({
+      index: '0',
+      count: '1',
+    })
+  }
+  const loadMore = () => {
+    setParams({
+      index: (Number(params.index) + 1).toString(),
+      count: '1',
+    });
+  };
+  const {
+    getNewItems,
+    refreshing,
+  } = useLoadOnScroll(getAll, [currentComment, params]);
+
+
+  async function getAll(){
+    try {
+      const {data} = await getMarkComments({
+        id: item.id,
+        ...params
+      });
+      if (params.index == '0') setComments(data.data);
+      else {
+        const newItems = getNewItems(data.data, comments);
+
+        setComments(prev => [...prev, ...newItems]);
+      }
+      setCurrentComment(data?.data?.created);
+    } catch (err) {
+      logger('exception in Get all() in Comment Screen!');
+    }
+  }
   const onPressReply = markId => {
-    logger('repling...', false, markId);
     inputRef?.current?.focus();
     setMarkType(2);
     setCurrentMarkId(markId);
   };
-  logger('markType: ', false, markType);
   const onPressSendComment = async () => {
+    setLoading(true);
     if (markType == 1) {
-      const response = await setMarkComments({
+      await setMarkComments({
         id: item.id,
         content: textComment,
         index: '0',
@@ -133,7 +175,7 @@ const CommentScreen = ({route, navigation}) => {
         type: '1',
       });
     } else if (markType == 2) {
-      const response = await setMarkComments({
+      await setMarkComments({
         id: item.id,
         content: textComment,
         index: '0',
@@ -142,39 +184,11 @@ const CommentScreen = ({route, navigation}) => {
         mark_id: currentMarkId,
       });
     }
-
     setTextComment('');
-    const fetchMarkComments = async () => {
-      try {
-        const response = await getMarkComments({
-          id: item.id,
-          index: 0,
-          count: 20,
-        });
-        setComments(response?.data?.data);
-        setCurrentComment(response?.data?.data?.created);
-      } catch (err) {
-        logger('excpetion in Comment Screen!');
-      }
-    };
-    await fetchMarkComments();
+    reload();
+    setLoading(false);
+
   };
-  React.useEffect(() => {
-    const fetchMarkComments = async () => {
-      try {
-        const response = await getMarkComments({
-          id: item.id,
-          index: 0,
-          count: 10,
-        });
-        setComments(response?.data?.data);
-        setCurrentComment(response?.data?.data?.created);
-      } catch (err) {
-        logger('excpetion in Comment Screen!');
-      }
-    };
-    fetchMarkComments();
-  }, [currentComment]);
   React.useEffect(() => {
     const getPost = async () => {
       const post = await call();
@@ -190,7 +204,15 @@ const CommentScreen = ({route, navigation}) => {
     <View style={styles.wrapper}>
       <HeaderCenter text={post.author.name} goBack={navigation.goBack} />
       <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
-      <ScrollView style={styles.subWrapper}>
+      <ScrollView
+      refreshControl={
+        <RefreshControl
+          colors={[Colors.primaryColor]}
+          refreshing={refreshing}
+          onRefresh={reload}
+        />
+      } 
+      style={styles.subWrapper}>
         <PostDisplay item={post} />
         <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
         <View
@@ -228,8 +250,19 @@ const CommentScreen = ({route, navigation}) => {
               onClickReply={onPressReply}
             />
           ))}
+          <Text 
+          style={{
+            padding: 10,
+            color: '#000000',
+            fontWeight: 'bold',
+            marginLeft: 10,
+            }}
+            onPress={loadMore}
+            >
+            Xem thêm bình luận...
+          </Text>
       </ScrollView>
-
+      {<LoadingOverlay isLoading={loading} />}
       <View style={styles.addComment}>
         <View
           style={{height: 40, width: 40, borderRadius: 30, overflow: 'hidden'}}>

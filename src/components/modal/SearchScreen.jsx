@@ -19,6 +19,9 @@ import {logger} from '../../utils/helper';
 import PostDisplay from '../posts/PostDisplay';
 import HistorySearchModal from './HistorySearchModal';
 import { APP_ROUTE } from '../../navigation/config/routes';
+import { FlatList, RefreshControl } from 'react-native-gesture-handler';
+import { useLoadOnScroll } from '../../hooks/useLoadOnScroll';
+import Loading from '../base/Loading';
 
 const SearchScreen = ({route, navigation}) => {
   const initialKeyword = route?.params?.initialKeyword || '';
@@ -32,17 +35,30 @@ const SearchScreen = ({route, navigation}) => {
     setSavedData(newSavedSearch);
   };
 
-  React.useEffect(() => {
-    const fetchSavedSearch = async () => {
-      try {
-        const response = await getSavedSearchRequest({index: 0, count: 20});
-        setSavedData(response.data.data);
-      } catch (err) {
-        setSavedData([]);
+  const {
+    getNewItems,
+    handleScroll,
+    params,
+    reload,
+    refreshing,
+    isLoadMore,
+  } = useLoadOnScroll(getAll, [searchData]);
+
+  async function getAll(){
+    try{
+      const {data} = await getSavedSearchRequest({...params});
+      setSavedData(data.data);
+      if (params.index == '0') setSavedData(data.data);
+      else{
+        const newItems = getNewItems(data.data, savedData);
+
+        setSavedData(prev => [...prev, ...newItems]);
       }
-    };
-    fetchSavedSearch();
-  }, [searchData]);
+    }catch (err) {
+      logger(err);
+      setSavedData([]);
+    }
+  }
 
   const onPressSavedItem = async text => {
     setKeyword(text);
@@ -53,101 +69,119 @@ const SearchScreen = ({route, navigation}) => {
     setSearchData(data);
   };
   const fetchSearchData = () => {
+    logger('keyword', true , keyword);
     if (keyword === '' || keyword === undefined || keyword === null) {
       return;
     }
     useSearch({onComplete: onCompleteSearch, keyword: keyword});
   };
   return (
-      <View>
-        <View style={styles.searchHeader}>
-          <TouchableHighlight
-            underlayColor={Colors.lightgrey}
-            style={{padding: 4, borderRadius: 20}}
-            onPress={() => {
-              setKeyword('');
-              navigation.navigate(APP_ROUTE.HOME_TAB);
-            }}>
-            <VectorIcon
-              name="arrowleft"
-              type="AntDesign"
-              size={24}
-              color={Colors.black}
-            />
-          </TouchableHighlight>
-          <TextInput
-            value={keyword}
-            style={styles.searchInput}
-            placeholder={'Tìm kiếm trên Facebook'}
-            placeholderTextColor={Colors.textGrey}
-            onFocus={() => setSearchData([])}
-            onChangeText={text => setKeyword(text)}
-            onSubmitEditing={fetchSearchData}
+    <View style={{paddingTop: 10, backgroundColor: '#ffffff'}}>
+      <View style={styles.searchHeader}>
+        <TouchableHighlight
+          underlayColor={Colors.lightgrey}
+          style={{padding: 4, borderRadius: 20}}
+          onPress={() => {
+            setKeyword('');
+            navigation.navigate(APP_ROUTE.HOME_TAB);
+          }}>
+          <VectorIcon
+            name="arrowleft"
+            type="AntDesign"
+            size={24}
+            color={Colors.black}
           />
-        </View>
-
-        <View
-          style={{
-            marginTop: '5%',
-            borderBottomColor: 'black',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
+        </TouchableHighlight>
+        <TextInput
+          value={keyword}
+          style={styles.searchInput}
+          placeholder={'Tìm kiếm trên Facebook'}
+          placeholderTextColor={Colors.textGrey}
+          onFocus={() => setSearchData([])}
+          onChangeText={text => setKeyword(text)}
+          onSubmitEditing={fetchSearchData}
         />
-        {openHistory && (
-          <HistorySearchModal
-            historySearch={savedData}
-            onCloseModal={onCloseHistory}
-          />
-        )}
-        {keyword === '' ? (
-          <View>
-            <View style={[styles.rowBetween]}>
-              <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
-              <TouchableOpacity>
-                <Text
-                  style={styles.biggerText}
-                  onPress={() => setOpenHistory(true)}>
-                  CHỈNH SỬA
-                </Text>
-              </TouchableOpacity>
-            </View>
+      </View>
+
+      <View
+        style={{
+          marginTop: '5%',
+          borderBottomColor: 'black',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+        }}
+      />
+      {openHistory && (
+        <HistorySearchModal
+          historySearch={savedData}
+          onCloseModal={onCloseHistory}
+        />
+      )}
+      {keyword === '' ? (
+        <View>
+          <FlatList
+            data={savedData}
+            ListHeaderComponent={
+              <View>
+                <View style={[styles.rowBetween]}>
+                  <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={styles.biggerText}
+                      onPress={() => setOpenHistory(true)}>
+                      CHỈNH SỬA
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    marginTop: '5%',
+                    borderBottomColor: 'black',
+                    borderBottomWidth: StyleSheet.hairlineWidth,
+                  }}
+                />
+              </View>
+            }
+            ListFooterComponent={() => isLoadMore && <Loading />}
+            renderItem={({item}) => (
+              <SingleSavedItem
+                key={item.id}
+                data={item}
+                keyword={item.keyword}
+                onPressItem={onPressSavedItem}
+              />
+            )}
+            keyExtractor={item => item.id}
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                colors={[Colors.primaryColor]}
+                refreshing={refreshing}
+                onRefresh={reload}
+              />
+            }
+            onScroll={handleScroll}
+            viewabilityConfig={{
+              viewAreaCoveragePercentThreshold: 50,
+            }}/>
+        </View>
+      ) : (
+        <View>
+          <ScrollView>
             <View
               style={{
-                marginTop: '5%',
-                borderBottomColor: 'black',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-              }}
-            />
-            <ScrollView>
-              <View style={{paddingBottom: 12}}>
-                {savedData.map(item => (
-                  <SingleSavedItem
-                    id={item.id}
-                    key={item.id}
-                    keyword={item.keyword}
-                    onPressItem={onPressSavedItem}
-                  />
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        ) : (
-          <View>
-            <ScrollView>
-              <View
-                style={{
-                  marginBottom: 12,
-                  backgroundColor: Colors.background,
-                  gap: 4,
-                }}>
-                {searchData.map(item => (
-                  <PostDisplay key={item.id} item={item} />
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        )}
-      </View>
+                marginBottom: 12,
+                backgroundColor: Colors.background,
+                gap: 4,
+              }}>
+              {searchData.map(item => (
+                <PostDisplay key={item.id} item={item} />
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+      )}
+    </View>
   );
 }
 const styles = StyleSheet.create({
