@@ -44,40 +44,19 @@ export const createApiInstance = (
      * @returns {import('axios').AxiosResponse}
      */
     response => {
+      console.log('res:', response.data);
+      if (response.data.coins) {
+        console.log('change coins:', response.data?.coins);
+        handleCoinsChange(response.data?.coins);
+      }
       if (response.data?.data?.coins) {
         if (
-          response.data.data.id &&
-          response.data.data.username &&
-          response.data.data.id !=
-            store.getState().userInfo?.user?.id?.toString()
+          response.config.url &&
+          response.config.url.includes('get_user_info')
         )
           return response;
 
-        const currentCoins = Number(store.getState().userInfo.user?.coins);
-        const updatedCoins = Number(response.data.data.coins);
-        if (currentCoins < updatedCoins) {
-          // case nạp coins
-          ToastAndroid.showWithGravity(
-            `Nạp thành công ${formatNumberSplitBy(
-              updatedCoins - currentCoins,
-            )} coins, số coins hiện tại: ${formatNumberSplitBy(
-              Number(response.data.data.coins),
-            )}`,
-            ToastAndroid.LONG,
-            ToastAndroid.TOP,
-          );
-        } else if (currentCoins > updatedCoins) {
-          ToastAndroid.showWithGravity(
-            `Bạn vừa bị trừ ${formatNumberSplitBy(
-              -updatedCoins + currentCoins,
-            )} coins, số coins hiện tại: ${formatNumberSplitBy(
-              Number(response.data.data.coins),
-            )}`,
-            ToastAndroid.LONG,
-            ToastAndroid.TOP,
-          );
-        }
-        store.dispatch(userInfoActions.updateCoin(response.data.data.coins));
+        handleCoinsChange(response.data?.data?.coins);
       }
       return response;
     },
@@ -106,3 +85,31 @@ export const createApiInstance = (
 
   return api;
 };
+
+export function handleCoinsChange(coins: string) {
+  const currentCoins = Number(store.getState().userInfo.user?.coins);
+  const updatedCoins = Number(coins);
+  if (currentCoins < updatedCoins) {
+    // case nạp coins
+    ToastAndroid.showWithGravity(
+      `Nạp thành công ${formatNumberSplitBy(
+        updatedCoins - currentCoins,
+      )} coins, số coins hiện tại: ${formatNumberSplitBy(
+        Number(updatedCoins),
+      )}`,
+      ToastAndroid.LONG,
+      ToastAndroid.TOP,
+    );
+  } else if (currentCoins > updatedCoins) {
+    ToastAndroid.showWithGravity(
+      `Bạn vừa bị trừ ${formatNumberSplitBy(
+        -updatedCoins + currentCoins,
+      )} coins, số coins hiện tại: ${formatNumberSplitBy(
+        Number(updatedCoins),
+      )}`,
+      ToastAndroid.LONG,
+      ToastAndroid.TOP,
+    );
+  }
+  store.dispatch(userInfoActions.updateCoin(updatedCoins.toString()));
+}

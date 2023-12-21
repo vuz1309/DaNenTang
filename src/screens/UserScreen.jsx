@@ -376,7 +376,7 @@ const UserScreen = ({navigation, route}) => {
                   color: Colors.textGrey,
                   alignItems: 'center',
                   flexDirection: 'row',
-                  paddingBottom: 25,
+                  paddingBottom: 12,
                 }}>
                 <Text
                   style={{
@@ -387,8 +387,18 @@ const UserScreen = ({navigation, route}) => {
                   Thông tin
                 </Text>
               </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(APP_ROUTE.FRIEND_ALL, {user: userInfo})
+                  }
+                  style={styles.buttonWrapper}>
+                  <Text style={styles.buttonText}>Bạn bè</Text>
+                </TouchableOpacity>
+              </View>
               <View
                 style={{
+                  marginTop: 12,
                   color: Colors.textGrey,
                   alignItems: 'center',
                   flexDirection: 'row',
@@ -568,6 +578,17 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Colors.white,
     marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: Colors.black,
+  },
+  buttonWrapper: {
+    backgroundColor: Colors.lightgrey,
+    borderRadius: 20,
+    padding: 8,
+    paddingHorizontal: 12,
   },
 });
 
