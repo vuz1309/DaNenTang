@@ -23,6 +23,7 @@ import PostDisplay from '../components/posts/PostDisplay';
 import HeaderCenter from '../components/base/headers/HeaderCenter';
 import {store} from '../state-management/redux/store';
 import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
+import {APP_ROUTE} from '../navigation/config/routes';
 
 const Comment = ({
   id,
@@ -163,9 +164,14 @@ const CommentScreen = ({route, navigation}) => {
     setMarkType(2);
     setCurrentMarkId(markId);
   };
+  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
   const onPressSendComment = async () => {
     setLoading(true);
     if (markType == 1) {
+      if (Number(store.getState().userInfo.user.coins) < 1) {
+        setIsShowDialogCoins(true);
+        return;
+      }
       await setMarkComments({
         id: item.id,
         content: textComment,
@@ -293,6 +299,19 @@ const CommentScreen = ({route, navigation}) => {
           />
         </TouchableHighlight>
       </View>
+      <DialogConfirm
+        isVisible={isShowDialogCoins}
+        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
+        title={'Thiếu coins'}
+        content={`Cần ít nhất ${2} coins để bình luận, bạn có muốn mua thêm coins?`}
+        mainBtn={{
+          text: 'Mua',
+          onPress: () => {
+            setIsShowDialogCoins(false);
+            navigation.navigate(APP_ROUTE.BUY_COINS);
+          },
+        }}
+      />
     </View>
   );
 };
