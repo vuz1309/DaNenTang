@@ -9,6 +9,7 @@ import {
   Modal,
   PermissionsAndroid,
   FlatList,
+  Pressable,
 } from 'react-native';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
@@ -38,6 +39,8 @@ import PostHeader from '../components/posts/PostHeader';
 import FilePost from '../components/posts/FilePost';
 import PostFooter from '../components/posts/PostFooter';
 import ImageView from '../components/base/images/ImageView';
+import {changeLanguage} from 'i18next';
+import {getAllFriends} from '../api/modules/friends.request';
 
 const nullImage = require('../assets/images/avatar_null.jpg');
 const Detail = ({iconName, iconType, type, info}) => {
@@ -73,6 +76,10 @@ const UserScreen = ({navigation, route}) => {
 
   const [imageViewed, setImageViewed] = React.useState('');
   const [isChangeImg, setIsChangeImg] = React.useState(false);
+
+  const [friends, setFriends] = React.useState([]);
+  const [totalFriends, setTotalFriends] = React.useState(0);
+
   const coins = React.useMemo(
     () => formatNumberSplitBy(Number(userInfo.coins)),
     [userInfo?.coins],
@@ -139,8 +146,25 @@ const UserScreen = ({navigation, route}) => {
       launchCamera(options).then(r => console.log(r));
     });
   };
+
+  const getUserFriends = async () => {
+    try {
+      const {data} = await getAllFriends({
+        count: '6',
+        index: '0',
+        user_id: userId,
+      });
+      setTotalFriends(data.data.total);
+      setFriends(data.data.friends);
+      console.log('user friends:', data.data);
+    } catch (error) {
+      console.log('friends:', error);
+    }
+  };
+
   React.useEffect(() => {
     getUserInfoApi();
+    getUserFriends();
   }, [userId]);
 
   const toggleEditModal = async () => {
@@ -162,6 +186,7 @@ const UserScreen = ({navigation, route}) => {
   const reload = () => {
     getUserInfoApi();
     reloadPost();
+    getUserFriends();
   };
   const removePost = id => {
     const index = userPosts.findIndex(item => item.id === id);
@@ -193,6 +218,7 @@ const UserScreen = ({navigation, route}) => {
       console.log('user posts:', error);
     }
   }
+
   if (!userInfo.id) return <LoadingOverlay />;
   return (
     <View style={styles.container}>
@@ -344,6 +370,74 @@ const UserScreen = ({navigation, route}) => {
             <View style={styles.detail}>
               <View
                 style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontWeight: '700',
+                    fontSize: 20,
+                    color: Colors.black,
+                  }}>
+                  Bạn bè
+                </Text>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate(APP_ROUTE.FRIEND_ALL, {user: userInfo})
+                  }>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: Colors.primaryColor,
+                    }}>
+                    Tìm bạn bè
+                  </Text>
+                </Pressable>
+              </View>
+              <Text style={{fontSize: 16, color: Colors.textGrey}}>
+                {totalFriends} người bạn
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  gap: 4,
+                }}>
+                {friends.map(fri => (
+                  <Pressable
+                    key={fri.id}
+                    onPress={() =>
+                      navigation.navigate(APP_ROUTE.USER_SCREEN, {
+                        userId: fri.id,
+                      })
+                    }
+                    style={{width: '32%'}}>
+                    <View
+                      style={{
+                        height: 88,
+                        borderRadius: 8,
+                        overflow: 'hidden',
+                        borderWidth: 1,
+                        borderColor: Colors.lightgrey,
+                      }}>
+                      <ImageView uri={fri.avatar} />
+                    </View>
+                    <Text
+                      style={{
+                        color: Colors.black,
+                        fontWeight: 'bold',
+                        fontSize: 16,
+                      }}>
+                      {fri.username}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+            <View style={styles.detail}>
+              <View
+                style={{
                   color: Colors.textGrey,
                   alignItems: 'center',
                   flexDirection: 'row',
@@ -358,15 +452,7 @@ const UserScreen = ({navigation, route}) => {
                   Thông tin
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate(APP_ROUTE.FRIEND_ALL, {user: userInfo})
-                  }
-                  style={styles.buttonWrapper}>
-                  <Text style={styles.buttonText}>Bạn bè</Text>
-                </TouchableOpacity>
-              </View>
+
               <View
                 style={{
                   marginTop: 12,
@@ -548,7 +634,7 @@ const styles = StyleSheet.create({
   detail: {
     padding: 20,
     backgroundColor: Colors.white,
-    marginTop: 10,
+    marginTop: 4,
   },
   buttonText: {
     fontSize: 16,

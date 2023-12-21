@@ -44,7 +44,6 @@ export const createApiInstance = (
      * @returns {import('axios').AxiosResponse}
      */
     response => {
-      console.log('res:', response.data);
       if (response.data.coins) {
         console.log('change coins:', response.data?.coins);
         handleCoinsChange(response.data?.coins);
