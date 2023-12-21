@@ -37,6 +37,7 @@ import LoadingOverlay from '../components/base/LoadingOverlay';
 import PostHeader from '../components/posts/PostHeader';
 import FilePost from '../components/posts/FilePost';
 import PostFooter from '../components/posts/PostFooter';
+import ImageView from '../components/base/images/ImageView';
 
 const nullImage = require('../assets/images/avatar_null.jpg');
 const Detail = ({iconName, iconType, type, info}) => {
@@ -261,17 +262,7 @@ const UserScreen = ({navigation, route}) => {
               onPress={() => setImageViewed(userInfo.cover_image)}
               style={styles.avaContainer}>
               <>
-                <Image
-                  style={styles.background}
-                  source={
-                    userInfo.cover_image
-                      ? {
-                          uri: userInfo.cover_image,
-                        }
-                      : nullImage
-                  }
-                  defaultSource={nullImage}
-                />
+                <ImageView uri={userInfo?.cover_image} />
 
                 {isOwner && (
                   <TouchableOpacity
@@ -289,27 +280,7 @@ const UserScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   style={styles.ava}
                   onPress={() => setImageViewed(userInfo.avatar)}>
-                  {userInfo.avatar ? (
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        resizeMode: 'cover',
-                      }}
-                      source={{
-                        uri: userInfo.avatar,
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        resizeMode: 'cover',
-                      }}
-                      source={nullImage}
-                    />
-                  )}
+                  <ImageView uri={userInfo?.avatar} />
                 </TouchableOpacity>
                 <Modal
                   onRequestClose={() => setImageViewed('')}
@@ -376,7 +347,7 @@ const UserScreen = ({navigation, route}) => {
                   color: Colors.textGrey,
                   alignItems: 'center',
                   flexDirection: 'row',
-                  paddingBottom: 25,
+                  paddingBottom: 12,
                 }}>
                 <Text
                   style={{
@@ -387,8 +358,18 @@ const UserScreen = ({navigation, route}) => {
                   Thông tin
                 </Text>
               </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(APP_ROUTE.FRIEND_ALL, {user: userInfo})
+                  }
+                  style={styles.buttonWrapper}>
+                  <Text style={styles.buttonText}>Bạn bè</Text>
+                </TouchableOpacity>
+              </View>
               <View
                 style={{
+                  marginTop: 12,
                   color: Colors.textGrey,
                   alignItems: 'center',
                   flexDirection: 'row',
@@ -568,6 +549,17 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Colors.white,
     marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: Colors.black,
+  },
+  buttonWrapper: {
+    backgroundColor: Colors.lightgrey,
+    borderRadius: 20,
+    padding: 8,
+    paddingHorizontal: 12,
   },
 });
 

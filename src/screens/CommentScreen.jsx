@@ -22,7 +22,7 @@ import {convertTimeToFacebookStyle} from '../helpers/helpers';
 import PostDisplay from '../components/posts/PostDisplay';
 import HeaderCenter from '../components/base/headers/HeaderCenter';
 import {store} from '../state-management/redux/store';
-import { useLoadOnScroll } from '../hooks/useLoadOnScroll';
+import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
 
 const Comment = ({
   id,
@@ -124,11 +124,11 @@ const CommentScreen = ({route, navigation}) => {
     index: '0',
     count: '1',
   });
-  function reload(){
+  function reload() {
     setParams({
       index: '0',
       count: '1',
-    })
+    });
   }
   const loadMore = () => {
     setParams({
@@ -136,17 +136,16 @@ const CommentScreen = ({route, navigation}) => {
       count: '1',
     });
   };
-  const {
-    getNewItems,
-    refreshing,
-  } = useLoadOnScroll(getAll, [currentComment, params]);
+  const {getNewItems, refreshing} = useLoadOnScroll(getAll, [
+    currentComment,
+    params,
+  ]);
 
-
-  async function getAll(){
+  async function getAll() {
     try {
       const {data} = await getMarkComments({
         id: item.id,
-        ...params
+        ...params,
       });
       if (params.index == '0') setComments(data.data);
       else {
@@ -187,7 +186,6 @@ const CommentScreen = ({route, navigation}) => {
     setTextComment('');
     reload();
     setLoading(false);
-
   };
   React.useEffect(() => {
     const getPost = async () => {
@@ -205,14 +203,14 @@ const CommentScreen = ({route, navigation}) => {
       <HeaderCenter text={post.author.name} goBack={navigation.goBack} />
       <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
       <ScrollView
-      refreshControl={
-        <RefreshControl
-          colors={[Colors.primaryColor]}
-          refreshing={refreshing}
-          onRefresh={reload}
-        />
-      } 
-      style={styles.subWrapper}>
+        refreshControl={
+          <RefreshControl
+            colors={[Colors.primaryColor]}
+            refreshing={refreshing}
+            onRefresh={reload}
+          />
+        }
+        style={styles.subWrapper}>
         <PostDisplay item={post} />
         <View style={{height: 1, backgroundColor: Colors.borderGrey}} />
         <View
@@ -250,17 +248,16 @@ const CommentScreen = ({route, navigation}) => {
               onClickReply={onPressReply}
             />
           ))}
-          <Text 
+        <Text
           style={{
             padding: 10,
             color: '#000000',
             fontWeight: 'bold',
             marginLeft: 10,
-            }}
-            onPress={loadMore}
-            >
-            Xem thêm bình luận...
-          </Text>
+          }}
+          onPress={loadMore}>
+          Xem thêm bình luận...
+        </Text>
       </ScrollView>
       {<LoadingOverlay isLoading={loading} />}
       <View style={styles.addComment}>
