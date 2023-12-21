@@ -1,3 +1,4 @@
+import { logger } from '../../utils/helper';
 import {
   TypeLoginRequest,
   TypeRegisterRequest,
@@ -21,5 +22,5 @@ export const setDevToken = (params: TypeSetDevToken) => {
 };
 
 export const checkEmailRequest = (params: {email: string}) => {
-  return requestJSONWithAuth('/check_email', params);
+  return request.post('/check_email', params);
 };

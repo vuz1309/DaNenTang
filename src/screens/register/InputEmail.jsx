@@ -14,6 +14,7 @@ import {
 } from '../../utils/authenticate/LocalStorage';
 import {validateEmail, validatePassword} from '../../utils/validater';
 import AlertMessage from '../../components/base/AlertMessage';
+import { checkEmailRequest } from '../../api/modules/authenticate';
 
 const InputEmail = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -23,7 +24,17 @@ const InputEmail = ({navigation}) => {
       AlertMessage('Email không đúng định dạng');
     } else {
       await storeStringAsyncData('email', email);
-      navigation.navigate(ONBOARDING_ROUTE.CREATE_PASSWORD);
+      try{
+        const {data} = await checkEmailRequest({email: email});
+        if(data?.data?.existed === '0'){
+          navigation.navigate(ONBOARDING_ROUTE.CREATE_PASSWORD);
+        }else{
+          AlertMessage("Email này đã được đăng ký trước đây");
+        }
+      }catch(err){
+        AlertMessage("Lỗi Backend");
+        logger(err);
+      }
     }
   };
   return (

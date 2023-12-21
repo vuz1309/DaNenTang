@@ -10,7 +10,13 @@ import {logger} from '../../utils/helper';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 
-export const SingleSavedItem = ({id, keyword, onPressItem}) => {
+export const SingleSavedItem = ({keyword, onPressItem,data}) => {
+  if (!data)
+  return (
+    <View>
+      <Text>Loading....</Text>
+    </View>
+  );
   return (
     <TouchableHighlight
       underlayColor={Colors.lightgrey}
