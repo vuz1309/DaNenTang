@@ -28,6 +28,7 @@ import {logger} from '../../utils/helper';
 import {useNavigation} from '@react-navigation/native';
 import {formatNumberSplitBy} from '../../helpers/helpers';
 import Enum from '../../utils/Enum';
+import DialogConfirm from '../base/dialog/DialogConfirm';
 
 const ScreenHeight = Dimensions.get('window').height;
 

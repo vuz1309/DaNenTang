@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   img: {
     width: '100%',
     height: 300,
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
     marginBottom: 8,
   },
 });

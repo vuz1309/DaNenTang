@@ -13,6 +13,7 @@ import {store} from '../../state-management/redux/store';
 import {userInfoActions} from '../../state-management/redux/slices/UserInfoSlice';
 import Enum from '../../utils/Enum';
 import {userSavedInfoActions} from '../../state-management/redux/slices/UserSavedSlice';
+import {validateUsername} from '../../utils/validater';
 const ChangeProfileAfterSignUp = ({}) => {
   const [username, setUsername] = React.useState('');
   const [image, setImage] = React.useState(nullImage);
@@ -29,6 +30,11 @@ const ChangeProfileAfterSignUp = ({}) => {
     if (loading) return;
     if (isDisableSubmit) {
       AlertMessage('Vui lòng nhập tên!');
+      return;
+    }
+    const validateRes = validateUsername(username);
+    if (!validateRes.isValid) {
+      AlertMessage(validateRes.message);
       return;
     }
     try {

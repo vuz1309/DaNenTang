@@ -35,7 +35,11 @@ const AllFriendsScreen = ({route}) => {
 
   async function getAllFriendsRequest() {
     try {
-      const {data} = await getAllFriends({...params, user_id: user.id});
+      const {data} = await getAllFriends({
+        ...params,
+        user_id: user.id,
+        count: '100',
+      });
 
       setTotal(data.data.total);
 

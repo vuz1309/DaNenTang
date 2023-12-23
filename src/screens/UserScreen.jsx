@@ -338,13 +338,13 @@ const UserScreen = ({navigation, route}) => {
                 style={{fontWeight: 'bold', color: Colors.black, fontSize: 25}}>
                 {userInfo.username}
               </Text>
-              <Text
+              {/* <Text
                 style={{fontSize: 18, paddingTop: 12, color: Colors.textGrey}}>
                 <Text style={{fontWeight: '700', color: Colors.black}}>
                   {userInfo.listing}{' '}
                 </Text>
                 bạn bè
-              </Text>
+              </Text> */}
               {userInfo?.description?.trim() && (
                 <Text
                   style={{
