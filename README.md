@@ -6,3 +6,7 @@ npm i @reduxjs/toolkit
 npm i redux-persist
 
 # FacebookClone
+
+-- FIX BUG:
+
+- Bug oriented: node_modules -> react-native-orientation -> android -> build.gradle -> chỉnh complie thành implementaion
