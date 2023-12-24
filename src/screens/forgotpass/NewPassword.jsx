@@ -1,7 +1,6 @@
 import {View, Text, StyleSheet, RefreshControl, FlatList, Pressable} from 'react-native';
 import React,{useState} from 'react';
 import {Colors} from '../../utils/Colors';
-
 import {useSelector} from 'react-redux';
 import {getAllFriends} from '../../api/modules/friends.request';
 import {useNavigation} from '@react-navigation/native';
@@ -13,13 +12,15 @@ import {APP_ROUTE} from '../../navigation/config/routes';
 import VectorIcon from '../../utils/VectorIcon';
 import { TextInput } from 'react-native-gesture-handler';
 import { getVerifyCodeRequest } from '../../api/modules/onboarding';
-
-const NewPassword = ({route})=>{
+import { resetPassword } from '../../api/modules/authenticate';
+import AlertMessage from '../../components/base/AlertMessage';
+import DialogConfirm from '../../components/base/dialog/DialogConfirm';
+const NewPassword = ({Return,RequestNewPass})=>{
 
 
     const validateInput = () => {
         return (
-          pass !== '' && confirmPass !== '' &&  newPass === confirmPass
+          pass !== '' && confirmPass !== '' &&  pass === confirmPass
         );
       };
 
@@ -27,28 +28,17 @@ const NewPassword = ({route})=>{
         try {
           if (validateInput()) {
             setLoading(true);
-            const {data} = await changePassword({
-              password: oldPass,
-              new_password: newPass,
-            });
-            console.log('update password', data);
-            if (data.code == SUCCESS_CODE) {
-              closeModal();
-              store.dispatch(
-                userSavedInfoActions.updateUserSaved({
-                  password: newPass,
-                  id: userLogged.id,
-                }),
-              );
+            const data = await RequestNewPass(pass);
               ToastAndroid.show('Đổi mật khẩu thành công!', ToastAndroid.SHORT);
-            }
+            
           } else {
             AlertMessage('Vui lòng điền chính xác thông tin');
           }
-          setLoading(false);
         } catch (err) {
           console.log(err);
           AlertMessage(err.msg);
+        }finally{
+          setLoading(false);
         }
       };
     const {goBack} = useNavigation();
@@ -59,6 +49,7 @@ const NewPassword = ({route})=>{
     const [see,setSee]=useState(false);
     const [see2,setSee2]=useState(false);
     const [confirmPass,setConfirmPass]=useState("");
+    const [toggleCf,SetToggleCf]=useState(false);
     const HandleForgotPassword=async ()=>{
         try{
            const res = await getVerifyCodeRequest({email});
@@ -69,12 +60,15 @@ const NewPassword = ({route})=>{
 
         }
     }
+    const CloseCf=()=>{
+      SetToggleCf(false);
+    }
 return (<View
 style={styles.container}>
     <View>
-        <Pressable onPress={goBack}>
+        <Pressable onPress={Return}>
         <VectorIcon
-            name="questioncircle"
+            name="arrowleft"
             type="AntDesign"
             size={35}
             color={Colors.black}
@@ -174,17 +168,33 @@ style={styles.container}>
                 </Pressable>
                 </View>
               <Pressable style={styles.findButton}
-              onPress={HandleForgotPassword}><Text
-              style={styles.findTxtBtn}>Tìm tài khoản</Text></Pressable>
+              onPress={()=>SetToggleCf(true)}><Text
+              style={styles.findTxtBtn}>Xác nhận</Text></Pressable>
         </View>
    
     </View>
+    {loading?<Loading/>:null}
+    <View style={{position:"absolute"}}>
+
+    <DialogConfirm
+        mainBtn={{text: 'Xác nhận', onPress: SendNewPassword}}
+       
+        closeBtn={{
+          text: 'Hủy',
+          onPress: CloseCf,
+        }}
+        isVisible={toggleCf}
+        title={'Xác nhận thay đổi mật khẩu?'}
+        content={'Bạn có chắc chắn muốn đổi mật khẩu không.'}
+        />
+        </View>
 </View>)
 }
 
 const styles = StyleSheet.create({
     container:{
         padding:15,
+        backgroundColor:Colors.white,
     },
     findButton:{
         marginTop:30,
@@ -192,7 +202,8 @@ const styles = StyleSheet.create({
         borderRadius:50,
         alignItems:'center',
         padding:10,
-        backgroundColor:Colors.blue,
+        backgroundColor: Colors.primaryColor,
+
        
     },
     findTxtBtn:{
