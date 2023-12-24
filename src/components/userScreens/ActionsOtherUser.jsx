@@ -68,7 +68,11 @@ const ActionsOtherUser = ({firstMode, user}) => {
       console.log(error);
     }
   };
+  const Addition = ()=>{
+  
+      navigate(APP_ROUTE.PROFILE_SETTING,{user});
 
+  }
   const blockUser = async () => {
     try {
       await setBlockRequest({
@@ -147,6 +151,7 @@ const ActionsOtherUser = ({firstMode, user}) => {
         customStyleText={{
           color: Themes.COLORS.logan,
         }}
+        onPress={Addition}
         icon={{
           name: 'dots-three-horizontal',
           type: 'Entypo',
