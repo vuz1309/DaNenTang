@@ -116,6 +116,7 @@ export default function HistorySearchModal({historySearch, onCloseModal}) {
           flexDirection: 'column',
           height: '100%',
           backgroundColor: Colors.white,
+          paddingTop: 10,
         }}>
         <View style={styles.searchHeader}>
           <View style={styles.row}>

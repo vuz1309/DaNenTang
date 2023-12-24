@@ -176,38 +176,13 @@ export const NotificationProvider = (props : any) => {
     } else {
       logger('case DENIED');
     }
-    // const authStatus = await messaging().hasPermission();
-    // switch (authStatus) {
-    //   case messaging.AuthorizationStatus.NOT_DETERMINED:
-    //     logger('case NOT_DETERMINED');
-    //     break;
-    //   case messaging.AuthorizationStatus.DENIED:
-    //     logger('case DENIED');
-    //     break;
-    //   case messaging.AuthorizationStatus.AUTHORIZED:
-    //     logger('case AUTHORIZED');
-    //     setEnableNotify(true);
-    //     break;
-    //   case messaging.AuthorizationStatus.PROVISIONAL:
-    //     logger('case PROVISIONAL');
-    //     break;
-    //   default:
-    //     logger('default case!');
-    //     await getAndSaveToken();
-    //     break;
-    // }
   };
 
   const checkNotificationSetting = async (
     callBack?: (status: string) => void,
   ) => {
     try {
-      // checkNotifications().then(({ status, settings }) => {
-      //   setEnableNotify(status === 'granted');
-      //   if (callBack && typeof callBack === 'function') {
-      //     callBack(status);
-      //   }
-      // });
+
     } catch (e) {
       console.error(e);
     }

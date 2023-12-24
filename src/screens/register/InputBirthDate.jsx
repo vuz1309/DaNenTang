@@ -13,12 +13,23 @@ import {
   storeStringAsyncData,
 } from '../../utils/authenticate/LocalStorage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AlertMessage from '../../components/base/AlertMessage';
 
 const InputBirthDate = ({navigation}) => {
   const [dateOfBirth, setDateOfBirth] = useState('Chọn ngày sinh của bạn');
-  const [date, setDate] = useState(new Date());
+  const [birthday, setDate] = useState(new Date());
   const [isVisible, setIsVisible] = useState(false);
+  const today = new Date();
   const onPress = async () => {
+    var ageDiff = today.getFullYear() - birthday.getFullYear();
+    if (today.getMonth() < birthday.getMonth() || (today.getMonth() === birthday.getMonth() && today.getDate() < birthday.getDate())) {
+      ageDiff--;
+    }
+    logger(ageDiff);
+    if(ageDiff <= 16){
+      AlertMessage("Bạn cần đủ 16 tuổi để tham gia Facebook");
+      return;
+    }
     await storeStringAsyncData('dateOfBirth', dateOfBirth);
     const dateOfBirthStr = await getStringAsyncData('dateOfBirth');
     logger(dateOfBirthStr);
@@ -40,9 +51,7 @@ const InputBirthDate = ({navigation}) => {
       toggleDatepicker();
     }
   };
-  const handleCancel = () => {
-    setIsVisible(false);
-  };
+ 
   return (
     <View style={styles.container}>
       <VectorIcon
@@ -78,7 +87,7 @@ const InputBirthDate = ({navigation}) => {
           <DateTimePicker
             mode="date"
             display="spinner"
-            value={date}
+            value={birthday}
             onChange={onChange}
           />
         )}

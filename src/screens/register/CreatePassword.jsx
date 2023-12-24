@@ -18,43 +18,39 @@ import {Ionicons} from '@expo/vector-icons';
 import axios from 'axios';
 import AlertMessage from '../../components/base/AlertMessage';
 import {validatePassword} from '../../utils/validater';
+import LoadingOverlay from '../../components/base/LoadingOverlay';
 const CreatePassword = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const {requestLogin, loading, error} = useLogin();
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleTogglePasswordVisibility = () => {
     setShowPassword(prevShowPassword => !prevShowPassword);
   };
   const onPress = async () => {
+    setIsLoading(true);
     if (!validatePassword(password)) {
       AlertMessage('Mật khẩu không đúng định dạng');
       return;
     }
     await storeStringAsyncData('password', password);
     const email = await getStringAsyncData('email');
-    logger(email);
-    logger(password);
     const dataRegister = {
       email,
       password,
       uuid: 'default',
     };
     try {
-      const response = await registerRequest(dataRegister);
-      // logger('Response Register Request: ', true, response);
-      // if (response.status === 201) {
-      // logger('Register Successfully@');
-      // navigation.navigate(ONBOARDING_ROUTE.CHECK_VERIFY_CODE)
+      await registerRequest(dataRegister);
       requestLogin({email, password});
-      // }
     } catch (ex) {
       console.log(ex);
-      // AlertMessage(ex.message);
     }
+    setIsLoading(false);
   };
   return (
     <View style={styles.container}>
+      <LoadingOverlay isLoading={isLoading} />
       <VectorIcon
         name="arrow-back"
         type="Ionicons"

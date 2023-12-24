@@ -1,19 +1,15 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-  ToastAndroid,
-} from 'react-native';
+import {Image, StyleSheet, Text, View, ToastAndroid} from 'react-native';
 import React, {useMemo} from 'react';
 import {Colors} from '../../utils/Colors';
 import VectorIcon from '../../utils/VectorIcon';
 import {StyledTouchable} from '../base';
 import Modal from 'react-native-modal';
-import {copyToClipboard} from '../../utils/helper';
-import {convertTimeToFacebookStyle} from '../../helpers/helpers';
-import AlertMessage from '../base/AlertMessage';
+
+import {
+  checkCoinsNotEnough,
+  convertTimeToFacebookStyle,
+} from '../../helpers/helpers';
+
 import {APP_ROUTE} from '../../navigation/config/routes';
 import {useNavigation} from '@react-navigation/native';
 import PostDescription from './PostDescription';
@@ -25,15 +21,18 @@ import StyledTouchableHighlight from '../base/StyledTouchableHighlight';
 import Enum from '../../utils/Enum';
 import DialogConfirm from '../base/dialog/DialogConfirm';
 import {useSelector} from 'react-redux';
+import {MIN_COINS} from '../../utils/constants';
 const avatarNullImage = require('../../assets/images/avatar_null.jpg');
 const PostHeader = ({
   data,
   isShowRemove = true,
+  reload = null,
 
-  setIsShowDialogCoins,
   textStyles = {color: Colors.textColor},
 }) => {
   const {navigate} = useNavigation();
+  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
+
   const userLogged = useSelector(state => state.userInfo.user);
   const createTime = useMemo(
     () => convertTimeToFacebookStyle(data.created),
@@ -62,7 +61,7 @@ const PostHeader = ({
 
   const removePost = async () => {
     setModalVisible(false);
-    if (Number(userLogged.coins) < 50) {
+    if (checkCoinsNotEnough()) {
       setIsShowDialogCoins(true);
       return;
     }
@@ -75,12 +74,19 @@ const PostHeader = ({
         }),
       );
       deletePostRequest({id: postId});
+      reload?.();
       ToastAndroid.show('Xóa bài đăng thành công!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
     }
   };
   const handleEditPost = () => {
+    setModalVisible(false);
+    setShowModalReport(false);
+    if (checkCoinsNotEnough()) {
+      setIsShowDialogCoins(true);
+      return;
+    }
     const postTmp = {
       image: data.image.map((item, index) => ({
         id: item.id,
@@ -95,8 +101,6 @@ const PostHeader = ({
       postData: postTmp,
       mode: Enum.PostMode.Edit,
     });
-    setModalVisible(false);
-    setShowModalReport(false);
   };
   if (!data) return <Loading />;
   return (
@@ -239,6 +243,20 @@ const PostHeader = ({
           </View>
         </Modal>
       )}
+
+      <DialogConfirm
+        isVisible={isShowDialogCoins}
+        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
+        title={'Thiếu coins'}
+        content={`Cần ít nhất ${MIN_COINS} coins để tiếp tục, bạn có muốn mua thêm coins?`}
+        mainBtn={{
+          text: 'Mua',
+          onPress: () => {
+            setIsShowDialogCoins(false);
+            navigate(APP_ROUTE.BUY_COINS);
+          },
+        }}
+      />
     </View>
   );
 };

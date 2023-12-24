@@ -28,6 +28,7 @@ import {logger} from '../../utils/helper';
 import {useNavigation} from '@react-navigation/native';
 import {formatNumberSplitBy} from '../../helpers/helpers';
 import Enum from '../../utils/Enum';
+import DialogConfirm from '../base/dialog/DialogConfirm';
 
 const ScreenHeight = Dimensions.get('window').height;
 
@@ -61,7 +62,7 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
   const [reactionModal, setReactionModal] = useState(false);
   const [feelPost, setFeelPost] = useState(data.is_felt);
   const [numOfFeels, setNumOfFeels] = useState(Number(data.feel));
-
+  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
   const feelText = useMemo(() => {
     if (feelPost === Enum.Feel.UN_FEEL) return numOfFeels;
     else if (numOfFeels > 1)
@@ -79,6 +80,10 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
     }
   };
   const handleFeel = async (id, type) => {
+    if (Number(store.getState().userInfo.user.coins) < 1) {
+      setIsShowDialogCoins(true);
+      return;
+    }
     try {
       const {data} = await feelPostApi({
         id,
@@ -266,6 +271,19 @@ const PostFooter = ({data, textStyles = {color: Colors.grey}}) => {
           <Text style={{...styles.reactionCount, ...textStyles}}>Chia sẻ</Text>
         </View>
       </View>
+      <DialogConfirm
+        isVisible={isShowDialogCoins}
+        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
+        title={'Thiếu coins'}
+        content={`Cần ít nhất ${1} coins để thả cảm xúc, bạn có muốn mua thêm coins?`}
+        mainBtn={{
+          text: 'Mua',
+          onPress: () => {
+            setIsShowDialogCoins(false);
+            navigate(APP_ROUTE.BUY_COINS);
+          },
+        }}
+      />
     </View>
   );
 };

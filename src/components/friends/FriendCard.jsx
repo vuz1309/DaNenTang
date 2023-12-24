@@ -90,11 +90,13 @@ const FriendCard = ({fr, reload}) => {
                   fontSize: 20,
                   color: Colors.black,
                 }}>
-                {fr.name}
+                {fr.username}
               </Text>
-              <Text style={{color: Colors.grey}}>
-                {fr.same_friends} bạn chung
-              </Text>
+              {!!Number(fr.same_friends) && (
+                <Text style={{color: Colors.grey}}>
+                  {fr.same_friends} bạn chung
+                </Text>
+              )}
             </View>
           </View>
           <Pressable style={{padding: 8}} onPress={() => setIsShowModal(true)}>

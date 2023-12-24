@@ -43,6 +43,7 @@ import PostListImage from './src/components/posts/PostListImage';
 import DetailsPost from './src/components/posts/DetailsPost';
 import SettingsScreen from './src/screens/settings/SettingsScreen';
 import ForgotPassword from './src/screens/forgotpass/ForgotPassword';
+import BuyCoins from './src/screens/coins/BuyCoins';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -117,6 +118,7 @@ const AppChild = () => {
               component={SettingsScreen}
             />
             <Stack.Screen name={APP_ROUTE.BLOCK} component={BlockScreen} />
+            <Stack.Screen name={APP_ROUTE.BUY_COINS} component={BuyCoins} />
           </>
         );
       }
@@ -175,9 +177,7 @@ const AppChild = () => {
   );
 };
 
-
 const App = () => {
-  
   return (
     <Provider store={store}>
       <AppStateProvider>

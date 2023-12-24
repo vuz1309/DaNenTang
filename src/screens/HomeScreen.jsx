@@ -1,5 +1,5 @@
-import {View, RefreshControl, Modal, FlatList} from 'react-native';
-import React, {useState} from 'react';
+import {View, RefreshControl, FlatList} from 'react-native';
+import React from 'react';
 import SubHeader from '../components/SubHeader';
 import Stories from '../components/Stories';
 import {Colors} from '../utils/Colors';
@@ -13,21 +13,13 @@ import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import Loading from '../components/base/Loading';
 import {notificationInfoActions} from '../state-management/redux/slices/NotificationsSlice';
 import {TabName} from '../data/TabData';
-import BuyCoins from './coins/BuyCoins';
+
 import LoadingPosting from '../components/posts/LoadingPosting';
-import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import PostHeader from '../components/posts/PostHeader';
 import FilePost from '../components/posts/FilePost';
 import PostFooter from '../components/posts/PostFooter';
 const HomeScreen = () => {
   // const userLogged = useSelector(state => state.userInfo.user);
-
-  const [isBuyCoin, setIsBuyCoin] = useState(false);
-  const [isShowDialogCoins, setIsShowDialogCoins] = React.useState(false);
-
-  const toggleBuyCoinModal = () => {
-    setIsBuyCoin(!isBuyCoin);
-  };
 
   const listPosts = useSelector(state => state.postInfo.posts);
   const isPosting = useSelector(state => state.postInfo.isPosting);
@@ -35,7 +27,7 @@ const HomeScreen = () => {
 
   const getListPostsApi = async () => {
     try {
-      console.log('home post param:', params);
+      // console.log('home post param:', params);
       const {data} = await getListPost(params);
       // console.log(data);
       if (data.data.last_id != 'undefined') {
@@ -100,7 +92,7 @@ const HomeScreen = () => {
   const postRenderItem = React.useCallback(
     ({item}) => (
       <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-        <PostHeader data={item} setIsShowDialogCoins={setIsShowDialogCoins} />
+        <PostHeader data={item} />
 
         <FilePost item={item} />
 
@@ -117,7 +109,7 @@ const HomeScreen = () => {
         onScroll={handleScroll}
         ListHeaderComponent={
           <>
-            <SubHeader buyCoin={toggleBuyCoinModal} />
+            <SubHeader />
             <Stories />
             <LoadingPosting isLoading={isPosting} />
           </>
@@ -137,30 +129,6 @@ const HomeScreen = () => {
         initialNumToRender={5}
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
-        }}
-      />
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isBuyCoin}
-        onRequestClose={toggleBuyCoinModal}>
-        <BuyCoins closeModal={toggleBuyCoinModal} />
-      </Modal>
-
-      <DialogConfirm
-        isVisible={isShowDialogCoins}
-        closeBtn={{text: 'Không', onPress: () => setIsShowDialogCoins(false)}}
-        title={'Thiếu coins'}
-        content={
-          'Cần ít nhất 50 coins để tiếp tục, bạn có muốn mua thêm coins?'
-        }
-        mainBtn={{
-          text: 'Mua',
-          onPress: () => {
-            setIsShowDialogCoins(false);
-            toggleBuyCoinModal();
-          },
         }}
       />
     </View>

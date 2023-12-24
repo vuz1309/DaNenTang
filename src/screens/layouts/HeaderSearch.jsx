@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderGrey,
     borderBottomWidth: 1,
     borderStyle: 'solid',
+    width: '100%',
   },
   titleText: {
     fontWeight: '700',

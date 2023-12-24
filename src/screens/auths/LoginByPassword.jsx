@@ -1,4 +1,5 @@
 import StyledButton from '../../components/base/StyledButton';
+import ImageView from '../../components/base/images/ImageView';
 const {
   View,
   Image,
@@ -9,7 +10,7 @@ const {
 import {Pressable} from 'react-native';
 const {Colors} = require('../../utils/Colors');
 const React = require('react');
-const nullImage = require('../../assets/images/avatar_null.jpg');
+
 import VectorIcon from '../../utils/VectorIcon';
 import {useLogin} from '../../utils/authenticate/AuthenticateService';
 import { useNavigation } from '@react-navigation/native';
@@ -65,10 +66,11 @@ const {navigate} = useNavigation();
               borderRadius: 100,
               overflow: 'hidden',
             }}>
-            <Image
+            {/* <Image
               source={image}
               style={{height: '100%', width: '100%', resizeMode: 'cover'}}
-            />
+            /> */}
+            <ImageView uri={user?.avatar} />
           </View>
           <Text
             numberOfLines={1}
