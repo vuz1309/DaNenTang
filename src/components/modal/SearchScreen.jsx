@@ -25,6 +25,7 @@ import Loading from '../base/Loading';
 
 const SearchScreen = ({route, navigation}) => {
   const initialKeyword = route?.params?.initialKeyword || '';
+  const userIdSearch = route?.params?.userId || null;
   const [keyword, setKeyword] = useState(initialKeyword);
   const [savedData, setSavedData] = useState([]);
   const [searchData, setSearchData] = useState([]);
@@ -62,7 +63,7 @@ const SearchScreen = ({route, navigation}) => {
 
   const onPressSavedItem = async text => {
     setKeyword(text);
-    useSearch({onComplete: onCompleteSearch, keyword: text});
+    useSearch({onComplete: onCompleteSearch, keyword: text, userId: userIdSearch});
   };
 
   const onCompleteSearch = data => {
@@ -73,7 +74,7 @@ const SearchScreen = ({route, navigation}) => {
     if (keyword === '' || keyword === undefined || keyword === null) {
       return;
     }
-    useSearch({onComplete: onCompleteSearch, keyword: keyword});
+    useSearch({onComplete: onCompleteSearch, keyword: keyword, userId: userIdSearch});
   };
   return (
     <View style={{paddingTop: 10, backgroundColor: '#ffffff'}}>

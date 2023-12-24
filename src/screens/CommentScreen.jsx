@@ -24,6 +24,7 @@ import HeaderCenter from '../components/base/headers/HeaderCenter';
 import {store} from '../state-management/redux/store';
 import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
 import {APP_ROUTE} from '../navigation/config/routes';
+import DialogConfirm from '../components/base/dialog/DialogConfirm';
 
 const Comment = ({
   id,
