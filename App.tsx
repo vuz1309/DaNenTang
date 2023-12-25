@@ -44,6 +44,7 @@ import DetailsPost from './src/components/posts/DetailsPost';
 import SettingsScreen from './src/screens/settings/SettingsScreen';
 import ForgotPassword from './src/screens/forgotpass/ForgotPassword';
 import BuyCoins from './src/screens/coins/BuyCoins';
+import ProfileSetting from './src/components/userScreens/ProfileSetting';
 const Stack = createStackNavigator();
 const AppChild = () => {
   const userLogged = useSelector(
@@ -78,6 +79,10 @@ const AppChild = () => {
             <Stack.Screen
               name={APP_ROUTE.FRIEND_ALL}
               component={AllFriendsScreen}
+            />
+            <Stack.Screen
+              name={APP_ROUTE.PROFILE_SETTING}
+              component={ProfileSetting}
             />
             <Stack.Screen
               name={APP_ROUTE.FRIEND_SUGGESTION}
