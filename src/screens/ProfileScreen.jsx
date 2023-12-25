@@ -12,13 +12,12 @@ import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
 
-
 import {useLogout} from '../hooks/useLogout';
 import auth from '@react-native-firebase/auth';
 import fireStore from '@react-native-firebase/firestore';
 import Modal from 'react-native-modal';
 import {store} from '../state-management/redux/store';
-import {APP_ROUTE, AUTHENTICATE_ROUTE} from '../navigation/config/routes'
+import {APP_ROUTE, AUTHENTICATE_ROUTE} from '../navigation/config/routes';
 
 import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
 import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
@@ -47,8 +46,8 @@ const ProfileScreen = () => {
     setIsChangePass(!isChangePass);
   };
 
-  const [help,setHelp]=useState(false);
-  const [setting,setSetting]=useState(false);
+  const [help, setHelp] = useState(false);
+  const [setting, setSetting] = useState(false);
 
   const userLogged = useSelector(
     /**
@@ -90,13 +89,17 @@ const ProfileScreen = () => {
         <View style={styles.profile}>
           <Image
             style={[styles.profileImage, {marginLeft: 10}]}
-            source={userLogged?{uri:userLogged.avatar}:null}
+            source={userLogged ? {uri: userLogged.avatar} : null}
           />
-          <Pressable style={styles.profileUser}
-            onPress={()=>navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged.id})}
-          >
+          <Pressable
+            style={styles.profileUser}
+            onPress={() =>
+              navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged.id})
+            }>
             <Text style={styles.userName}>{userLogged?.username}</Text>
-            <Text>Xem trang cá nhân của bạn</Text>
+            <Text style={{color: Colors.textGrey}}>
+              Xem trang cá nhân của bạn
+            </Text>
           </Pressable>
           <View style={styles.OtherProfile}>
             {/* <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} />
@@ -269,7 +272,6 @@ const ProfileScreen = () => {
                 </Pressable>
               </View>
 
-              
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
                 <Pressable
@@ -285,8 +287,6 @@ const ProfileScreen = () => {
                   <Text style={styles.expandText}>Danh sách Block</Text>
                 </Pressable>
               </View>
-
-
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
@@ -320,9 +320,9 @@ const ProfileScreen = () => {
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
-                  <Pressable style={styles.expandOptionMain}
-                  onPress={()=>navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}
-                >
+                <Pressable
+                  style={styles.expandOptionMain}
+                  onPress={() => navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}>
                   <VectorIcon
                     type="Feather"
                     name="smartphone"
@@ -333,7 +333,6 @@ const ProfileScreen = () => {
                   <Text style={styles.expandText}>Trình tiết kiệm dữ liệu</Text>
                 </Pressable>
               </View>
-
             </View>
           ) : null}
         </Animated.View>
@@ -347,7 +346,13 @@ const ProfileScreen = () => {
         <DialogConfirm
           isVisible={!!isShowModalLogout}
           closeBtn={{text: 'Không', onPress: () => setIsShowModalLogout(false)}}
-          mainBtn={{text: 'Đăng xuất', onPress: onLogout}}
+          mainBtn={{
+            text: 'Đăng xuất',
+            onPress: () => {
+              setIsShowModalLogout(false);
+              onLogout();
+            },
+          }}
           content={'Bạn có chắc chắn muốn đăng xuất?'}
           title={'Đăng xuất?'}
         />

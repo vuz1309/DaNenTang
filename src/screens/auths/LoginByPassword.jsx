@@ -13,15 +13,12 @@ const React = require('react');
 
 import VectorIcon from '../../utils/VectorIcon';
 import {useLogin} from '../../utils/authenticate/AuthenticateService';
-import { useNavigation } from '@react-navigation/native';
-import { AUTHENTICATE_ROUTE } from '../../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
+import {AUTHENTICATE_ROUTE} from '../../navigation/config/routes';
 const LoginByPassword = ({user, onClose}) => {
   const [password, setPassword] = React.useState('');
-  const image = React.useMemo(
-    () => (user.avatar ? {uri: user.avatar} : nullImage),
-    [user?.avatar],
-  );
-const {navigate} = useNavigation();
+
+  const {navigate} = useNavigation();
   const {requestLogin, loading} = useLogin();
   const onSubmit = async () => {
     await requestLogin({
@@ -89,31 +86,28 @@ const {navigate} = useNavigation();
             marginTop: 16,
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 10, 
+            gap: 10,
           }}>
-              <TextInput
-                secureTextEntry={true}
-                placeholder="Mật khẩu"
-                placeholderTextColor={Colors.textGrey}
-                autoFocus={true}
-                value={password}
-                onChangeText={value => setPassword(value)}
-                style={{
-                  borderWidth: 1,
-                  borderColor: Colors.borderGrey,
-                  padding: 10,
-                  height:50,
-                  borderRadius: 12,
-                  color: Colors.black,
-                  width:'100%',
-                }}
-              />
-            <Pressable
-            onPress={()=>navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}>
-              <Text
-              style={{
-              }}>Quên mật khẩu?</Text>
-            </Pressable>
+          <TextInput
+            secureTextEntry={true}
+            placeholder="Mật khẩu"
+            placeholderTextColor={Colors.textGrey}
+            autoFocus={true}
+            value={password}
+            onChangeText={value => setPassword(value)}
+            style={{
+              borderWidth: 1,
+              borderColor: Colors.borderGrey,
+              padding: 10,
+              height: 50,
+              borderRadius: 12,
+              color: Colors.black,
+              width: '100%',
+            }}
+          />
+          <Pressable onPress={() => navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}>
+            <Text style={{color: Colors.black}}>Quên mật khẩu?</Text>
+          </Pressable>
         </View>
         <View style={{alignItems: 'center', marginTop: 16}}>
           <StyledButton

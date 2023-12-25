@@ -10,6 +10,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {getVerifyCodeRequest} from '../../api/modules/onboarding';
 import NewPassword from './NewPassword';
 import {resetPassword} from '../../api/modules/authenticate';
+import {StyledButton} from '../../components/base';
 
 const ForgotPassword = ({route}) => {
   const {goBack, navigate} = useNavigation();
@@ -65,7 +66,7 @@ const ForgotPassword = ({route}) => {
           <Text
             style={{
               fontSize: 24,
-              fontWeight: 700,
+              fontWeight: '700',
               color: Colors.black,
             }}>
             Tìm tài khoản của bạn
@@ -73,7 +74,7 @@ const ForgotPassword = ({route}) => {
           <Text
             style={{
               fontSize: 15,
-              fontWeight: 400,
+              fontWeight: '400',
               color: Colors.black,
             }}>
             Nhập email của bạn.
@@ -95,12 +96,16 @@ const ForgotPassword = ({route}) => {
               width: '100%',
             }}
           />
-          <Pressable style={styles.findButton} onPress={HandleForgotPassword}>
-            <Text style={styles.findTxtBtn}>Tìm tài khoản</Text>
-          </Pressable>
+
+          <StyledButton
+            onPress={HandleForgotPassword}
+            title="Tìm tài khoản"
+            customStyle={styles.findButton}
+            customStyleText={styles.findTxtBtn}
+            isLoading={isLoading}
+          />
         </View>
       </View>
-      {isLoading ? <Loading /> : null}
 
       <Modal
         animationType="slide"
@@ -123,10 +128,10 @@ const styles = StyleSheet.create({
   },
   findButton: {
     marginTop: 30,
-    borderWidth: 1,
+
     borderRadius: 50,
     alignItems: 'center',
-    padding: 10,
+
     backgroundColor: Colors.primaryColor,
   },
   findTxtBtn: {
