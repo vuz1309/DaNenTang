@@ -24,3 +24,6 @@ export const setDevToken = (params: TypeSetDevToken) => {
 export const checkEmailRequest = (params: {email: string}) => {
   return request.post('/check_email', params);
 };
+  export const resetPassword = (params: {email:string,code:string,password:string}) => {
+    return requestJSONWithAuth('/reset_password ', params);
+};

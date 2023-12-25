@@ -3,6 +3,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
   Pressable,
   Animated,
   ScrollView,
@@ -10,19 +11,31 @@ import {
 import React, {useState, useRef, useEffect} from 'react';
 import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
-import {useLogout} from '../hooks/useLogout';
-import Modal from 'react-native-modal';
-import {APP_ROUTE} from '../navigation/config/routes';
 
+
+import {useLogout} from '../hooks/useLogout';
+import auth from '@react-native-firebase/auth';
+import fireStore from '@react-native-firebase/firestore';
+import Modal from 'react-native-modal';
+import {store} from '../state-management/redux/store';
+import {APP_ROUTE, AUTHENTICATE_ROUTE} from '../navigation/config/routes'
+
+import {storeStringAsyncData} from '../utils/authenticate/LocalStorage';
+import {AsyncStorageKey} from '../utils/authenticate/LocalStorage';
+import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
+import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
+import {StyledTouchable} from '../components/base';
+import {Themes} from '../assets/themes';
 import ChangePassword from './auths/ChangePassword';
 import VectorIcon from '../utils/VectorIcon';
-
+import tempImage from '../assets/images/img1.jpeg';
 import HeaderTitle from '../components/layouts/HeaderTitle';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useNavigation} from '@react-navigation/native';
-import ImageView from '../components/base/images/ImageView';
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
 
   const {navigate} = useNavigation();
@@ -34,8 +47,8 @@ const ProfileScreen = () => {
     setIsChangePass(!isChangePass);
   };
 
-  const [help, setHelp] = useState(false);
-  const [setting, setSetting] = useState(false);
+  const [help,setHelp]=useState(false);
+  const [setting,setSetting]=useState(false);
 
   const userLogged = useSelector(
     /**
@@ -74,35 +87,23 @@ const ProfileScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <HeaderTitle title={'Menu'} />
-        <Pressable
-          onPress={() =>
-            navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged?.id})
-          }
-          style={styles.profile}>
-          {/* <Image
+        <View style={styles.profile}>
+          <Image
             style={[styles.profileImage, {marginLeft: 10}]}
-            source={tempImage}
-          /> */}
-          <View
-            style={{
-              ...styles.profileImage,
-              marginLeft: 10,
-              overflow: 'hidden',
-            }}>
-            <ImageView uri={userLogged?.avatar} />
-          </View>
-          <View style={styles.profileUser}>
+            source={userLogged?{uri:userLogged.avatar}:null}
+          />
+          <Pressable style={styles.profileUser}
+            onPress={()=>navigate(APP_ROUTE.USER_SCREEN, {userId: userLogged.id})}
+          >
             <Text style={styles.userName}>{userLogged?.username}</Text>
-            <Text style={{color: Colors.textGrey}}>
-              Xem trang cá nhân của bạn
-            </Text>
+            <Text>Xem trang cá nhân của bạn</Text>
+          </Pressable>
+          <View style={styles.OtherProfile}>
+            {/* <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} />
+            <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} />
+            <Image style={styles.profileImage} source={userLogged?{uri:userLogged.avatar}:null} /> */}
           </View>
-          {/* <View style={styles.OtherProfile}>
-            <Image style={styles.profileImage} source={tempImage} />
-            <Image style={styles.profileImage} source={tempImage} />
-            <Image style={styles.profileImage} source={tempImage} />
-          </View> */}
-        </Pressable>
+        </View>
         <Pressable onPress={ToggleHelp} style={styles.option}>
           <VectorIcon
             style={styles.optionIcon}
@@ -268,6 +269,7 @@ const ProfileScreen = () => {
                 </Pressable>
               </View>
 
+              
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
                 <Pressable
@@ -280,9 +282,11 @@ const ProfileScreen = () => {
                     color={Colors.black}
                     style={styles.expandOptionIcon}
                   />
-                  <Text style={styles.expandText}>Danh sách chặn</Text>
+                  <Text style={styles.expandText}>Danh sách Block</Text>
                 </Pressable>
               </View>
+
+
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
@@ -316,7 +320,9 @@ const ProfileScreen = () => {
 
               <View style={styles.expandOption}>
                 <View style={styles.expandOptionShadow}></View>
-                <View style={styles.expandOptionMain}>
+                  <Pressable style={styles.expandOptionMain}
+                  onPress={()=>navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}
+                >
                   <VectorIcon
                     type="Feather"
                     name="smartphone"
@@ -325,8 +331,9 @@ const ProfileScreen = () => {
                     style={styles.expandOptionIcon}
                   />
                   <Text style={styles.expandText}>Trình tiết kiệm dữ liệu</Text>
-                </View>
+                </Pressable>
               </View>
+
             </View>
           ) : null}
         </Animated.View>
@@ -340,13 +347,7 @@ const ProfileScreen = () => {
         <DialogConfirm
           isVisible={!!isShowModalLogout}
           closeBtn={{text: 'Không', onPress: () => setIsShowModalLogout(false)}}
-          mainBtn={{
-            text: 'Đăng xuất',
-            onPress: () => {
-              setIsShowModalLogout(false);
-              onLogout();
-            },
-          }}
+          mainBtn={{text: 'Đăng xuất', onPress: onLogout}}
           content={'Bạn có chắc chắn muốn đăng xuất?'}
           title={'Đăng xuất?'}
         />
@@ -394,8 +395,8 @@ const styles = StyleSheet.create({
   },
   profileImage: {
     borderRadius: 50,
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderColor: Colors.white,
     borderWidth: 1,
     marginRight: -20,
@@ -483,11 +484,11 @@ const styles = StyleSheet.create({
   },
   logout: {
     fontSize: 15,
-    color: Colors.black,
+    color: Colors.white,
     fontWeight: '500',
   },
   logoutButton: {
-    backgroundColor: Colors.lightgrey,
+    backgroundColor: Colors.primaryColor,
     padding: 12,
     borderRadius: 20,
     width: '90%',

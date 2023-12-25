@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Colors} from '../utils/Colors';
@@ -16,10 +17,12 @@ import Loading from '../components/base/Loading';
 import {validateEmail, validatePassword} from '../utils/validater';
 import AlertMessage from '../components/base/AlertMessage';
 import {StyledButton} from '../components/base';
+import { useNavigation } from '@react-navigation/native';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const {navigate} = useNavigation();
   const goToRegisterScreen = () => {
     navigation.navigate(AUTHENTICATE_ROUTE.REGISTER);
   };
@@ -72,7 +75,12 @@ const LoginScreen = ({navigation}) => {
           customStyle={styles.loginButton}
           customStyleText={styles.login}
         />
+        <Pressable
+          onPress={()=>navigate(AUTHENTICATE_ROUTE.FORGOT_PASS)}
+        >
+
         <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
+        </Pressable>
         <View
           style={{
             width: '100%',

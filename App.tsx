@@ -42,6 +42,7 @@ import ListReactions from './src/components/comments/ListReactions';
 import PostListImage from './src/components/posts/PostListImage';
 import DetailsPost from './src/components/posts/DetailsPost';
 import SettingsScreen from './src/screens/settings/SettingsScreen';
+import ForgotPassword from './src/screens/forgotpass/ForgotPassword';
 import BuyCoins from './src/screens/coins/BuyCoins';
 const Stack = createStackNavigator();
 const AppChild = () => {
@@ -143,6 +144,13 @@ const AppChild = () => {
             name={ONBOARDING_ROUTE.INPUT_NAME}
             component={InputName}
           />
+          <Stack.Screen
+            name={AUTHENTICATE_ROUTE.FORGOT_PASS}
+            component={ForgotPassword}/>  
+            <Stack.Screen
+            name={AUTHENTICATE_ROUTE.NEW_PASS}
+            component={ForgotPassword}/>  
+            
           <Stack.Screen
             name={ONBOARDING_ROUTE.INPUT_BIRTH_DATE}
             component={InputBirthDate}
