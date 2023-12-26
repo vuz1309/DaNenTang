@@ -25,6 +25,7 @@ import {store} from '../state-management/redux/store';
 import {useLoadOnScroll} from '../hooks/useLoadOnScroll';
 import {APP_ROUTE} from '../navigation/config/routes';
 import DialogConfirm from '../components/base/dialog/DialogConfirm';
+import ImageView from '../components/base/images/ImageView';
 
 const Comment = ({
   id,
@@ -270,14 +271,7 @@ const CommentScreen = ({route, navigation}) => {
       <View style={styles.addComment}>
         <View
           style={{height: 40, width: 40, borderRadius: 30, overflow: 'hidden'}}>
-          <Image
-            style={{resizeMode: 'cover', height: '100%', width: '100%'}}
-            source={
-              store.getState().userInfo.user.avatar
-                ? {uri: store.getState().userInfo.user.avatar}
-                : require('../assets/images/avatar_null.jpg')
-            }
-          />
+          <ImageView uri={store.getState().userInfo.user.avatar} />
         </View>
         <TextInput
           onPressOut={() => setMarkType(1)}
