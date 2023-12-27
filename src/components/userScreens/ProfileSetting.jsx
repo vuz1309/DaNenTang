@@ -21,23 +21,29 @@ import {setBlockRequest} from '../../api/modules/block.request';
 import {APP_ROUTE} from '../../navigation/config/routes';
 import {store} from '../../state-management/redux/store';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
+import {useSelector} from 'react-redux';
 const ProfileSetting = ({route}) => {
   const {goBack, navigate} = useNavigation();
-  // const userLogged = useSelector(
-  //   /**
-  //    *
-  //    * @param {FacebookRootState} state
-  //    * @returns
-  //    */
-  //   state => state.userInfo.user,
-  // );
+  const userLogged = useSelector(
+    /**
+     *
+     * @param {FacebookRootState} state
+     * @returns
+     */
+    state => state.userInfo.user,
+  );
 
-  useEffect(() => {
-    SetLink(route.params.user.link);
-  });
+  // useEffect(() => {
+  //   SetLink(route.params.user.link);
+  // });
 
   const [showBlocKModal, SetShowBlockModal] = useState(false);
-  const [link, SetLink] = useState('');
+
+  const isOwner = React.useMemo(
+    () => userLogged.id === route.params.user.id,
+    [route.params.user.id],
+  );
+  // const [link, SetLink] = useState('');
   const CloseCf = () => {
     SetShowBlockModal(false);
   };
@@ -78,7 +84,7 @@ const ProfileSetting = ({route}) => {
       </View>
 
       <View style={styles.list}>
-        <Pressable style={styles.option}>
+        {/* <Pressable style={styles.option}>
           <VectorIcon
             name="warning"
             type="AntDesign"
@@ -86,8 +92,8 @@ const ProfileSetting = ({route}) => {
             color={Colors.black}
           />
           <Text style={styles.textOption}>Báo cáo trang cá nhân</Text>
-        </Pressable>
-        {console.log({name: route.params.user.userName})}
+        </Pressable> */}
+        {/* {console.log({name: route.params.user.userName})}
         <Pressable style={styles.option}>
           <VectorIcon
             name="hearto"
@@ -98,14 +104,14 @@ const ProfileSetting = ({route}) => {
           <Text style={styles.textOption}>
             Giúp đỡ {route.params.user.username}
           </Text>
-        </Pressable>
+        </Pressable> */}
         <Pressable
-          style={styles.option}
+          style={[styles.option, {display: isOwner ? 'none' : 'flex'}]}
           onPress={() => SetShowBlockModal(true)}>
           <VectorIcon
             name="deleteuser"
             type="AntDesign"
-            size={35}
+            size={32}
             color={Colors.black}
           />
           <Text style={styles.textOption}>Chặn</Text>
@@ -114,12 +120,12 @@ const ProfileSetting = ({route}) => {
           <VectorIcon
             name="search1"
             type="AntDesign"
-            size={35}
+            size={32}
             color={Colors.black}
           />
           <Text style={styles.textOption}>Tìm kiếm</Text>
         </Pressable>
-        <Pressable style={styles.option}>
+        {/* <Pressable style={styles.option}>
           <VectorIcon
             name="adduser"
             type="AntDesign"
@@ -127,7 +133,7 @@ const ProfileSetting = ({route}) => {
             color={Colors.black}
           />
           <Text style={styles.textOption}>Mời bạn</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       <View style={{backgroundColor: Colors.white, paddingLeft: 5}}>
@@ -158,11 +164,11 @@ const ProfileSetting = ({route}) => {
               padding: 5,
               fontWeight: 600,
             }}>
-            {link}
+            {route.params.user.link}
           </Text>
           <Pressable
             style={styles.copyBtn}
-            onPress={() => copyToClipboard(link)}>
+            onPress={() => copyToClipboard(route.params.user.link)}>
             <Text
               style={{
                 color: Colors.darkBackground,

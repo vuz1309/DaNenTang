@@ -33,8 +33,6 @@ import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useNavigation} from '@react-navigation/native';
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
 
   const {navigate} = useNavigation();

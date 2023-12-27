@@ -64,4 +64,4 @@ const ImageView = ({
   );
 };
 
-export default ImageView;
+export default React.memo(ImageView, (prev, next) => prev.uri === next.uri);

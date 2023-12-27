@@ -22,7 +22,7 @@ const Enum = {
     PostMarked: 6,
     MarkCommented: 7,
     VideoAdded: 8,
-    POstCommented: 9,
+    PostCommented: 9,
   },
   ThumnailMode: {
     Navigate: 1,

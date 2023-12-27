@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   RefreshControl,
   Modal,
   PermissionsAndroid,
@@ -15,7 +14,6 @@ import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 import {useSelector} from 'react-redux';
 import {getUserInfo} from '../api/modules/userProfile.request';
-import {useScrollHanler} from '../hooks/useScrollHandler';
 import ActionsOwner from '../components/userScreens/ActionsOwner';
 import ActionsOtherUser from '../components/userScreens/ActionsOtherUser';
 import Loading from '../components/base/Loading';
@@ -23,7 +21,6 @@ import EditUserInfo from '../components/userScreens/EditUserInfo';
 import {Themes} from '../assets/themes';
 import ZoomableImage from '../components/base/ZoomableImage';
 import StyledTouchableHighlight from '../components/base/StyledTouchableHighlight';
-import Enum from '../utils/Enum';
 import {APP_ROUTE} from '../navigation/config/routes';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AlertMessage from '../components/base/AlertMessage';
@@ -39,10 +36,8 @@ import PostHeader from '../components/posts/PostHeader';
 import FilePost from '../components/posts/FilePost';
 import PostFooter from '../components/posts/PostFooter';
 import ImageView from '../components/base/images/ImageView';
-import {changeLanguage} from 'i18next';
 import {getAllFriends} from '../api/modules/friends.request';
 
-const nullImage = require('../assets/images/avatar_null.jpg');
 const Detail = ({iconName, iconType, type, info}) => {
   return (
     <View
@@ -156,16 +151,11 @@ const UserScreen = ({navigation, route}) => {
       });
       setTotalFriends(data.data.total);
       setFriends(data.data.friends);
-      console.log('user friends:', data.data);
+      // console.log('user friends:', data.data);
     } catch (error) {
       console.log('friends:', error);
     }
   };
-
-  React.useEffect(() => {
-    getUserInfoApi();
-    getUserFriends();
-  }, [userId]);
 
   const toggleEditModal = async () => {
     if (isEdit) await getUserInfoApi();
@@ -181,10 +171,12 @@ const UserScreen = ({navigation, route}) => {
     setSearchText,
     refreshing: refreshingPost,
     isLoadMore,
-  } = useLoadOnScroll(getUserPosts, [userId]);
+  } = useLoadOnScroll(getUserPosts);
 
   const reload = () => {
+    console.log('reload user screen');
     getUserInfoApi();
+    setSearchText('99999');
     reloadPost();
     getUserFriends();
   };
@@ -218,6 +210,9 @@ const UserScreen = ({navigation, route}) => {
       console.log('user posts:', error);
     }
   }
+  React.useEffect(() => {
+    reload();
+  }, [userId]);
 
   if (!userInfo.id) return <LoadingOverlay />;
   return (
@@ -519,6 +514,10 @@ const UserScreen = ({navigation, route}) => {
             onRefresh={reload}
           />
         }
+        // viewabilityConfig={{
+        //   viewAreaCoveragePercentThreshold: 50,
+        // }}
+        viewabilityConfig={{viewAreaCoveragePercentThreshold: 50}}
       />
     </View>
   );
