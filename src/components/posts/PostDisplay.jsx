@@ -11,14 +11,10 @@ import FilePost from './FilePost';
  * @param {object} props
  * @returns
  */
-const PostDisplay = ({item, setIsShowDialogCoins, isShowRemove = false}) => {
+const PostDisplay = ({item, isShowRemove = false}) => {
   return (
     <View style={{backgroundColor: Colors.white, marginTop: 8}}>
-      <PostHeader
-        isShowRemove={isShowRemove}
-        data={item}
-        setIsShowDialogCoins={setIsShowDialogCoins}
-      />
+      <PostHeader isShowRemove={isShowRemove} data={item} />
 
       <FilePost item={item} />
 

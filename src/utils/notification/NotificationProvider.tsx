@@ -8,8 +8,8 @@ import {useAppTokens} from '../../hooks/useAppToken';
 import {AppStateContext} from './AppStateProvider';
 import AlertMessage from '../../components/base/AlertMessage';
 import Enum from '../Enum';
-import { useNavigation } from '@react-navigation/native';
-import { APP_ROUTE } from '../../navigation/config/routes';
+import {useNavigation} from '@react-navigation/native';
+import {APP_ROUTE} from '../../navigation/config/routes';
 
 export const NotificationContext = createContext({});
 export const notiContents = {
@@ -45,14 +45,14 @@ export const notiContents = {
     title: `Thông báo từ bài viết`,
     body: `đã thêm video mới vào bài viết.`,
   },
-  [Enum.NotiType.VideoAdded]: {
+  [Enum.NotiType.PostCommented]: {
     title: `Thông báo từ bài viết của bạn`,
     body: `đã bày phản hồi bình luận bài viết của bạn.`,
   },
 };
 const DEFINE_SAVE_TOKEN = false;
 
-export const NotificationProvider = (props : any) => {
+export const NotificationProvider = (props: any) => {
   const {children} = props;
   const [enableNotify, setEnableNotify] = React.useState(false);
   const [firebaseToken, setFirebaseToken] = useState<any>('');
@@ -135,7 +135,6 @@ export const NotificationProvider = (props : any) => {
         response?.data,
       );
     }
-    
   };
 
   const onMessageError = (data: any) => {};
@@ -182,7 +181,6 @@ export const NotificationProvider = (props : any) => {
     callBack?: (status: string) => void,
   ) => {
     try {
-
     } catch (e) {
       console.error(e);
     }

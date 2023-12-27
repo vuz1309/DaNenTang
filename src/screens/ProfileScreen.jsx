@@ -33,8 +33,6 @@ import DialogConfirm from '../components/base/dialog/DialogConfirm';
 import {useNavigation} from '@react-navigation/native';
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-
   const [isShowModalLogout, setIsShowModalLogout] = React.useState(false);
 
   const {navigate} = useNavigation();
@@ -284,7 +282,7 @@ const ProfileScreen = () => {
                     color={Colors.black}
                     style={styles.expandOptionIcon}
                   />
-                  <Text style={styles.expandText}>Danh sách Block</Text>
+                  <Text style={styles.expandText}>Danh sách chặn</Text>
                 </Pressable>
               </View>
 

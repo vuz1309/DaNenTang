@@ -21,7 +21,7 @@ const VideoItem = React.memo(
       navigate(APP_ROUTE.WATCH_NIGHT, {post: item});
     };
     return (
-      <View style={{backgroundColor: Colors.white, marginBottom: 12}}>
+      <View style={{backgroundColor: Colors.white, marginBottom: 8}}>
         <PostHeader data={item} isShowRemove={false} />
 
         <Pressable onPress={handlePress}>
@@ -80,7 +80,7 @@ const WatchScreen = () => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.background}}>
+    <View style={{flex: 1, backgroundColor: Colors.lightgrey}}>
       <FlatList
         data={posts}
         onScroll={handleScroll}

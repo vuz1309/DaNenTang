@@ -46,7 +46,7 @@ const actionsNoti = {
     route: APP_ROUTE.COMMENT_PAGE,
     param: {item: data.post},
   }),
-  [Enum.NotiType.POstCommented]: data => ({
+  [Enum.NotiType.PostCommented]: data => ({
     route: APP_ROUTE.COMMENT_PAGE,
     param: {item: data.post},
   }),
@@ -61,7 +61,7 @@ const notiIcons = {
   [Enum.NotiType.PostMarked]: require('../../assets/images/messageIcon.png'),
   [Enum.NotiType.PostFelt]: require('../../assets/images/postIcon.jpg'),
   [Enum.NotiType.VideoAdded]: require('../../assets/images/watchIcon.webp'),
-  [Enum.NotiType.POstCommented]: require('../../assets/images/messageIcon.png'),
+  [Enum.NotiType.PostCommented]: require('../../assets/images/messageIcon.png'),
 };
 
 const Notification = ({noti}) => {

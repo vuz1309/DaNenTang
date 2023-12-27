@@ -64,5 +64,6 @@ export const useLoadOnScroll = (loadFunc, dependencies = []) => {
     handleSubmitSearch,
     searchText,
     setSearchText,
+    setParams,
   };
 };
