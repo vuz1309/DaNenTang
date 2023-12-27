@@ -8,14 +8,15 @@ import {logger} from '../utils/helper';
 interface IUseSearch {
   onComplete: (response: any) => void;
   keyword: any;
+  userId?: string;
 }
 const useSearch = async (props: IUseSearch) => {
   const {onComplete, keyword} = props;
-  logger('keyword: ', true, keyword);
+  // logger('keyword: ', true, keyword);
   try {
     const response = await searchRequest({
       keyword: keyword,
-      user_id: null,
+      user_id: props.userId || null,
       index: 0,
       count: 20,
     });

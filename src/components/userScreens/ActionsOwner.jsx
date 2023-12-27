@@ -1,8 +1,13 @@
+import {useNavigation} from '@react-navigation/native';
 import {Themes} from '../../assets/themes';
 import {Colors} from '../../utils/Colors';
 import {StyledButton} from '../base';
 import {View} from 'react-native';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {store} from '../../state-management/redux/store';
 const ActionsOwner = ({action}) => {
+  const {navigate} = useNavigation();
+
   return (
     <View
       style={{
@@ -45,20 +50,25 @@ const ActionsOwner = ({action}) => {
         }}
         onPress={() => action()}
       />
-      {/* <StyledButton
+      <StyledButton
         customStyle={{
           backgroundColor: Themes.COLORS.lightGreyBg,
           flex: 0.5,
           gap: 0,
           height: '100%',
         }}
+        onPress={() =>
+          navigate(APP_ROUTE.PROFILE_SETTING, {
+            user: store.getState().userInfo.user,
+          })
+        }
         icon={{
           name: 'dots-three-horizontal',
           type: 'Entypo',
           size: 20,
           color: Colors.black,
         }}
-      /> */}
+      />
     </View>
   );
 };

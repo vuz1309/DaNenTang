@@ -68,7 +68,7 @@ const SearchScreen = ({route, navigation}) => {
     setSearchData(data);
   };
   const fetchSearchData = () => {
-    logger('keyword', true, keyword);
+    // logger('keyword', true, keyword);
     if (keyword === '' || keyword === undefined || keyword === null) {
       return;
     }
@@ -86,7 +86,7 @@ const SearchScreen = ({route, navigation}) => {
           style={{padding: 4, borderRadius: 20}}
           onPress={() => {
             setKeyword('');
-            navigation.navigate(APP_ROUTE.HOME_TAB);
+            navigation.goBack();
           }}>
           <VectorIcon
             name="arrowleft"
