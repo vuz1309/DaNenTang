@@ -1,11 +1,15 @@
+import React from 'react';
 import {logout} from '../api/modules/userProfile.request';
 import {postInfoActions} from '../state-management/redux/slices/HomeListPost';
 import {userInfoActions} from '../state-management/redux/slices/UserInfoSlice';
 import {store} from '../state-management/redux/store';
 
 export const useLogout = () => {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
   const onLogout = async () => {
     try {
+      setLoading(true);
       logout();
       store.dispatch(userInfoActions.logOut());
       store.dispatch(postInfoActions.setPosts([]));
@@ -24,9 +28,14 @@ export const useLogout = () => {
       // );
     } catch (error) {
       console.log(error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
   return {
     onLogout,
+    loading,
+    error,
   };
 };

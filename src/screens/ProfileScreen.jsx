@@ -344,7 +344,13 @@ const ProfileScreen = () => {
         <DialogConfirm
           isVisible={!!isShowModalLogout}
           closeBtn={{text: 'Không', onPress: () => setIsShowModalLogout(false)}}
-          mainBtn={{text: 'Đăng xuất', onPress: onLogout}}
+          mainBtn={{
+            text: 'Đăng xuất',
+            onPress: () => {
+              setIsShowModalLogout(false);
+              onLogout();
+            },
+          }}
           content={'Bạn có chắc chắn muốn đăng xuất?'}
           title={'Đăng xuất?'}
         />

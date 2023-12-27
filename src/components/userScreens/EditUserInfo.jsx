@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -13,7 +12,6 @@ import {
 } from 'react-native';
 import VectorIcon from '../../utils/VectorIcon';
 import {Colors} from '../../utils/Colors';
-import nullImage from '../../assets/images/avatar_null.jpg';
 import {setUserInfo} from '../../api/modules/userProfile.request';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {store} from '../../state-management/redux/store';
@@ -113,135 +111,156 @@ const EditUserInfo = ({userInfo, closeModal}) => {
   //   console.log(userData);
   // }, [userData]);
   return (
-    <ScrollView>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior="position"
-        keyboardVerticalOffset={keyboardVerticalOffset}>
-        <View style={styles.header}>
-          <View style={styles.backButton}>
-            <TouchableOpacity onPress={closeModal}>
-              <VectorIcon
-                name="arrowleft"
-                type="AntDesign"
-                size={22}
-                color={Colors.grey}
-              />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.headerText}>Chỉnh sửa thông tin</Text>
-          <TouchableOpacity onPress={handleEdit}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: Colors.primaryColor,
-              }}>
-              Cập nhật
-            </Text>
+    <View style={{flex: 1}}>
+      <View style={styles.header}>
+        <View style={styles.backButton}>
+          <TouchableOpacity onPress={closeModal}>
+            <VectorIcon
+              name="arrowleft"
+              type="AntDesign"
+              size={22}
+              color={Colors.grey}
+            />
           </TouchableOpacity>
         </View>
-        <View style={styles.editOption}>
-          <HeaderOption name={'Ảnh đại diện'} />
-          <View
+        <Text style={styles.headerText}>Chỉnh sửa thông tin</Text>
+        <TouchableOpacity onPress={handleEdit}>
+          <Text
             style={{
-              alignItems: 'center',
+              fontSize: 16,
+              fontWeight: 'bold',
+              color: Colors.primaryColor,
             }}>
-            <TouchableOpacity onPress={() => openLibrary('avatar')}>
-              <ImageView uri={userData?.avatar?.uri} imageStyles={styles.ava} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.editOption}>
-          <HeaderOption name={'Ảnh nền'} />
-          <View
-            style={{
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
+            Cập nhật
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior="position"
+          keyboardVerticalOffset={keyboardVerticalOffset}>
+          <View style={styles.editOption}>
+            <HeaderOption name={'Ảnh đại diện'} />
+            <View
               style={{
-                width: '100%',
-                height: 200,
-                borderRadius: 18,
-                overflow: 'hidden',
-                borderWidth: 1,
-                borderColor: Colors.borderGrey,
-              }}
-              onPress={() => openLibrary('cover_image')}>
-              <ImageView uri={userData?.cover_image?.uri} />
-            </TouchableOpacity>
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity onPress={() => openLibrary('avatar')}>
+                <ImageView
+                  uri={userData?.avatar?.uri}
+                  imageStyles={styles.ava}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={styles.editOption}>
-          <HeaderOption name={'Thông tin'} />
-          <View style={styles.infoOption}>
-            <Text style={styles.label}>Tên tài khoản: </Text>
-            <TextInput
-              placeholder="Tài khoản"
-              inputMode="text"
-              value={userData.username}
-              placeholderTextColor={Colors.borderGrey}
-              onChangeText={value =>
-                setUserData(prevState => ({
-                  ...prevState,
-                  username: value,
-                }))
-              }
-              style={styles.inputBox}
-            />
+          <View style={styles.editOption}>
+            <HeaderOption name={'Ảnh nền'} />
+            <View
+              style={{
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                style={{
+                  width: '100%',
+                  height: 200,
+                  borderRadius: 18,
+                  overflow: 'hidden',
+                  borderWidth: 1,
+                  borderColor: Colors.borderGrey,
+                }}
+                onPress={() => openLibrary('cover_image')}>
+                <ImageView uri={userData?.cover_image?.uri} />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.infoOption}>
-            <Text style={styles.label}>Quốc gia: </Text>
-            <TextInput
-              placeholder="Quốc gia"
-              inputMode="text"
-              value={userData.country}
-              placeholderTextColor={Colors.borderGrey}
-              onChangeText={value =>
-                setUserData(prevState => ({
-                  ...prevState,
-                  country: value,
-                }))
-              }
-              style={styles.inputBox}
-            />
-          </View>
-          <View style={styles.infoOption}>
-            <Text style={styles.label}>Thành phố: </Text>
-            <TextInput
-              placeholder="Thành phố"
-              inputMode="text"
-              value={userData.city}
-              placeholderTextColor={Colors.borderGrey}
-              onChangeText={value =>
-                setUserData(prevState => ({
-                  ...prevState,
-                  city: value,
-                }))
-              }
-              style={styles.inputBox}
-            />
-          </View>
+          <View style={styles.editOption}>
+            <HeaderOption name={'Thông tin'} />
+            <View style={styles.infoOption}>
+              <Text style={styles.label}>Tên tài khoản: </Text>
+              <TextInput
+                placeholder="Tài khoản"
+                inputMode="text"
+                value={userData.username}
+                placeholderTextColor={Colors.borderGrey}
+                onChangeText={value =>
+                  setUserData(prevState => ({
+                    ...prevState,
+                    username: value,
+                  }))
+                }
+                style={styles.inputBox}
+              />
+            </View>
+            <View style={styles.infoOption}>
+              <Text style={styles.label}>Quốc gia: </Text>
+              <TextInput
+                placeholder="Quốc gia"
+                inputMode="text"
+                value={userData.country}
+                placeholderTextColor={Colors.borderGrey}
+                onChangeText={value =>
+                  setUserData(prevState => ({
+                    ...prevState,
+                    country: value,
+                  }))
+                }
+                style={styles.inputBox}
+              />
+            </View>
+            <View style={styles.infoOption}>
+              <Text style={styles.label}>Thành phố: </Text>
+              <TextInput
+                placeholder="Thành phố"
+                inputMode="text"
+                value={userData.city}
+                placeholderTextColor={Colors.borderGrey}
+                onChangeText={value =>
+                  setUserData(prevState => ({
+                    ...prevState,
+                    city: value,
+                  }))
+                }
+                style={styles.inputBox}
+              />
+            </View>
 
-          <View style={styles.infoOption}>
-            <Text style={styles.label}>Nơi ở: </Text>
-            <TextInput
-              placeholder="Nơi ở"
-              inputMode="text"
-              value={userData.address}
-              placeholderTextColor={Colors.borderGrey}
-              onChangeText={value =>
-                setUserData(prevState => ({
-                  ...prevState,
-                  address: value,
-                }))
-              }
-              style={styles.inputBox}
-            />
+            <View style={styles.infoOption}>
+              <Text style={styles.label}>Nơi ở: </Text>
+              <TextInput
+                placeholder="Nơi ở"
+                inputMode="text"
+                value={userData.address}
+                placeholderTextColor={Colors.borderGrey}
+                onChangeText={value =>
+                  setUserData(prevState => ({
+                    ...prevState,
+                    address: value,
+                  }))
+                }
+                style={styles.inputBox}
+              />
+            </View>
+            <View style={styles.infoOption}>
+              <Text style={styles.label}>Link: </Text>
+              <TextInput
+                placeholder="Link"
+                inputMode="text"
+                value={userData.link}
+                placeholderTextColor={Colors.borderGrey}
+                onChangeText={value =>
+                  setUserData(prevState => ({
+                    ...prevState,
+                    link: value,
+                  }))
+                }
+                style={styles.inputBox}
+              />
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </ScrollView>
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </View>
   );
 };
 

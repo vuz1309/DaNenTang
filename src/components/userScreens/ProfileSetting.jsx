@@ -120,7 +120,7 @@ const ProfileSetting = ({route}) => {
           <VectorIcon
             name="search1"
             type="AntDesign"
-            size={32}
+            size={28}
             color={Colors.black}
           />
           <Text style={styles.textOption}>Tìm kiếm</Text>
@@ -214,14 +214,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: Colors.borderGrey,
     paddingLeft: 5,
+    alignItems: 'center',
+    paddingVertical: 12,
   },
   textOption: {
     textAlign: 'right',
-    paddingTop: 15,
-    paddingBottom: 10,
+
     paddingLeft: 20,
-    height: '100%',
+
     color: Colors.black,
+    fontSize: 20,
   },
   titleText: {
     fontWeight: '700',

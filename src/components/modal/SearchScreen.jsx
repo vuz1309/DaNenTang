@@ -18,9 +18,9 @@ import {getSavedSearchRequest} from '../../api/modules/search';
 import {logger} from '../../utils/helper';
 import PostDisplay from '../posts/PostDisplay';
 import HistorySearchModal from './HistorySearchModal';
-import { APP_ROUTE } from '../../navigation/config/routes';
-import { FlatList, RefreshControl } from 'react-native-gesture-handler';
-import { useLoadOnScroll } from '../../hooks/useLoadOnScroll';
+import {APP_ROUTE} from '../../navigation/config/routes';
+import {FlatList, RefreshControl} from 'react-native-gesture-handler';
+import {useLoadOnScroll} from '../../hooks/useLoadOnScroll';
 import Loading from '../base/Loading';
 
 const SearchScreen = ({route, navigation}) => {
@@ -36,26 +36,20 @@ const SearchScreen = ({route, navigation}) => {
     setSavedData(newSavedSearch);
   };
 
-  const {
-    getNewItems,
-    handleScroll,
-    params,
-    reload,
-    refreshing,
-    isLoadMore,
-  } = useLoadOnScroll(getAll, [searchData]);
+  const {getNewItems, handleScroll, params, reload, refreshing, isLoadMore} =
+    useLoadOnScroll(getAll, [searchData]);
 
-  async function getAll(){
-    try{
+  async function getAll() {
+    try {
       const {data} = await getSavedSearchRequest({...params});
       setSavedData(data.data);
       if (params.index == '0') setSavedData(data.data);
-      else{
+      else {
         const newItems = getNewItems(data.data, savedData);
 
         setSavedData(prev => [...prev, ...newItems]);
       }
-    }catch (err) {
+    } catch (err) {
       logger(err);
       setSavedData([]);
     }
@@ -63,18 +57,26 @@ const SearchScreen = ({route, navigation}) => {
 
   const onPressSavedItem = async text => {
     setKeyword(text);
-    useSearch({onComplete: onCompleteSearch, keyword: text, userId: userIdSearch});
+    useSearch({
+      onComplete: onCompleteSearch,
+      keyword: text,
+      userId: userIdSearch,
+    });
   };
 
   const onCompleteSearch = data => {
     setSearchData(data);
   };
   const fetchSearchData = () => {
-    logger('keyword', true , keyword);
+    // logger('keyword', true, keyword);
     if (keyword === '' || keyword === undefined || keyword === null) {
       return;
     }
-    useSearch({onComplete: onCompleteSearch, keyword: keyword, userId: userIdSearch});
+    useSearch({
+      onComplete: onCompleteSearch,
+      keyword: keyword,
+      userId: userIdSearch,
+    });
   };
   return (
     <View style={{paddingTop: 10, backgroundColor: '#ffffff'}}>
@@ -84,7 +86,7 @@ const SearchScreen = ({route, navigation}) => {
           style={{padding: 4, borderRadius: 20}}
           onPress={() => {
             setKeyword('');
-            navigation.navigate(APP_ROUTE.HOME_TAB);
+            navigation.goBack();
           }}>
           <VectorIcon
             name="arrowleft"
@@ -106,7 +108,6 @@ const SearchScreen = ({route, navigation}) => {
 
       <View
         style={{
-          marginTop: '5%',
           borderBottomColor: 'black',
           borderBottomWidth: StyleSheet.hairlineWidth,
         }}
@@ -123,7 +124,7 @@ const SearchScreen = ({route, navigation}) => {
             data={savedData}
             ListHeaderComponent={
               <View>
-                <View style={[styles.rowBetween]}>
+                <View style={[styles.rowBetween, {padding: 12}]}>
                   <Text style={styles.biggerText}>Tìm kiếm gần đây</Text>
                   <TouchableOpacity>
                     <Text
@@ -135,7 +136,6 @@ const SearchScreen = ({route, navigation}) => {
                 </View>
                 <View
                   style={{
-                    marginTop: '5%',
                     borderBottomColor: 'black',
                     borderBottomWidth: StyleSheet.hairlineWidth,
                   }}
@@ -164,7 +164,8 @@ const SearchScreen = ({route, navigation}) => {
             onScroll={handleScroll}
             viewabilityConfig={{
               viewAreaCoveragePercentThreshold: 50,
-            }}/>
+            }}
+          />
         </View>
       ) : (
         <View>
@@ -184,7 +185,7 @@ const SearchScreen = ({route, navigation}) => {
       )}
     </View>
   );
-}
+};
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -249,7 +250,7 @@ const styles = StyleSheet.create({
   },
   searchHeader: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
+    padding: 8,
     alignItems: 'center',
     gap: 8,
   },
@@ -264,8 +265,6 @@ const styles = StyleSheet.create({
     height: 42,
   },
   biggerText: {
-    marginTop: '3%',
-    marginLeft: '3%',
     fontSize: 18,
     color: 'black',
     fontWeight: '600',
