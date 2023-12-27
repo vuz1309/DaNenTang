@@ -62,6 +62,8 @@ export const useLogin = (): LoginRequest => {
       const response: any = await loginRequest(loginParams);
 
       await handleLoginSuccess(response);
+      console.log(response.data.data);
+
       if (response.data.data.active == Enum.AccountStatus.VALID.toString()) {
         const pushSettings = await getPushSettingsRequest();
         store.dispatch(
@@ -78,6 +80,15 @@ export const useLogin = (): LoginRequest => {
             count: '20',
           }),
         );
+        store.dispatch(postInfoActions.setLastId('99999'));
+        const {saveFcmToken, getFcmToken} = useAppTokens(); // save local storage
+        try {
+          const fcmToken = (await getFcmToken()) || '';
+          // logger('fcmToken: ', true, fcmToken);
+          await setDevToken({devtype: '1', devtoken: fcmToken});
+        } catch (err) {
+          console.log(err);
+        }
       }
 
       // console.log('push settings:', pushSettings?.data?.data);
@@ -91,21 +102,14 @@ export const useLogin = (): LoginRequest => {
       );
     } catch (e: any) {
       setError(e);
-      AlertMessage(e?.message || 'Đăng nhập thất bại', 'Thất bại!');
+      console.log('error:', e);
+      // AlertMessage(e?.message || 'Đăng nhập thất bại', 'Thất bại!');
     } finally {
       setLoading(false);
     }
   };
   const handleLoginSuccess = async ({data}: {data: any}) => {
-    const {saveFcmToken, getFcmToken} = useAppTokens(); // save local storage
     AuthenticateService.handlerLogin(data);
-    try {
-      const fcmToken = (await getFcmToken()) || '';
-      // logger('fcmToken: ', true, fcmToken);
-      await setDevToken({devtype: '1', devtoken: fcmToken});
-    } catch (err) {
-      console.log(err);
-    }
   };
   return {
     loading,

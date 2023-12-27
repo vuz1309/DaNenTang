@@ -26,8 +26,9 @@ const HomeScreen = () => {
   const params = useSelector(state => state.postInfo.paramsConfig);
 
   const getListPostsApi = async () => {
+    console.log('home screen getListPost');
+
     try {
-      // console.log('home post param:', params);
       const {data} = await getListPost(params);
       // console.log(data);
       if (data.data.last_id != 'undefined') {

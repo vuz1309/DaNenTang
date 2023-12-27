@@ -189,6 +189,7 @@ const UserScreen = ({navigation, route}) => {
     }
   };
   async function getUserPosts() {
+    console.log('user screen getListPost');
     try {
       const {data} = await getListPost({
         ...params,

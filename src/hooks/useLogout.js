@@ -13,7 +13,7 @@ export const useLogout = () => {
       logout();
       store.dispatch(userInfoActions.logOut());
       store.dispatch(postInfoActions.setPosts([]));
-      store.dispatch(postInfoActions.setLastId('99999'));
+      // store.dispatch(postInfoActions.setLastId('99999'));
 
       // store.dispatch(
       //   postInfoActions.setParams({

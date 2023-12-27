@@ -92,13 +92,16 @@ export const CheckVerifyCode = ({navigation}) => {
         <View
           style={{
             marginTop: '10%',
-
+            paddingHorizontal: 32,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 16,
+            gap: 0,
           }}>
-          <StyledText content="FB-" customStyle={[styles.biggerTextCenter]} />
+          <StyledText
+            content="FB  -  "
+            customStyle={[styles.biggerTextCenter]}
+          />
           <View style={styles.wrapperTextInput}>
             <TextInput
               keyboardType="numeric"
@@ -143,8 +146,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  wrapperTextInput: {flex: 1},
   textInput: {
-    height: 30,
+    height: 40,
+    width: '100%',
     borderColor: Colors.borderGrey,
     borderWidth: 1,
     paddingHorizontal: 8,
