@@ -17,6 +17,7 @@ import {logger} from '../helper';
 import {ToastAndroid} from 'react-native';
 import {getPushSettingsRequest} from '../../api/modules/pushnoti';
 import {postInfoActions} from '../../state-management/redux/slices/HomeListPost';
+import Enum from '../Enum';
 
 interface LoginRequest {
   loading: boolean;
@@ -61,31 +62,31 @@ export const useLogin = (): LoginRequest => {
       const response: any = await loginRequest(loginParams);
 
       await handleLoginSuccess(response);
-
-      const pushSettings = await getPushSettingsRequest();
+      if (response.data.data.active == Enum.AccountStatus.VALID.toString()) {
+        const pushSettings = await getPushSettingsRequest();
+        store.dispatch(
+          userInfoActions.savePushSettings(pushSettings?.data?.data),
+        );
+        store.dispatch(
+          postInfoActions.setParams({
+            in_campaign: '1',
+            campaign_id: '1',
+            latitude: '1.0',
+            longitude: '1.0',
+            last_id: '99999',
+            index: '0',
+            count: '20',
+          }),
+        );
+      }
 
       // console.log('push settings:', pushSettings?.data?.data);
-
-      store.dispatch(
-        userInfoActions.savePushSettings(pushSettings?.data?.data),
-      );
 
       store.dispatch(
         userSavedInfoActions.addUserSaved({
           email: loginParams.email,
           password: loginParams.password,
           ...response.data?.data,
-        }),
-      );
-      store.dispatch(
-        postInfoActions.setParams({
-          in_campaign: '1',
-          campaign_id: '1',
-          latitude: '1.0',
-          longitude: '1.0',
-          last_id: '99999',
-          index: '0',
-          count: '20',
         }),
       );
     } catch (e: any) {

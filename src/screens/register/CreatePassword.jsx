@@ -3,19 +3,13 @@ import {Colors} from '../../utils/Colors';
 import {StyleSheet, TextInput, View} from 'react-native';
 import React, {useState} from 'react';
 import VectorIcon from '../../utils/VectorIcon';
-import {
-  AUTHENTICATE_ROUTE,
-  ONBOARDING_ROUTE,
-} from '../../navigation/config/routes';
-import {logger} from '../../utils/helper';
+import {ONBOARDING_ROUTE} from '../../navigation/config/routes';
 import {
   getStringAsyncData,
   storeStringAsyncData,
 } from '../../utils/authenticate/LocalStorage';
-import {loginRequest, registerRequest} from '../../api/modules/authenticate';
+import {registerRequest} from '../../api/modules/authenticate';
 import {useLogin} from '../../utils/authenticate/AuthenticateService';
-import {Ionicons} from '@expo/vector-icons';
-import axios from 'axios';
 import AlertMessage from '../../components/base/AlertMessage';
 import {validatePassword} from '../../utils/validater';
 import LoadingOverlay from '../../components/base/LoadingOverlay';
